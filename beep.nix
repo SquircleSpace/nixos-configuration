@@ -25,11 +25,6 @@ in
   services.xserver.dpi = 125; # Technically 226 is correct
   services.xserver.libinput.enable = true;
 
-  services.xserver.displayManager.sddm.autoLogin = {
-    enable = true;
-    user = "brad";
-  };
-
   system.stateVersion = "17.09";
 
   boot.initrd.availableKernelModules = [ "ahci" "ohci_pci" "ehci_pci" "pata_atiixp" "xhci_pci" "usbhid" "usb_storage" "sd_mod" ];
