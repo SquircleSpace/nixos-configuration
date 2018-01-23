@@ -1,0 +1,4 @@
+#!/bin/sh
+
+git archive --format=tar HEAD | tar -x -C /etc/nixos && \
+    nixos-rebuild "$@"
