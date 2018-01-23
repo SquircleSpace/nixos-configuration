@@ -31,6 +31,7 @@
     extraGroups = [ "wheel" "networkmanager" ];
     uid = 1000;
     openssh.authorizedKeys.keyFiles = [ ./brad-pubkey ];
+    passwordFile = "/etc/nixos/user-passwords/brad";
     packages = with pkgs; [
       # Essentials
       git emacs tmux stow
@@ -41,4 +42,11 @@
     ];
   };
   users.mutableUsers = false;
+
+  system.activationScripts = {
+    "Protect /etc/nixos/user-passwords/" = ''
+      chown -R root:root /etc/nixos/user-passwords/
+      chmod -R go-rwx /etc/nixos/user-passwords/
+    '';
+  };
 }
