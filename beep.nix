@@ -25,6 +25,7 @@ in
   services.xserver.dpi = 125; # Technically 226 is correct
   services.xserver.libinput.enable = true;
   services.xserver.libinput.tapping = false; # Tap-to-click is evil
+  services.xserver.libinput.clickMethod = "clickfinger"; # Multi-touch!
 
   system.stateVersion = "17.09";
 
