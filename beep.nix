@@ -22,7 +22,7 @@ in
   programs.bash.enableCompletion = true;
 
   services.xserver.layout = "us";
-
+  services.xserver.dpi = 125; # Technically 226 is correct
   services.xserver.libinput.enable = true;
 
   services.xserver.displayManager.sddm.autoLogin = {
