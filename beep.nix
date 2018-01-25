@@ -26,6 +26,7 @@ in
   services.xserver.libinput.enable = true;
   services.xserver.libinput.tapping = false; # Tap-to-click is evil
   services.xserver.libinput.clickMethod = "clickfinger"; # Multi-touch!
+  services.xserver.libinput.naturalScrolling = true;
 
   system.stateVersion = "17.09";
 
