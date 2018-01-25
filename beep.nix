@@ -32,4 +32,6 @@ in
   boot.initrd.availableKernelModules = [ "ahci" "ohci_pci" "ehci_pci" "pata_atiixp" "xhci_pci" "usbhid" "usb_storage" "sd_mod" ];
   boot.initrd.kernelModules = [ "spi_pxa2xx_platform" "spi_pxa2xx_pci" "intel_lpss_pci" "applespi" ];
   boot.kernelModules = [ "kvm-amd" ];
+
+  users.extraUsers.brad.packages = with pkgs; [ xorg.xbacklight ];
 }
