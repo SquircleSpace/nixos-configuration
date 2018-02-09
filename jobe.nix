@@ -1,5 +1,7 @@
 { config, pkgs, ... }:
-
+let
+  boot-windows = import ./boot-windows { stdenv = pkgs.stdenv; };
+in
 {
   # Hello!  My name is
   networking.hostName = "Jobe";
@@ -77,4 +79,13 @@
 
   # Let me tell you where my screens go
   services.xserver.xrandrHeads = [ "DP-0" "DVI-D-0" ];
+
+  # Booting windows should be easy
+  security.wrappers = {
+    boot-windows = {
+      source = "${boot-windows}/bin/boot-windows";
+      owner = "root";
+      setuid = true;
+    };
+  };
 }
