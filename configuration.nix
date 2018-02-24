@@ -13,6 +13,8 @@
   services.xserver.enable = true;
   services.xserver.displayManager.sddm.enable = true;
   services.xserver.windowManager.stumpwm.enable = true;
+  services.xserver.windowManager.default = "stumpwm";
+  services.xserver.desktopManager.default = "none";
 
   # Manage that network
   networking.networkmanager.enable = true;

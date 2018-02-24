@@ -28,6 +28,11 @@ in
   services.xserver.libinput.clickMethod = "clickfinger"; # Multi-touch!
   services.xserver.libinput.naturalScrolling = true;
 
+  services.xserver.displayManager.sddm.autoLogin = {
+    enable = true;
+    user = "brad";
+  };
+
   system.stateVersion = "17.09";
 
   boot.initrd.availableKernelModules = [ "ahci" "ohci_pci" "ehci_pci" "pata_atiixp" "xhci_pci" "usbhid" "usb_storage" "sd_mod" ];
