@@ -40,4 +40,7 @@ in
   boot.kernelModules = [ "kvm-amd" ];
 
   users.extraUsers.brad.packages = with pkgs; [ xorg.xbacklight ];
+
+  services.redshift.enable = true;
+  services.redshift.provider = "geoclue2";
 }
