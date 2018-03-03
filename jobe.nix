@@ -45,9 +45,6 @@ in
   nixpkgs.config.allowUnfree = true;
   hardware.opengl.driSupport32Bit = true;
 
-  # Sometimes I want plasma5... but only sometimes!
-  services.xserver.desktopManager.plasma5.enable = true;
-
   # Soon...
   # services.crashplan.enable = true;
 
