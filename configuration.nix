@@ -51,4 +51,19 @@
       chmod -R go-rwx /etc/nixos/user-passwords/
     '';
   };
+
+  nixpkgs.overlays = [
+    (self: super: {
+      stumpwm = assert super.stumpwm.drvAttrs.src.drvAttrs.rev == "refs/tags/1.0.0";
+      super.stumpwm.overrideAttrs (oldAttrs: {
+        buildInputs = pkgs.lib.concatLists [ oldAttrs.buildInputs [ pkgs.lispPackages.alexandria ] ];
+        name = "stumpwm-20180313";
+        src = pkgs.fetchgit {
+          url = "https://github.com/stumpwm/stumpwm";
+          rev = "8a19932093fe8cc78955459bc9213f2329bf91e7";
+          sha256 = "17s6ij6fl9ms6rwvxn5pl8icbr7kk0laf0vlr7qwjyjfqa97iw5c";
+        };
+      });
+    })
+  ];
 }
