@@ -8,8 +8,8 @@
         name = "stumpwm-20180313";
         src = pkgs.fetchgit {
           url = "https://github.com/stumpwm/stumpwm";
-          rev = "8a19932093fe8cc78955459bc9213f2329bf91e7";
-          sha256 = "17s6ij6fl9ms6rwvxn5pl8icbr7kk0laf0vlr7qwjyjfqa97iw5c";
+          rev = "v1.0.1-rc";
+          sha256 = "12nbq4iyfhzhrzbbbakg2lijmn568skd48dbbb0q4rkcqyzqiz6v";
         };
       });
 
