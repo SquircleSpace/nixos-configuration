@@ -37,7 +37,7 @@
     passwordFile = "/etc/nixos/user-passwords/brad";
     packages = with pkgs; [
       # Essentials
-      git emacs tmux stow firefox terminator
+      git emacs tmux stow firefox terminator psmisc
       # Love 'em
       file htop lsof mosh nox nix-repl sbcl wget xxd
       # For screen locking
