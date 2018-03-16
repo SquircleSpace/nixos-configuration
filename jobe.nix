@@ -28,6 +28,13 @@ in
       path = "/hermes/Photos";
       "read only" = "yes";
     };
+    gaia = {
+      browseable = "yes";
+      comment = "Gaia";
+      "guest ok" = "no";
+      path = "/crypt/gaia/Gaia";
+      "read only" = "yes";
+    };
     homes = {
       "guest ok" = "no";
       "browseable" = "no";
