@@ -52,4 +52,6 @@
       chmod -R go-rwx /etc/nixos/user-passwords/
     '';
   };
+
+  hardware.pulseaudio.enable = true;
 }
