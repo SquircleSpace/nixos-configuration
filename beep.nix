@@ -39,7 +39,7 @@ in
   boot.initrd.kernelModules = [ "spi_pxa2xx_platform" "spi_pxa2xx_pci" "intel_lpss_pci" "applespi" ];
   boot.kernelModules = [ "kvm-amd" ];
 
-  users.extraUsers.brad.packages = with pkgs; [ xorg.xbacklight ];
+  users.extraUsers.brad.packages = with pkgs; [ xorg.xbacklight yabar ];
 
   services.redshift.enable = true;
   services.redshift.provider = "geoclue2";

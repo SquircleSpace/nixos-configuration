@@ -42,8 +42,6 @@
       file htop lsof mosh nox nix-repl sbcl wget xxd
       # For screen locking
       xscreensaver
-      # Pretty alright
-      yabar
     ];
   };
   users.mutableUsers = false;
