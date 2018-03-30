@@ -40,6 +40,13 @@
       git emacs tmux stow firefox terminator psmisc
       # Love 'em
       file htop lsof mosh nox nix-repl sbcl wget xxd
+      # Nice to have
+      (pidgin-with-plugins.override {
+        plugins = [
+          purple-hangouts pidginwindowmerge
+          pidgin-opensteamworks
+        ];
+      })
       # For screen locking
       xscreensaver
     ];
