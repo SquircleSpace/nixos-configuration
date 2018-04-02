@@ -3,6 +3,10 @@ let
   boot-windows = import ./boot-windows { stdenv = pkgs.stdenv; };
 in
 {
+  imports = [
+    ./vpn.nix
+  ];
+
   # Hello!  My name is
   networking.hostName = "Jobe";
 
