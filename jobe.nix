@@ -59,7 +59,7 @@ in
   # Soon...
   # services.crashplan.enable = true;
 
-  system.stateVersion = "17.09";
+  system.stateVersion = "18.03";
 
   # Mount some partitions
   fileSystems = {

@@ -33,7 +33,7 @@ in
     user = "brad";
   };
 
-  system.stateVersion = "17.09";
+  system.stateVersion = "18.03";
 
   boot.initrd.availableKernelModules = [ "ahci" "ohci_pci" "ehci_pci" "pata_atiixp" "xhci_pci" "usbhid" "usb_storage" "sd_mod" ];
   boot.initrd.kernelModules = [ "spi_pxa2xx_platform" "spi_pxa2xx_pci" "intel_lpss_pci" "applespi" ];
