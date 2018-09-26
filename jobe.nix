@@ -55,6 +55,7 @@ in
   services.xserver.videoDrivers = ["nvidia"];
   nixpkgs.config.allowUnfree = true;
   hardware.opengl.driSupport32Bit = true;
+  hardware.pulseaudio.support32Bit = true;
 
   # Soon...
   # services.crashplan.enable = true;
@@ -96,4 +97,8 @@ in
       setuid = true;
     };
   };
+
+  users.extraUsers.brad.packages = with pkgs; [
+    steam playonlinux
+  ];
 }
