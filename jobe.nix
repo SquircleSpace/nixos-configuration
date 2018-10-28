@@ -57,9 +57,6 @@ in
   hardware.opengl.driSupport32Bit = true;
   hardware.pulseaudio.support32Bit = true;
 
-  # Soon...
-  # services.crashplan.enable = true;
-
   system.stateVersion = "18.03";
 
   # Mount some partitions
