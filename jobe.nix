@@ -25,18 +25,11 @@ in
   # Share some files
   services.samba.enable = true;
   services.samba.shares = {
-    photos = {
+    media = {
       browseable = "yes";
-      comment = "Photos";
+      comment = "Media";
       "guest ok" = "no";
-      path = "/hermes/Photos";
-      "read only" = "yes";
-    };
-    gaia = {
-      browseable = "yes";
-      comment = "Gaia";
-      "guest ok" = "no";
-      path = "/crypt/gaia/Gaia";
+      path = "/media/";
       "read only" = "yes";
     };
     homes = {
