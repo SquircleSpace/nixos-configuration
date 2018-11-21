@@ -95,6 +95,6 @@ in
   };
 
   users.extraUsers.brad.packages = with pkgs; [
-    steam playonlinux
+    steam playonlinux wine
   ];
 }
