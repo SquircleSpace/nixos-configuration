@@ -7,7 +7,7 @@
 
 int markWindows() {
     pid_t pid = 0;
-    const char *efiBootmgrArgs[] = {"efibootmgr", "-n", "2", NULL};
+    const char *efiBootmgrArgs[] = {"efibootmgr", "-n", "0", NULL};
     int status = posix_spawnp(&pid, "efibootmgr", NULL, NULL, (char * const *)efiBootmgrArgs, environ);
     if (0 != status) {
 	printf("Couldn't fork efibootmgr. Got status %d\n", status);
