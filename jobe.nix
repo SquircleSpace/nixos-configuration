@@ -97,4 +97,7 @@ in
   users.extraUsers.brad.packages = with pkgs; [
     steam playonlinux wine
   ];
+
+  # ESYNC support in some Proton games requires a LOT of file descriptors
+  systemd.extraConfig = "DefaultLimitNOFILE=1048576";
 }
