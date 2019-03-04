@@ -10,6 +10,9 @@ in
   # Hello!  My name is
   networking.hostName = "Jobe";
 
+  # Updates are important
+  system.autoUpgrade.enable = true;
+
   # We're self respecting and use EFI boot around here
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
