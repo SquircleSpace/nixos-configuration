@@ -75,10 +75,9 @@ in
       fsType = "btrfs";
       options = [ "subvol=/home" ];
     };
-    "/media" = {
+    "/crypt" = {
       device = "/dev/disk/by-uuid/82b4a0b5-3266-4d53-840d-061d43b3db57";
       fsType = "btrfs";
-      options = [ "subvol=/media" ];
     };
   };
 
