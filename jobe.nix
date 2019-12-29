@@ -85,7 +85,27 @@ in
   nix.useSandbox = true;
 
   # Let me tell you where my screens go
-  services.xserver.xrandrHeads = [ "DP-0" "DVI-D-0" ];
+  services.xserver.dpi = 150;
+  services.xserver.xrandrHeads = [
+    {
+      "output" = "DVI-D-0";
+      "primary" = false;
+      "monitorConfig" = ''
+        DisplaySize 476 298
+        Option "LeftOf" "DP-0"
+      '';
+    }
+    {
+      "output" = "DP-0";
+      "primary" = true;
+      "monitorConfig" = ''DisplaySize 622 343'';
+    }
+    {
+      "output" = "HDMI-0";
+      "primary" = false;
+      "monitorConfig" = ''Option "Enable" "false"'';
+    }
+  ];
 
   # Booting windows should be easy
   security.wrappers = {
