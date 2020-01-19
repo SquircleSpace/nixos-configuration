@@ -87,26 +87,25 @@ in
 
   # Let me tell you where my screens go
   services.xserver.dpi = 150;
-  services.xserver.xrandrHeads = [
-    {
-      "output" = "DVI-D-0";
-      "primary" = false;
-      "monitorConfig" = ''
-        DisplaySize 476 298
-        Option "LeftOf" "DP-0"
-      '';
-    }
-    {
-      "output" = "DP-0";
-      "primary" = true;
-      "monitorConfig" = ''DisplaySize 622 343'';
-    }
-    {
-      "output" = "HDMI-0";
-      "primary" = false;
-      "monitorConfig" = ''Option "Enable" "false"'';
-    }
-  ];
+  services.xserver.monitorSection = ''
+    VendorName     "Unknown"
+    ModelName      "Samsung U28E590"
+    HorizSync       30.0 - 135.0
+    VertRefresh     56.0 - 75.0
+    Option         "DPMS"
+  '';
+  services.xserver.screenSection = ''
+    Monitor        "Monitor[0]"
+    Option         "Stereo" "0"
+    Option         "nvidiaXineramaInfoOrder" "DFP-4"
+    Option         "metamodes" "DP-2: nvidia-auto-select +1680+0, DVI-D-0: nvidia-auto-select +0+0"
+    Option         "SLI" "Off"
+    Option         "MultiGPU" "Off"
+    Option         "BaseMosaic" "off"
+    SubSection     "Display"
+        Depth       24
+    EndSubSection
+  '';
 
   # Booting windows should be easy
   security.wrappers = {
