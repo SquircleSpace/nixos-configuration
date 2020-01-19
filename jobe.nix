@@ -121,6 +121,8 @@ in
     steam playonlinux wine
   ];
 
+  hardware.steam-hardware.enable = true;
+
   # ESYNC support in some Proton games requires a LOT of file descriptors
   systemd.extraConfig = "DefaultLimitNOFILE=1048576";
 }
