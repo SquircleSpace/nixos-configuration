@@ -124,4 +124,10 @@ in
 
   # ESYNC support in some Proton games requires a LOT of file descriptors
   systemd.extraConfig = "DefaultLimitNOFILE=1048576";
+
+  swapDevices = [
+    {
+      device = "/dev/disk/by-uuid/d82294ec-e7fb-4225-b6d0-9296dba8a23b";
+    }
+  ];
 }
