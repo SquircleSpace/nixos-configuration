@@ -52,7 +52,13 @@ in
   nixpkgs.config.allowUnfree = true;
   hardware.opengl.driSupport32Bit = true;
   hardware.opengl.extraPackages = [ pkgs.libva ];
-  hardware.pulseaudio.support32Bit = true;
+  hardware.pulseaudio = {
+    support32Bit = true;
+    package = pkgs.pulseaudioFull; # for bluetooth output
+    extraModules = [ pkgs.pulseaudio-modules-bt ]; # support more codecs
+  };
+  hardware.bluetooth.enable = true;
+  services.blueman.enable = true;
 
   system.stateVersion = "18.03";
 
