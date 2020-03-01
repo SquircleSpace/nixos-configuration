@@ -123,7 +123,7 @@ in
   };
 
   users.extraUsers.brad.packages = with pkgs; [
-    steam playonlinux wine
+    steam
   ];
 
   hardware.steam-hardware.enable = true;
