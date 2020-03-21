@@ -13,6 +13,7 @@
   # You want a UI?  I got a UI!
   services.xserver.enable = true;
   services.xserver.displayManager.sddm.enable = true;
+  services.xserver.desktopManager.gnome3.enable = true;
   services.xserver.windowManager.stumpwm.enable = true;
   services.xserver.windowManager.default = "stumpwm";
   services.xserver.desktopManager.default = "none";
