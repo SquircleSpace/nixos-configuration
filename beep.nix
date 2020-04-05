@@ -30,7 +30,7 @@ in
 
   services.xserver.displayManager.sddm.autoLogin = {
     enable = true;
-    user = "brad";
+    user = "ada";
   };
 
   system.stateVersion = "18.03";
@@ -39,7 +39,7 @@ in
   boot.initrd.kernelModules = [ "spi_pxa2xx_platform" "spi_pxa2xx_pci" "intel_lpss_pci" "applespi" ];
   boot.kernelModules = [ "kvm-amd" ];
 
-  users.extraUsers.brad.packages = with pkgs; [ xorg.xbacklight yabar ];
+  users.extraUsers.ada.packages = with pkgs; [ xorg.xbacklight yabar ];
 
   services.redshift.enable = true;
   services.redshift.provider = "geoclue2";

@@ -28,14 +28,14 @@
   programs.gnupg.agent = { enable = true; enableSSHSupport = true; };
 
   # Everyone loves logging in
-  users.extraUsers.brad = {
+  users.extraUsers.ada = {
     isNormalUser = true;
-    home = "/home/brad";
-    description = "Brad Jensen";
+    home = "/home/ada";
+    description = "Ada";
     extraGroups = [ "wheel" "networkmanager" ];
     uid = 1000;
-    openssh.authorizedKeys.keyFiles = [ ./brad-pubkey ];
-    passwordFile = "/etc/nixos/user-passwords/brad";
+    openssh.authorizedKeys.keyFiles = [ ./ada-pubkey ];
+    passwordFile = "/etc/nixos/user-passwords/ada";
     packages = with pkgs; [
       # Essentials
       git emacs tmux stow firefox terminator psmisc

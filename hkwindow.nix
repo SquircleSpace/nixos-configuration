@@ -1,5 +1,5 @@
 { config, lib, pkgs, ... }:
-let private-nixpkgs = import /home/brad/private-nixpkgs {};
+let private-nixpkgs = import /home/ada/private-nixpkgs {};
 in
 {
   imports = [];
@@ -31,6 +31,6 @@ in
   };
 
   environment.etc."HomeKitDevices/ComputerWindow" = {
-    source = /home/brad/private-nixpkgs/pkgs/hkwindow/ComputerWindow;
+    source = /home/ada/private-nixpkgs/pkgs/hkwindow/ComputerWindow;
   };
 }
