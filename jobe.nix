@@ -123,7 +123,7 @@ in
     };
   };
 
-  users.extraUsers.brad.packages = with pkgs; [
+  users.extraUsers.ada.packages = with pkgs; [
     steam
   ];
 

@@ -38,20 +38,43 @@
     openssh.authorizedKeys.keyFiles = [ ./ada-pubkey ];
     passwordFile = "/etc/nixos/user-passwords/ada";
     packages = with pkgs; [
-      # Essentials
-      git emacs tmux stow firefox terminator psmisc
-      # Love 'em
-      file htop lsof mosh nox sbcl wget xxd unzip
-      # Nice to have
+      aspellDicts.en
+      btrfs-progs
+      chromium
+      darktable
+      discord
+      emacs
+      file
+      firefox
+      gdb
+      git
+      gnomeExtensions.nohotcorner
+      gparted
+      graphviz
+      htop
+      lldb
+      lsof
+      mosh
+      nox
+      pavucontrol
+      psmisc
+      sbcl
+      smartmontools
+      stow
+      terminator
+      tmux
+      unzip
+      vlc
+      w3m
+      wget
+      xscreensaver
+      xxd
       (pidgin-with-plugins.override {
         plugins = [
           purple-hangouts pidginwindowmerge
           pidgin-opensteamworks
         ];
       })
-      # For screen locking
-      xscreensaver
-      gnomeExtensions.nohotcorner
     ];
   };
   users.mutableUsers = false;
