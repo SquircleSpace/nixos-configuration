@@ -12,11 +12,12 @@
 
   # You want a UI?  I got a UI!
   services.xserver.enable = true;
-  services.xserver.desktopManager.xfce.enable = true;
-  services.xserver.displayManager.sddm.enable = true;
+  services.xserver.desktopManager.gnome3.enable = true;
+  services.xserver.displayManager.gdm.enable = true;
+  services.xserver.displayManager.gdm.wayland = false;
   services.xserver.windowManager.stumpwm.enable = true;
-  services.xserver.windowManager.default = "stumpwm";
-  services.xserver.desktopManager.default = "none";
+  #services.xserver.windowManager.default = "stumpwm";
+  #services.xserver.desktopManager.default = "none";
 
   # Manage that network
   networking.networkmanager.enable = true;
@@ -50,6 +51,7 @@
       })
       # For screen locking
       xscreensaver
+      gnomeExtensions.nohotcorner
     ];
   };
   users.mutableUsers = false;
