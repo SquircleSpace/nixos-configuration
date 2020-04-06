@@ -125,6 +125,7 @@ in
 
   users.extraUsers.ada.packages = with pkgs; [
     steam
+    (import ./minecraft.nix { inherit pkgs; })
   ];
 
   hardware.steam-hardware.enable = true;
