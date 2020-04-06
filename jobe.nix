@@ -5,7 +5,7 @@ in
 {
   imports = [
     ./vpn.nix
-    ./minecraft.nix
+    ./minecraftServer.nix
   ];
 
   # Hello!  My name is
