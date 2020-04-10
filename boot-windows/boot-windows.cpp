@@ -5,10 +5,12 @@
 #include <sys/wait.h>
 #include <string.h>
 
+const char * const efibootmgrPath = "@efibootmgr@/bin/efibootmgr";
+
 int markWindows() {
     pid_t pid = 0;
-    const char *efiBootmgrArgs[] = {"efibootmgr", "-n", "0", NULL};
-    int status = posix_spawnp(&pid, "efibootmgr", NULL, NULL, (char * const *)efiBootmgrArgs, environ);
+    const char *efiBootmgrArgs[] = {efibootmgrPath, "-n", "0", NULL};
+    int status = posix_spawnp(&pid, efibootmgrPath, NULL, NULL, (char * const *)efiBootmgrArgs, environ);
     if (0 != status) {
 	printf("Couldn't fork efibootmgr. Got status %d\n", status);
 	return status;
@@ -50,8 +52,8 @@ int bootWindows() {
 
 int removeBootNext() {
     pid_t pid = 0;
-    const char *efiBootmgrArgs[] = {"efibootmgr", "-N", NULL};
-    int status = posix_spawnp(&pid, "efibootmgr", NULL, NULL, (char * const *)efiBootmgrArgs, environ);
+    const char *efiBootmgrArgs[] = {efibootmgrPath, "-N", NULL};
+    int status = posix_spawnp(&pid, efibootmgrPath, NULL, NULL, (char * const *)efiBootmgrArgs, environ);
     if (0 != status) {
 	printf("Couldn't fork efibootmgr. Got status %d\n", status);
 	return status;

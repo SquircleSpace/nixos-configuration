@@ -1,6 +1,6 @@
 { config, pkgs, ... }:
 let
-  boot-windows = import ./boot-windows { stdenv = pkgs.stdenv; };
+  boot-windows = import ./boot-windows pkgs;
 in
 {
   imports = [
