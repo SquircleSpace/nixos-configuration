@@ -126,6 +126,7 @@ in
   users.extraUsers.ada.packages = with pkgs; [
     steam
     (import ./minecraft.nix { inherit pkgs; })
+    gimp
   ];
 
   hardware.steam-hardware.enable = true;
