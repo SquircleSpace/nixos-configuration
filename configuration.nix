@@ -58,6 +58,7 @@
       nox
       pavucontrol
       psmisc
+      python37Packages.glances
       sbcl
       smartmontools
       stow
