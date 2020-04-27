@@ -13,6 +13,9 @@ in
 
   # Updates are important
   system.autoUpgrade.enable = true;
+  # Updates fill up my disk
+  nix.gc.automatic = true;
+  nix.gc.options = "--delete-older-than 10d";
 
   # We're self respecting and use EFI boot around here
   boot.loader.systemd-boot.enable = true;
