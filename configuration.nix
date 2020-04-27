@@ -48,7 +48,7 @@
       firefox
       gdb
       git
-      gnomeExtensions.nohotcorner
+      gnome3.gnome-tweaks
       gparted
       graphviz
       htop

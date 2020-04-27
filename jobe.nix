@@ -61,7 +61,7 @@ in
   hardware.bluetooth.enable = true;
   services.blueman.enable = true;
 
-  system.stateVersion = "18.03";
+  system.stateVersion = "20.03";
 
   # Mount some partitions
   fileSystems = {
