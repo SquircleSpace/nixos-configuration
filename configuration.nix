@@ -52,6 +52,7 @@
       gparted
       graphviz
       htop
+      ispell
       lldb
       lsof
       mosh
