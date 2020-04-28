@@ -10,15 +10,6 @@
     # Keep the global environment clean
   ];
 
-  # You want a UI?  I got a UI!
-  services.xserver.enable = true;
-  services.xserver.desktopManager.gnome3.enable = true;
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.displayManager.gdm.wayland = false;
-  services.xserver.windowManager.stumpwm.enable = true;
-  #services.xserver.windowManager.default = "stumpwm";
-  #services.xserver.desktopManager.default = "none";
-
   # Manage that network
   networking.networkmanager.enable = true;
 
@@ -40,42 +31,25 @@
     packages = with pkgs; [
       aspellDicts.en
       btrfs-progs
-      chromium
-      darktable
-      discord
       emacs
       file
-      firefox
       gdb
       git
-      gnome3.gnome-tweaks
-      gparted
       graphviz
       htop
       ispell
       lldb
       lsof
       mosh
-      pavucontrol
       psmisc
       python37Packages.glances
-      sbcl
       smartmontools
       stow
-      terminator
       tmux
       unzip
-      vlc
       w3m
       wget
-      xscreensaver
       xxd
-      (pidgin-with-plugins.override {
-        plugins = [
-          purple-hangouts pidginwindowmerge
-          pidgin-opensteamworks
-        ];
-      })
     ];
   };
   users.mutableUsers = false;

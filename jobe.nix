@@ -6,6 +6,7 @@ in
   imports = [
     ./vpn.nix
     ./minecraftServer.nix
+    ./ui.nix
   ];
 
   # Hello!  My name is
@@ -127,9 +128,13 @@ in
   };
 
   users.extraUsers.ada.packages = with pkgs; [
+    chromium
+    darktable
+    discord
+    gimp
+    sbcl
     steam
     (import ./minecraft.nix { inherit pkgs; })
-    gimp
   ];
 
   hardware.steam-hardware.enable = true;
