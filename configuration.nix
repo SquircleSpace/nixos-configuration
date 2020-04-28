@@ -56,7 +56,6 @@
       lldb
       lsof
       mosh
-      nox
       pavucontrol
       psmisc
       python37Packages.glances
