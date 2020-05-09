@@ -132,6 +132,7 @@ in
     darktable
     discord
     gimp
+    lutris
     sbcl
     steam
     (import ./minecraft.nix { inherit pkgs; })
