@@ -133,6 +133,7 @@ in
     discord
     gimp
     lutris
+    pandoc
     sbcl
     steam
     (import ./minecraft.nix { inherit pkgs; })
