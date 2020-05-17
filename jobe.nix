@@ -49,8 +49,8 @@ in
   services.samba.syncPasswordsByPam = true;
 
   # Open up samba ports
-  networking.firewall.allowedTCPPorts = [ 137 138 139 445 ];
-  networking.firewall.allowedUDPPorts = [ 137 138 139 445 ];
+  networking.firewall.allowedTCPPorts = [ 137 138 139 445 7777 ];
+  networking.firewall.allowedUDPPorts = [ 137 138 139 445 7777 ];
 
   # Drivers
   services.xserver.videoDrivers = ["nvidia"];
