@@ -98,6 +98,14 @@ in
     fileSystems = [ "/crypt" ];
   };
 
+  services.smartd = {
+    enable = true;
+    notifications.x11 = {
+      enable = true;
+      display = ":1"; # For some reason, I seem to always log in on display 1?
+    };
+  };
+
   # For working on nixpkgs
   nix.useSandbox = true;
 
