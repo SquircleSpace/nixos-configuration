@@ -93,6 +93,11 @@ in
     };
   };
 
+  services.btrfs.autoScrub = {
+    enable = true;
+    fileSystems = [ "/crypt" ];
+  };
+
   # For working on nixpkgs
   nix.useSandbox = true;
 
