@@ -5,7 +5,6 @@ in
 {
   imports = [
     ./vpn.nix
-    ./minecraftServer.nix
     ./ui.nix
   ];
 
