@@ -148,6 +148,7 @@ in
     pandoc
     sbcl
     steam
+    wine
     (import ./minecraft.nix { inherit pkgs; })
   ];
 
