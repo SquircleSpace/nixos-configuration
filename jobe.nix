@@ -62,6 +62,11 @@ in
     extraModules = [ pkgs.pulseaudio-modules-bt ]; # support more codecs
   };
   hardware.bluetooth.enable = true;
+  hardware.bluetooth.config = {
+    General = {
+      ControllerMode = "dual";
+    };
+  };
   services.blueman.enable = true;
 
   system.stateVersion = "20.03";
