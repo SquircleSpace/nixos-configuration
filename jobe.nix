@@ -167,4 +167,12 @@ in
       device = "/dev/disk/by-uuid/d82294ec-e7fb-4225-b6d0-9296dba8a23b";
     }
   ];
+
+  services.borgbackup.repos.pifer = {
+    allowSubRepos = true;
+    authorizedKeysAppendOnly = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINKi5JMv0RCL4XLdTkACef/dgQdkVgVOoUdTcoCGD3ww ada@squircle.space"
+    ];
+    path = "/crypt/borg/pifer";
+  };
 }
