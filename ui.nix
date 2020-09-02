@@ -23,6 +23,7 @@
         purple-hangouts
         pidginwindowmerge
         pidgin-opensteamworks
+        (callPackage ./pidgin-indicator.nix { })
       ];
     })
   ];
