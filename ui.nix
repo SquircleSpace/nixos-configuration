@@ -6,6 +6,10 @@
   services.xserver.displayManager.gdm.wayland = false;
   services.xserver.windowManager.stumpwm.enable = true;
 
+  services.xserver.desktopManager.gnome3.sessionPath = [
+    pkgs.gnomeExtensions.appindicator
+  ];
+
   users.extraUsers.ada.packages = with pkgs; [
     firefox
     gnome3.gnome-tweaks
