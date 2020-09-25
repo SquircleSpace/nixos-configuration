@@ -154,6 +154,7 @@ in
     sbcl
     steam
     wine
+    signal-desktop
     (import ./minecraft.nix { inherit pkgs; })
   ];
 
