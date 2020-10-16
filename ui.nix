@@ -26,5 +26,6 @@
         (callPackage ./pidgin-indicator.nix { })
       ];
     })
+    signal-desktop
   ];
 }
