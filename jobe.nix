@@ -69,7 +69,7 @@ in
   };
   services.blueman.enable = true;
 
-  system.stateVersion = "20.03";
+  system.stateVersion = "20.09";
 
   # Mount some partitions
   fileSystems = {

@@ -42,7 +42,7 @@
       lsof
       mosh
       psmisc
-      python37Packages.glances
+      glances
       smartmontools
       stow
       tmux
