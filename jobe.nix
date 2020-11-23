@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 let
   boot-windows = import ./boot-windows pkgs;
 in
@@ -174,5 +174,43 @@ in
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINKi5JMv0RCL4XLdTkACef/dgQdkVgVOoUdTcoCGD3ww ada@squircle.space"
     ];
     path = "/crypt/borg/pifer";
+  };
+
+  services.borgbackup.jobs."rsync" = let
+    rawBorgPasswordPath = "/var/lib/borg/password";
+    borgPasswordPath = assert (lib.assertMsg (builtins.pathExists rawBorgPasswordPath) "Make sure to put the encryption password in place!"); rawBorgPasswordPath;
+    rawBorgPrivateKeyPath = "/var/lib/borg/id_ed25519";
+    borgPrivateKeyPath = assert (lib.assertMsg (builtins.pathExists rawBorgPrivateKeyPath) "Make sure to put the private key in place!"); rawBorgPrivateKeyPath;
+  in {
+    repo = "7995@usw-s007.rsync.net:borg/jobe/main";
+    startAt = "weekly";
+    environment = {
+      "BORG_REMOTE_PATH" = "borg1";
+      "BORG_RSH" = "ssh -i ${borgPrivateKeyPath}";
+    };
+    encryption.mode = "repokey";
+    encryption.passCommand = "cat ${borgPasswordPath}";
+    preHook = ''
+      if [ -d /crypt/snapshots/home/current ]; then
+        ${pkgs.btrfs-progs}/bin/btrfs subvolume delete /crypt/snapshots/home/current
+      fi
+      ${pkgs.btrfs-progs}/bin/btrfs subvolume snapshot -r /home/ /crypt/snapshots/home/current
+    '';
+    postHook = ''
+      mv /crypt/snapshots/home/current "/crypt/snapshots/home/$(date --rfc-3339=seconds)"
+    '';
+    paths = [ "/crypt/snapshots/home/current/" ];
+    readWritePaths = [ "/crypt/snapshots/home/" ];
+    exclude = [
+      "/crypt/snapshots/home/current/ada/Downloads"
+      "/crypt/snapshots/home/current/ada/.local/share/Steam"
+    ];
+  };
+
+  system.activationScripts = {
+    "Protect /var/lib/borg/" = ''
+      chown -R root:root /var/lib/borg/
+      chmod -R go-rwx /var/lib/borg/
+    '';
   };
 }
