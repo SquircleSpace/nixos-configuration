@@ -198,6 +198,13 @@ in
     encryption.mode = "repokey";
     encryption.passCommand = "cat ${borgPasswordPath}";
     compression = "auto,lzma";
+    prune.keep = {
+      within = "1d"; # Keep all archives from the last day
+      daily = 14;
+      weekly = 26;
+      monthly = 6;
+      yearly = 5;
+    };
     preHook = ''
       backupTime="$(date --rfc-3339=seconds)"
       '' + lib.strings.concatMapStrings (subvolumeName: ''
