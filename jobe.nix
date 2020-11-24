@@ -181,6 +181,13 @@ in
     borgPasswordPath = assert (lib.assertMsg (builtins.pathExists rawBorgPasswordPath) "Make sure to put the encryption password in place!"); rawBorgPasswordPath;
     rawBorgPrivateKeyPath = "/var/lib/borg/id_ed25519";
     borgPrivateKeyPath = assert (lib.assertMsg (builtins.pathExists rawBorgPrivateKeyPath) "Make sure to put the private key in place!"); rawBorgPrivateKeyPath;
+    subvolumeNames = [
+      "home"
+      "photos"
+    ];
+    snapshotDirectory = subvolumeName: "/crypt/snapshots/${subvolumeName}";
+    subvolumeDirectory = subvolumeName: "/crypt/${subvolumeName}";
+    backupDirectory = subvolumeName: "${snapshotDirectory subvolumeName}/current";
   in {
     repo = "7995@usw-s007.rsync.net:borg/jobe/main";
     startAt = "weekly";
@@ -191,19 +198,24 @@ in
     encryption.mode = "repokey";
     encryption.passCommand = "cat ${borgPasswordPath}";
     preHook = ''
-      if [ -d /crypt/snapshots/home/current ]; then
-        ${pkgs.btrfs-progs}/bin/btrfs subvolume delete /crypt/snapshots/home/current
+      backupTime="$(date --rfc-3339=seconds)"
+      '' + lib.strings.concatMapStrings (subvolumeName: ''
+      if [ -d "${backupDirectory subvolumeName}" ]; then
+        ${pkgs.btrfs-progs}/bin/btrfs subvolume delete "${backupDirectory subvolumeName}"
       fi
-      ${pkgs.btrfs-progs}/bin/btrfs subvolume snapshot -r /home/ /crypt/snapshots/home/current
-    '';
-    postHook = ''
-      mv /crypt/snapshots/home/current "/crypt/snapshots/home/$(date --rfc-3339=seconds)"
-    '';
-    paths = [ "/crypt/snapshots/home/current/" ];
-    readWritePaths = [ "/crypt/snapshots/home/" ];
+      ${pkgs.btrfs-progs}/bin/btrfs subvolume snapshot -r "${subvolumeDirectory subvolumeName}" "${snapshotDirectory subvolumeName}/$backupTime"
+      ${pkgs.btrfs-progs}/bin/btrfs subvolume snapshot -r "${snapshotDirectory subvolumeName}/$backupTime" "${backupDirectory subvolumeName}"
+    '') subvolumeNames;
+    postHook = lib.strings.concatMapStrings (subvolumeName: ''
+      if [ -d "${backupDirectory subvolumeName}" ]; then
+        ${pkgs.btrfs-progs}/bin/btrfs subvolume delete "${backupDirectory subvolumeName}"
+      fi
+    '') subvolumeNames;
+    paths = map backupDirectory subvolumeNames;
+    readWritePaths = map snapshotDirectory subvolumeNames;
     exclude = [
-      "/crypt/snapshots/home/current/ada/Downloads"
-      "/crypt/snapshots/home/current/ada/.local/share/Steam"
+      "${backupDirectory "home"}/ada/Downloads"
+      "${backupDirectory "home"}/ada/.local/share/Steam"
     ];
   };
 
