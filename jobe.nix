@@ -197,6 +197,7 @@ in
     };
     encryption.mode = "repokey";
     encryption.passCommand = "cat ${borgPasswordPath}";
+    compression = "auto,lzma";
     preHook = ''
       backupTime="$(date --rfc-3339=seconds)"
       '' + lib.strings.concatMapStrings (subvolumeName: ''
