@@ -17,6 +17,9 @@
   services.emacs.enable = true;
   services.emacs.defaultEditor = true;
 
+  # Firejail the things
+  programs.firejail.enable = true;
+
   programs.gnupg.agent = { enable = true; enableSSHSupport = true; };
 
   # Everyone loves logging in
