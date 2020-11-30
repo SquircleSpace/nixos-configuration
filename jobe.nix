@@ -145,6 +145,7 @@ in
   };
 
   users.extraUsers.ada.packages = with pkgs; [
+    bitwarden
     chromium
     darktable
     discord
