@@ -22,6 +22,10 @@
 
   programs.gnupg.agent = { enable = true; enableSSHSupport = true; };
 
+  # Keep tmp temporary!
+  boot.tmpOnTmpfs = true;
+  boot.cleanTmpDir = true;
+
   # Everyone loves logging in
   users.extraUsers.ada = {
     isNormalUser = true;
