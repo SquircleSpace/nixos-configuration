@@ -62,11 +62,6 @@ in
       device = "/dev/disk/by-uuid/C420-4469";
       fsType = "vfat";
     };
-    "/malachi" = {
-      device = "/dev/disk/by-uuid/AA584CB4584C80D5";
-      fsType = "ntfs-3g";
-      options = [ "ro" "dmask=0222" "fmask=0333" ];
-    };
     "/home" = {
       device = "/dev/disk/by-uuid/82b4a0b5-3266-4d53-840d-061d43b3db57";
       fsType = "btrfs";
