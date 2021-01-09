@@ -1,9 +1,11 @@
 { config, pkgs, ... }:
 {
   services.xserver.enable = true;
-  services.xserver.desktopManager.gnome3.enable = true;
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.displayManager.gdm.wayland = false;
+  # services.xserver.desktopManager.gnome3.enable = true;
+  services.xserver.desktopManager.plasma5.enable = true;
+  # services.xserver.displayManager.gdm.enable = true;
+  # services.xserver.displayManager.gdm.wayland = false;
+  services.xserver.displayManager.sddm.enable = true;
   services.xserver.windowManager.stumpwm.enable = true;
 
   services.xserver.desktopManager.gnome3.sessionPath = [
@@ -12,7 +14,6 @@
 
   users.extraUsers.ada.packages = with pkgs; [
     firefox
-    gnome3.gnome-tweaks
     gparted
     pavucontrol
     terminator
