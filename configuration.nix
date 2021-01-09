@@ -26,6 +26,9 @@
   boot.tmpOnTmpfs = true;
   boot.cleanTmpDir = true;
 
+  # Make boot pretty!
+  boot.plymouth.enable = true;
+
   # Everyone loves logging in
   users.extraUsers.ada = {
     isNormalUser = true;
