@@ -27,6 +27,12 @@
         (callPackage ./pidgin-indicator.nix { })
       ];
     })
-    signal-desktop
+    (signal-desktop.overrideAttrs (old: {
+      preFixup = old.preFixup + ''
+        # Make signal desktop shortcut launch it into the tray
+        substituteInPlace $out/share/applications/signal-desktop.desktop \
+          --replace $out/bin/signal-desktop "$out/bin/signal-desktop --use-tray-icon --start-in-tray"
+      '';
+    }))
   ];
 }
