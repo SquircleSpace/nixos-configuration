@@ -20,6 +20,7 @@
     kdeApplications.kmail
     kdeApplications.kmail-account-wizard
     kdeApplications.korganizer
+    kdeApplications.okular
     pavucontrol
     terminator
     vlc
