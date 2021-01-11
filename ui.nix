@@ -15,6 +15,11 @@
   users.extraUsers.ada.packages = with pkgs; [
     firefox
     gparted
+    kdeApplications.kontact
+    kdeApplications.kaddressbook
+    kdeApplications.kmail
+    kdeApplications.kmail-account-wizard
+    kdeApplications.korganizer
     pavucontrol
     terminator
     vlc
