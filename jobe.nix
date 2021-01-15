@@ -4,8 +4,11 @@ let
 in
 {
   imports = [
+    ./hardware-configuration.nix
+    ./common.nix
     ./vpn.nix
     ./ui.nix
+    ./ada.nix
   ];
 
   # Hello!  My name is
@@ -37,6 +40,7 @@ in
   nixpkgs.config.allowUnfree = true;
   hardware.opengl.driSupport32Bit = true;
   hardware.opengl.extraPackages = [ pkgs.libva ];
+  hardware.pulseaudio.enable = true;
   hardware.pulseaudio = {
     support32Bit = true;
     package = pkgs.pulseaudioFull; # for bluetooth output
@@ -121,14 +125,9 @@ in
   };
 
   users.extraUsers.ada.packages = with pkgs; [
-    bitwarden
-    chromium
     darktable
     discord
-    gimp
     lutris
-    pandoc
-    sbcl
     steam
     steam.run
     wine
