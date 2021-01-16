@@ -10,6 +10,7 @@ in
     ./ui.nix
     ./ada.nix
     ./ssh.nix
+    ./sound.nix
   ];
 
   # Hello!  My name is
@@ -38,12 +39,7 @@ in
   nixpkgs.config.allowUnfree = true;
   hardware.opengl.driSupport32Bit = true;
   hardware.opengl.extraPackages = [ pkgs.libva ];
-  hardware.pulseaudio.enable = true;
-  hardware.pulseaudio = {
-    support32Bit = true;
-    package = pkgs.pulseaudioFull; # for bluetooth output
-    extraModules = [ pkgs.pulseaudio-modules-bt ]; # support more codecs
-  };
+  hardware.pulseaudio.support32Bit = true;
   hardware.bluetooth.enable = true;
   hardware.bluetooth.config = {
     General = {

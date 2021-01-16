@@ -6,6 +6,7 @@
     ./ui.nix
     ./ada.nix
     ./ssh.nix
+    ./sound.nix
   ];
 
   boot.loader.systemd-boot.enable = true;
@@ -47,13 +48,6 @@
     user = "ada";
   };
 
-  # Enable sound.
-  sound.enable = true;
-  hardware.pulseaudio.enable = true;
-  hardware.pulseaudio = {
-    package = pkgs.pulseaudioFull; # for bluetooth output
-    extraModules = [ pkgs.pulseaudio-modules-bt ]; # support more codecs
-  };
   hardware.bluetooth.enable = true;
   services.blueman.enable = true;
 
