@@ -9,6 +9,7 @@ in
     ./vpn.nix
     ./ui.nix
     ./ada.nix
+    ./ssh.nix
   ];
 
   # Hello!  My name is
@@ -26,10 +27,7 @@ in
 
   time.timeZone = "America/Los_Angeles";
 
-  # SSH.  The lifeblood of a server.
-  services.openssh.enable = true;
-  services.openssh.forwardX11 = true;
-  # And Mosh!
+  # Mosh is cool!
   programs.mosh.enable = true;
 
   networking.firewall.allowedTCPPorts = [ 7777 ];

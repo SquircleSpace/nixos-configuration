@@ -5,6 +5,7 @@
     ./common.nix
     ./ui.nix
     ./ada.nix
+    ./ssh.nix
   ];
 
   boot.loader.systemd-boot.enable = true;
