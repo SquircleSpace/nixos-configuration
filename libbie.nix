@@ -36,13 +36,9 @@
     ];
 
   networking.hostName = "Libbie"; # Define your hostname.
-  networking.networkmanager.enable = true;
 
   time.timeZone = "America/Los_Angeles";
 
-  services.xserver.enable = true;
-  services.xserver.displayManager.sddm.enable = true;
-  services.xserver.desktopManager.plasma5.enable = true;
   services.xserver.displayManager.autoLogin = {
     enable = true;
     user = "ada";
