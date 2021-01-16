@@ -1,4 +1,11 @@
 #!/bin/sh
 
-git archive --format=tar HEAD | tar -x -C /etc/nixos && \
-    nixos-rebuild "$@"
+set -e
+
+if ! [ -L /etc/nixos/configuration.nix ]; then
+    echo "Must set /etc/nixos/configuration.nix to be a symlink to a system config" >&2
+    exit 1
+fi
+
+git archive --format=tar HEAD | tar -x -C /etc/nixos
+nixos-rebuild "$@"
