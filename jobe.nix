@@ -38,7 +38,6 @@ in
   services.xserver.videoDrivers = ["nvidia"];
   nixpkgs.config.allowUnfree = true;
   hardware.opengl.driSupport32Bit = true;
-  hardware.opengl.extraPackages = [ pkgs.libva ];
   hardware.pulseaudio.support32Bit = true;
   hardware.bluetooth.enable = true;
   hardware.bluetooth.config = {
