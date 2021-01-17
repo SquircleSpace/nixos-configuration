@@ -51,5 +51,9 @@
 
   users.mutableUsers = false;
 
+  powerManagement.powertop.enable = true;
+  services.tlp.enable = true;
+  networking.networkmanager.wifi.powersave = true;
+
   system.stateVersion = "20.09";
 }
