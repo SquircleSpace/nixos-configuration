@@ -7,6 +7,7 @@ nonUIPackages = with pkgs; [
     file
     gdb
     git
+    gitAndTools.git-filter-repo
     glances
     graphviz
     htop
