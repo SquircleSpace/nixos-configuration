@@ -16,6 +16,11 @@
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" ];
   boot.initrd.kernelModules = [ "dm-snapshot" ];
+  boot.kernelPatches = [ {
+    name = "system76-acpi-update";
+    patch = ./system76-acpi.patch;
+    extraConfig = "";
+  } ];
 
   boot.initrd.luks.devices.crypted = {
     allowDiscards = true;
