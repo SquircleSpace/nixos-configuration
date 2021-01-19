@@ -31,9 +31,6 @@ in
   # Mosh is cool!
   programs.mosh.enable = true;
 
-  networking.firewall.allowedTCPPorts = [ 7777 ];
-  networking.firewall.allowedUDPPorts = [ 7777 ];
-
   # Drivers
   services.xserver.videoDrivers = ["nvidia"];
   nixpkgs.config.allowUnfree = true;
