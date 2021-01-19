@@ -28,6 +28,7 @@ nonUIPackages = with pkgs; [
   ];
 uiPackages = with pkgs; [
     bitwarden
+    caffeine-ng
     chromium
     firefox
     gimp
