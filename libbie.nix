@@ -40,7 +40,7 @@
     [ { device = "/dev/disk/by-uuid/fb60397a-f288-408e-b6ad-5ecb95fb7534"; }
     ];
 
-  networking.hostName = "Libbie"; # Define your hostname.
+  networking.hostName = "Libbie";
 
   time.timeZone = "America/Los_Angeles";
 
