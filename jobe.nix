@@ -44,6 +44,8 @@ in
   };
   services.blueman.enable = true;
 
+  powerManagement.cpuFreqGovernor = "ondemand";
+
   system.stateVersion = "20.09";
 
   # Mount some partitions
