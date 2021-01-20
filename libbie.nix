@@ -14,11 +14,13 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.kernelPatches = [ {
-    name = "system76-acpi-update";
-    patch = ./system76-acpi.patch;
-    extraConfig = "";
-  } ];
+  boot.kernelPatches = [
+    {
+      name = "system76-acpi-update";
+      patch = ./system76-acpi.patch;
+      extraConfig = "";
+    }
+  ];
 
   boot.initrd.luks.devices.crypted = {
     allowDiscards = true;
@@ -26,19 +28,19 @@
     preLVM = true;
   };
 
-  fileSystems."/" =
-    { device = "/dev/disk/by-uuid/2ff8a826-b407-4ae5-b371-2e040216a9e0";
-      fsType = "btrfs";
-    };
+  fileSystems."/" = {
+    device = "/dev/disk/by-uuid/2ff8a826-b407-4ae5-b371-2e040216a9e0";
+    fsType = "btrfs";
+  };
 
-  fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/7C33-E4CC";
-      fsType = "vfat";
-    };
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/7C33-E4CC";
+    fsType = "vfat";
+  };
 
-  swapDevices =
-    [ { device = "/dev/disk/by-uuid/fb60397a-f288-408e-b6ad-5ecb95fb7534"; }
-    ];
+  swapDevices = [
+    { device = "/dev/disk/by-uuid/fb60397a-f288-408e-b6ad-5ecb95fb7534"; }
+  ];
 
   networking.hostName = "Libbie";
 
