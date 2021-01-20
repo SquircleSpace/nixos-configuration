@@ -32,6 +32,10 @@
     device = "/dev/disk/by-uuid/2ff8a826-b407-4ae5-b371-2e040216a9e0";
     fsType = "btrfs";
   };
+  services.btrfs.autoScrub = {
+    enable = true;
+    fileSystems = [ "/" ];
+  };
 
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/7C33-E4CC";
