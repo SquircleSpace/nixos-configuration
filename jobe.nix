@@ -11,6 +11,7 @@ in
     ./ada.nix
     ./ssh.nix
     ./sound.nix
+    ./backup.nix
   ];
 
   # Hello!  My name is
@@ -145,61 +146,20 @@ in
     path = "/crypt/borg/pifer";
   };
 
-  services.borgbackup.jobs."rsync" = let
-    rawBorgPasswordPath = "/var/lib/borg/password";
-    borgPasswordPath = assert (lib.assertMsg (builtins.pathExists rawBorgPasswordPath) "Make sure to put the encryption password in place!"); rawBorgPasswordPath;
-    rawBorgPrivateKeyPath = "/var/lib/borg/id_ed25519";
-    borgPrivateKeyPath = assert (lib.assertMsg (builtins.pathExists rawBorgPrivateKeyPath) "Make sure to put the private key in place!"); rawBorgPrivateKeyPath;
-    subvolumeNames = [
-      "home"
-      "photos"
-    ];
-    snapshotDirectory = subvolumeName: "/crypt/snapshots/${subvolumeName}";
-    subvolumeDirectory = subvolumeName: "/crypt/${subvolumeName}";
-    backupDirectory = subvolumeName: "${snapshotDirectory subvolumeName}/current";
-  in {
-    repo = "7995@usw-s007.rsync.net:borg/jobe/main";
-    startAt = "weekly";
-    environment = {
-      "BORG_REMOTE_PATH" = "borg1";
-      "BORG_RSH" = "ssh -i ${borgPrivateKeyPath}";
-    };
-    encryption.mode = "repokey";
-    encryption.passCommand = "cat ${borgPasswordPath}";
-    compression = "auto,lzma";
-    prune.keep = {
-      within = "1d"; # Keep all archives from the last day
-      daily = 14;
-      weekly = 26;
-      monthly = 6;
-      yearly = 5;
-    };
-    preHook = ''
-      backupTime="$(date --rfc-3339=seconds)"
-      '' + lib.strings.concatMapStrings (subvolumeName: ''
-      if [ -d "${backupDirectory subvolumeName}" ]; then
-        ${pkgs.btrfs-progs}/bin/btrfs subvolume delete "${backupDirectory subvolumeName}"
-      fi
-      ${pkgs.btrfs-progs}/bin/btrfs subvolume snapshot -r "${subvolumeDirectory subvolumeName}" "${snapshotDirectory subvolumeName}/$backupTime"
-      ${pkgs.btrfs-progs}/bin/btrfs subvolume snapshot -r "${snapshotDirectory subvolumeName}/$backupTime" "${backupDirectory subvolumeName}"
-    '') subvolumeNames;
-    postHook = lib.strings.concatMapStrings (subvolumeName: ''
-      if [ -d "${backupDirectory subvolumeName}" ]; then
-        ${pkgs.btrfs-progs}/bin/btrfs subvolume delete "${backupDirectory subvolumeName}"
-      fi
-    '') subvolumeNames;
-    paths = map backupDirectory subvolumeNames;
-    readWritePaths = map snapshotDirectory subvolumeNames;
+  services.borgbackup.smartjobs."rsync" = {
+    paths = [ "/home" "/crypt/photos" ];
+    subvolumes = [ "/home" "/crypt/photos" ];
     exclude = [
-      "${backupDirectory "home"}/ada/Downloads"
-      "${backupDirectory "home"}/ada/.local/share/Steam"
+      "/home/ada/Downloads"
+      "/home/ada/.local/share/Steam"
     ];
-  };
-
-  system.activationScripts = {
-    "Protect /var/lib/borg/" = ''
-      chown -R root:root /var/lib/borg/
-      chmod -R go-rwx /var/lib/borg/
-    '';
+    server = {
+      remote = "7995@usw-s007.rsync.net";
+      borgCommand = "borg1";
+    };
+    repoName = "borg/jobe/main";
+    privateKeyPath = "/var/lib/borg/id_ed25519";
+    passwordPath = "/var/lib/borg/password";
+    snapshotPath = "/crypt/snapshots/backup";
   };
 }
