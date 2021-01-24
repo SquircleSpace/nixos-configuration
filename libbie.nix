@@ -98,4 +98,6 @@
     passwordPath = "/var/lib/borg/password";
     snapshotPath = "/btrfs/snapshots/backup";
   };
+
+  nixpkgs.config.allowUnfree = true;
 }
