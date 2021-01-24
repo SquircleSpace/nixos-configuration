@@ -88,6 +88,7 @@
     paths = [ "/home" ];
     subvolumes = [ "/home" ];
     exclude = [
+      "/home/ada/.cache"
       "/home/ada/Downloads"
       "/home/ada/.local/share/Steam"
     ];
