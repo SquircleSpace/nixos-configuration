@@ -153,10 +153,7 @@ in
       "/home/ada/Downloads"
       "/home/ada/.local/share/Steam"
     ];
-    server = {
-      remote = "7995@usw-s007.rsync.net";
-      borgCommand = "borg1";
-    };
+    server = import ./server-rsync.net.nix;
     repoName = "borg/jobe/main";
     privateKeyPath = "/var/lib/borg/id_ed25519";
     passwordPath = "/var/lib/borg/password";

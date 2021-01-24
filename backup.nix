@@ -16,10 +16,19 @@ let
 
   serverType = with lib; with types; submodule {
     options = {
-      remote = mkOption {
+      hostname = mkOption {
         type = str;
-        example = "user@example.com";
+        example = "example.com";
         description = "The remote to backup to.";
+      };
+      user = mkOption {
+        type = str;
+        example = "user";
+        description = "The username to log into the remote with.";
+      };
+      publicKeyFile = mkOption {
+        type = path;
+        description = "The hosts's public key.";
       };
       borgCommand = mkOption {
         type = str;
@@ -104,8 +113,12 @@ let
     chmod go-rwx ${shellQuote cfg.privateKeyPath} ${shellQuote cfg.passwordPath}
     ${checkSnapshotPathIsSafe} "$(dirname ${shellQuote cfg.snapshotPath})" || exit 1
   '';
+  mkKnownHosts = name: cfg: lib.nameValuePair cfg.server.hostname {
+    hostNames = [ cfg.server.hostname ];
+    publicKeyFile = cfg.server.publicKeyFile;
+  };
   mkBorgbackupJob = name: cfg: lib.nameValuePair name {
-    repo = "${cfg.server.remote}:${cfg.repoName}";
+    repo = "${cfg.server.user}@${cfg.server.hostname}:${cfg.repoName}";
     startAt = cfg.startAt;
     environment = {
       "BORG_REMOTE_PATH" = cfg.server.borgCommand;
@@ -183,5 +196,6 @@ in
   config = lib.mkIf (config.services.borgbackup.smartjobs != {}) {
     services.borgbackup.jobs = lib.mapAttrs' mkBorgbackupJob config.services.borgbackup.smartjobs;
     system.activationScripts = lib.mapAttrs' mkActivationScript config.services.borgbackup.smartjobs;
+    programs.ssh.knownHosts = lib.mapAttrs' mkKnownHosts config.services.borgbackup.smartjobs;
   };
 }
