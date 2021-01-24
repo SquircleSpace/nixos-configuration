@@ -7,6 +7,7 @@
     ./ada.nix
     ./ssh.nix
     ./sound.nix
+    ./backup.nix
   ];
 
   hardware.system76.enableAll = true;
@@ -82,4 +83,18 @@
   networking.networkmanager.wifi.powersave = true;
 
   system.stateVersion = "20.09";
+
+  services.borgbackup.smartjobs."rsync" = {
+    paths = [ "/home" ];
+    subvolumes = [ "/home" ];
+    exclude = [
+      "/home/ada/Downloads"
+      "/home/ada/.local/share/Steam"
+    ];
+    server = import ./server-rsync.net.nix;
+    repoName = "borg/libbie/main";
+    privateKeyPath = "/var/lib/borg/id_ed25519";
+    passwordPath = "/var/lib/borg/password";
+    snapshotPath = "/btrfs/snapshots/backup";
+  };
 }
