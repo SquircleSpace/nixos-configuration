@@ -18,9 +18,6 @@
   boot.tmpOnTmpfs = true;
   boot.cleanTmpDir = true;
 
-  # Make boot pretty!
-  boot.plymouth.enable = true;
-
   system.activationScripts = {
     "Protect /etc/nixos/user-passwords/" = ''
       if [ -d /etc/nixos/user-passwords/ ]; then
