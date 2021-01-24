@@ -100,4 +100,11 @@
   };
 
   nixpkgs.config.allowUnfree = true;
+
+  users.extraUsers.ada.packages = with pkgs; [
+    discord
+    steam
+    steam.run
+    wine
+  ];
 }
