@@ -1,7 +1,7 @@
 { config, pkgs, lib, ...}:
 let
-assertPath = import ./assertPath.nix lib;
-nonUIPackages = with pkgs; [
+  assertPath = import ./assertPath.nix lib;
+  nonUIPackages = with pkgs; [
     aspellDicts.en
     btrfs-progs
     file
@@ -26,7 +26,7 @@ nonUIPackages = with pkgs; [
     wget
     xxd
   ];
-uiPackages = with pkgs; [
+  uiPackages = with pkgs; [
     bitwarden
     caffeine-ng
     chromium
@@ -53,7 +53,7 @@ uiPackages = with pkgs; [
       '';
     }))
   ];
-kdePackages = with pkgs; [
+  kdePackages = with pkgs; [
     kdeApplications.kontact
     kdeApplications.kaddressbook
     kdeApplications.kmail
@@ -61,10 +61,10 @@ kdePackages = with pkgs; [
     kdeApplications.korganizer
     kdeApplications.okular
   ];
-isUI = config.services.xserver.enable;
-emacsPackage = with pkgs; if isUI then emacs else emacs-nox;
-optionalList = condition: list: if condition then list else [];
-packages = lib.flatten [
+  isUI = config.services.xserver.enable;
+  emacsPackage = with pkgs; if isUI then emacs else emacs-nox;
+  optionalList = condition: list: if condition then list else [];
+  packages = lib.flatten [
     nonUIPackages
     (optionalList isUI uiPackages)
     (optionalList config.services.xserver.desktopManager.plasma5.enable kdePackages)
