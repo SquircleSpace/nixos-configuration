@@ -171,17 +171,15 @@ let
       fi
       mkdir -p "$(dirname "$SNAPSHOT_PATH"/"$SUBVOL_PATH")"
       ${pkgs.btrfs-progs}/bin/btrfs subvolume snapshot "$SUBVOL_PATH" "$SNAPSHOT_PATH"/"$SUBVOL_PATH"
-    '') (lib.sort (x: y: x < y) cfg.subvolumes)) +
-    ''
-      # Make snapshots readonly
-    '' +
-    (lib.concatMapStrings (subvol: ''
-      SUBVOL_PATH=${shellQuote subvol}
-      ${pkgs.btrfs-progs}/bin/btrfs property set -t subvol "$SNAPSHOT_PATH"/"$SUBVOL_PATH" ro true
-    '') (lib.sort (x: y: x > y) cfg.subvolumes));
+    '') (lib.sort (x: y: x < y) cfg.subvolumes));
 
     postHook = ''
       if [ $exitStatus = 0 ]; then
+    '' +
+    (lib.concatMapStrings (subvol: ''
+        SUBVOL_PATH=${shellQuote subvol}
+        ${pkgs.btrfs-progs}/bin/btrfs property set -t subvol "$SNAPSHOT_PATH"/"$SUBVOL_PATH" ro true
+    '') (lib.sort (x: y: x > y) cfg.subvolumes)) + ''
         mv "$SNAPSHOT_PATH" "$SNAPSHOT_PATH_DIRNAME"/"$BACKUP_TIME"."$SNAPSHOT_PATH_BASENAME"
       fi
     '';
