@@ -158,4 +158,8 @@ in
     passwordPath = "/var/lib/borg/password";
     snapshotPath = "/crypt/snapshots/backup";
   };
+
+  hardware.pulseaudio.zeroconf.publish.enable = true;
+  services.avahi.openFirewall = true;
+  networking.firewall.allowedTCPPorts = [ 4713 ];
 }
