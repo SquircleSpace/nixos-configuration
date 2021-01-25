@@ -111,7 +111,6 @@ let
   mkActivationScript = name: cfg: lib.nameValuePair "Protect borgbackup for ${name}" ''
     chown root:root ${shellQuote cfg.privateKeyPath} ${shellQuote cfg.passwordPath}
     chmod go-rwx ${shellQuote cfg.privateKeyPath} ${shellQuote cfg.passwordPath}
-    ${checkSnapshotPathIsSafe} "$(dirname ${shellQuote cfg.snapshotPath})"
   '';
   mkKnownHosts = name: cfg: lib.nameValuePair cfg.server.hostname {
     hostNames = [ cfg.server.hostname ];
