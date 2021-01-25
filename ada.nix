@@ -33,6 +33,7 @@ uiPackages = with pkgs; [
     firefox
     gimp
     gparted
+    paprefs
     pavucontrol
     terminator
     vlc
