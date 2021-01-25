@@ -10,7 +10,6 @@ in
     ./ui.nix
     ./ada.nix
     ./ssh.nix
-    ./sound.nix
     ./backup.nix
   ];
 
