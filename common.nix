@@ -18,6 +18,17 @@
   boot.tmpOnTmpfs = true;
   boot.cleanTmpDir = true;
 
+  # No sudo!
+  security.sudo.enable = false;
+  security.doas.enable = true;
+  security.doas.extraRules = [
+    {
+      groups = [ "wheel" ];
+      persist = true;
+      setEnv = [ "NIX_PATH" ];
+    }
+  ];
+
   system.activationScripts = {
     "Protect /etc/nixos/user-passwords/" = ''
       if [ -d /etc/nixos/user-passwords/ ]; then
