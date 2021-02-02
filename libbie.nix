@@ -77,6 +77,11 @@
 
   users.mutableUsers = false;
 
+  powerManagement.powerUpCommands = ''
+    echo 70 > /sys/class/power_supply/BAT0/charge_control_start_threshold
+    echo 75 > /sys/class/power_supply/BAT0/charge_control_end_threshold
+  '';
+
   powerManagement.powertop.enable = true;
   services.tlp.enable = true;
   networking.networkmanager.wifi.powersave = true;
