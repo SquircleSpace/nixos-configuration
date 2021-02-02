@@ -11,6 +11,7 @@
 
   hardware.system76.enableAll = true;
 
+  boot.loader.systemd-boot.editor = false;
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelPackages = pkgs.linuxPackages_latest;
