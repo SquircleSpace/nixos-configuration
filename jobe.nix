@@ -120,6 +120,7 @@ in
     darktable
     discord
     lutris
+    nvtop
     steam
     steam.run
     wine
