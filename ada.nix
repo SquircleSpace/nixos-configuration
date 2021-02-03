@@ -53,14 +53,13 @@ let
       '';
     }))
   ];
-  kdePackages = with pkgs; [
-    kdeApplications.kaddressbook
-    kdeApplications.kmail
-    kdeApplications.kmail-account-wizard
-    kdeApplications.kontact
-    kdeApplications.korganizer
-    kdeApplications.okular
-    kdeApplications.yakuake
+  kdePackages = with (if "20.09" == config.system.nixos.release then pkgs.kdeApplications else pkgs); [
+    kontact
+    kaddressbook
+    kmail
+    korganizer
+    okular
+    yakuake
   ];
   isUI = config.services.xserver.enable;
   emacsPackage = with pkgs; if isUI then emacs else emacs-nox;
