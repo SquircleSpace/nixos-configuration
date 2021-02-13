@@ -68,6 +68,12 @@ in
       fsType = "btrfs";
     };
   };
+  boot.initrd.luks.forceLuksSupportInInitrd = true;
+  boot.initrd.postMountCommands = ''
+    cryptsetup luksOpen --key-file /mnt-root/root/keys/crypt1 /dev/disk/by-partuuid/316a1645-96f4-4bb8-b2c2-986a7b637d03 crypt1
+    cryptsetup luksOpen --key-file /mnt-root/root/keys/crypt1 /dev/disk/by-partuuid/a5b78c0f-c556-4eba-ac41-f6934744add3 crypt2
+    cryptsetup luksOpen --key-file /mnt-root/root/keys/crypt1 /dev/disk/by-partuuid/90bed07a-e219-4aaa-b3dc-b1ff11075ceb crypt3
+  '';
 
   services.btrfs.autoScrub = {
     enable = true;
