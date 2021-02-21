@@ -54,12 +54,13 @@ let
     }))
   ];
   kdePackages = with pkgs; [
-    kdeApplications.kontact
     kdeApplications.kaddressbook
     kdeApplications.kmail
     kdeApplications.kmail-account-wizard
+    kdeApplications.kontact
     kdeApplications.korganizer
     kdeApplications.okular
+    kdeApplications.yakuake
   ];
   isUI = config.services.xserver.enable;
   emacsPackage = with pkgs; if isUI then emacs else emacs-nox;
