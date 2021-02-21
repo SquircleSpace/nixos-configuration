@@ -18,6 +18,9 @@
   boot.tmpOnTmpfs = true;
   boot.cleanTmpDir = true;
 
+  programs.gnupg.agent.enable = true;
+  programs.gnupg.agent.enableSSHSupport = true;
+
   # No sudo!
   security.sudo.enable = false;
   security.doas.enable = true;
