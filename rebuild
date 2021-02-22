@@ -7,5 +7,5 @@ if ! [ -L /etc/nixos/configuration.nix ]; then
     exit 1
 fi
 
-git archive --format=tar HEAD | tar -x -C /etc/nixos
-nixos-rebuild "$@"
+git archive --format=tar HEAD | doas tar -x -C /etc/nixos
+doas nixos-rebuild "$@"
