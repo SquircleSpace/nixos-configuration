@@ -37,14 +37,6 @@ let
     pavucontrol
     terminator
     vlc
-    (pidgin-with-plugins.override {
-      plugins = [
-        purple-hangouts
-        pidginwindowmerge
-        pidgin-opensteamworks
-        (callPackage ./pidgin-indicator.nix { })
-      ];
-    })
     (signal-desktop.overrideAttrs (old: {
       preFixup = old.preFixup + ''
         # Make signal desktop shortcut launch it into the tray
