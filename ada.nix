@@ -53,10 +53,11 @@ let
       '';
     }))
   ];
-  kdePackages = with (if "20.09" == config.system.nixos.release then pkgs.kdeApplications else pkgs); [
-    kontact
+  kdePackages = with (if "20.09" == config.system.nixos.release then pkgs.kdeApplications else pkgs.plasma5Packages); [
     kaddressbook
     kmail
+    kmail-account-wizard
+    kontact
     korganizer
     okular
     yakuake
