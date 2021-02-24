@@ -48,6 +48,20 @@ in
 
   system.stateVersion = "20.09";
 
+  boot.initrd.luks.reusePassphrases = true;
+
+  boot.initrd.luks.devices.crypt1 = {
+    allowDiscards = true;
+    device = "/dev/disk/by-partuuid/42024e68-9074-4943-b210-ae526e2d34b4";
+    preLVM = true;
+  };
+  boot.initrd.luks.devices.crypt2 = {
+    allowDiscards = true;
+    device = "/dev/disk/by-partuuid/de0ce953-6b46-4c5e-9429-ccf400edee1a";
+    preLVM = true;
+  };
+  boot.initrd.luks.forceLuksSupportInInitrd = true;
+
   # Mount some partitions
   fileSystems = {
     "/" = {
@@ -59,22 +73,16 @@ in
       fsType = "vfat";
     };
     "/home" = {
-      device = "/dev/disk/by-uuid/82b4a0b5-3266-4d53-840d-061d43b3db57";
+      device = "/dev/mapper/crypt1";
       fsType = "btrfs";
       options = [ "subvol=/home" "discard" ];
     };
     "/crypt" = {
-      device = "/dev/disk/by-uuid/82b4a0b5-3266-4d53-840d-061d43b3db57";
+      device = "/dev/mapper/crypt1";
       fsType = "btrfs";
       options = [ "discard" ];
     };
   };
-  boot.initrd.luks.forceLuksSupportInInitrd = true;
-  boot.initrd.postMountCommands = ''
-    cryptsetup luksOpen --key-file /mnt-root/root/keys/crypt1 /dev/disk/by-partuuid/316a1645-96f4-4bb8-b2c2-986a7b637d03 crypt1
-    cryptsetup luksOpen --key-file /mnt-root/root/keys/crypt1 /dev/disk/by-partuuid/a5b78c0f-c556-4eba-ac41-f6934744add3 crypt2
-    cryptsetup luksOpen --key-file /mnt-root/root/keys/crypt1 /dev/disk/by-partuuid/90bed07a-e219-4aaa-b3dc-b1ff11075ceb crypt3
-  '';
 
   services.btrfs.autoScrub = {
     enable = true;
