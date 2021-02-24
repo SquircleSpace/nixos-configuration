@@ -33,21 +33,22 @@
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/2ff8a826-b407-4ae5-b371-2e040216a9e0";
     fsType = "btrfs";
-    options = [ "subvol=/subvolumes/root" ];
+    options = [ "subvol=/subvolumes/root" "discard" ];
   };
   fileSystems."/home" = {
     device = "/dev/disk/by-uuid/2ff8a826-b407-4ae5-b371-2e040216a9e0";
     fsType = "btrfs";
-    options = [ "subvol=/subvolumes/home" ];
+    options = [ "subvol=/subvolumes/home" "discard" ];
   };
   fileSystems."/nix" = {
     device = "/dev/disk/by-uuid/2ff8a826-b407-4ae5-b371-2e040216a9e0";
     fsType = "btrfs";
-    options = [ "subvol=/subvolumes/nix" ];
+    options = [ "subvol=/subvolumes/nix" "discard" ];
   };
   fileSystems."/btrfs" = {
     device = "/dev/disk/by-uuid/2ff8a826-b407-4ae5-b371-2e040216a9e0";
     fsType = "btrfs";
+    options = [ "discard" ];
   };
   services.btrfs.autoScrub = {
     enable = true;
