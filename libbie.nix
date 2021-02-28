@@ -122,6 +122,4 @@
     steam.run
     wine
   ];
-
-  hardware.pulseaudio.zeroconf.discovery.enable = true;
 }
