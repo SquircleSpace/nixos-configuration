@@ -28,7 +28,7 @@
     {
       groups = [ "wheel" ];
       persist = true;
-      setEnv = [ "NIX_PATH" ];
+      keepEnv = true;
     }
   ];
 
