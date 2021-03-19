@@ -47,6 +47,7 @@ let
   ];
   kdePackages = with (if "20.09" == config.system.nixos.release then pkgs.kdeApplications else pkgs.plasma5Packages); [
     kaddressbook
+    kleopatra
     kmail
     kmail-account-wizard
     kontact
