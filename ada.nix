@@ -33,6 +33,7 @@ let
     firefox
     gimp
     gparted
+    nextcloud-client
     paprefs
     pavucontrol
     terminator
