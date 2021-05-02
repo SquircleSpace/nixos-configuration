@@ -165,7 +165,9 @@ in
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINKi5JMv0RCL4XLdTkACef/dgQdkVgVOoUdTcoCGD3ww ada@squircle.space"
     ];
     path = "/crypt/borg/pifer";
+    user = "borg";
   };
+  users.extraUsers.borg.isSystemUser = true;
 
   services.borgbackup.smartjobs."rsync" = {
     paths = [ "/home" "/crypt/photos" ];
