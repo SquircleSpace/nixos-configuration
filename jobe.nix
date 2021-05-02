@@ -65,8 +65,9 @@ in
   # Mount some partitions
   fileSystems = {
     "/" = {
-      device = "/dev/disk/by-uuid/c17e85fc-f9f4-45ef-b468-c6a97d28be7d";
-      fsType = "ext4";
+      device = "/dev/mapper/crypt1";
+      fsType = "btrfs";
+      options = [ "subvol=/root" "discard" ];
     };
     "/boot" = {
       device = "/dev/disk/by-uuid/C420-4469";
@@ -81,6 +82,11 @@ in
       device = "/dev/mapper/crypt1";
       fsType = "btrfs";
       options = [ "discard" ];
+    };
+    "/nix" = {
+      device = "/dev/mapper/crypt1";
+      fsType = "btrfs";
+      options = [ "subvol=/nix" "discard" ];
     };
   };
 
