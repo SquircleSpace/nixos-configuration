@@ -67,7 +67,7 @@ in
     "/" = {
       device = "/dev/mapper/crypt1";
       fsType = "btrfs";
-      options = [ "subvol=/root" "discard" ];
+      options = [ "subvol=/root" "discard" "noatime" ];
     };
     "/boot" = {
       device = "/dev/disk/by-uuid/C420-4469";
@@ -76,17 +76,17 @@ in
     "/home" = {
       device = "/dev/mapper/crypt1";
       fsType = "btrfs";
-      options = [ "subvol=/home" "discard" ];
+      options = [ "subvol=/home" "discard" "noatime" ];
     };
     "/crypt" = {
       device = "/dev/mapper/crypt1";
       fsType = "btrfs";
-      options = [ "discard" ];
+      options = [ "discard" "noatime" ];
     };
     "/nix" = {
       device = "/dev/mapper/crypt1";
       fsType = "btrfs";
-      options = [ "subvol=/nix" "discard" ];
+      options = [ "subvol=/nix" "discard" "noatime" ];
     };
   };
 
