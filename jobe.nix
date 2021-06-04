@@ -37,11 +37,6 @@ in
   hardware.opengl.driSupport32Bit = true;
   hardware.pulseaudio.support32Bit = true;
   hardware.bluetooth.enable = true;
-  hardware.bluetooth.config = {
-    General = {
-      ControllerMode = "dual";
-    };
-  };
   services.blueman.enable = true;
 
   powerManagement.cpuFreqGovernor = "ondemand";
