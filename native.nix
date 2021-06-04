@@ -6,7 +6,7 @@
     description = ''
       CPU architecture to build for.
 
-      Hint: use `gcc -march=native -Q --help=target | grep -- '-march='`
+      Hint: use `cat /sys/devices/cpu/caps/pmu_name`
     '';
   };
 
