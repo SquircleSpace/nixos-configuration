@@ -33,6 +33,7 @@ in
 
   # Drivers
   services.xserver.videoDrivers = ["nvidia"];
+  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.beta;
   nixpkgs.config.allowUnfree = true;
   hardware.opengl.driSupport32Bit = true;
   hardware.pulseaudio.support32Bit = true;
