@@ -30,6 +30,17 @@
           sha256 = "1p9lx78cayyn7qc2q66id2xfs76jyddnqv2x1ypsvixaxwcvqgdb";
         };
       });
+
+      firejail = assert super.firejail.version == "0.9.64.4";
+        super.firejail.overrideAttrs (oldAttrs: {
+          version = "20210614";
+          src = pkgs.fetchFromGitHub {
+            owner = "netblue30";
+            repo = "firejail";
+            rev = "e770ab6d858bf8594edb012b1df6b899efb37e94";
+            sha256="0zk3w4dvpcdixv6c6hpaf0akazin8h1l4zfl2lff1mmp4y89i57b";
+          };
+        });
     })
   ];
 }
