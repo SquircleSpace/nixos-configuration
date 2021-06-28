@@ -42,6 +42,13 @@ in
 
   powerManagement.cpuFreqGovernor = "ondemand";
 
+  services.wakeonlan.interfaces = [
+    {
+      interface = "eno1";
+      method = "magicpacket";
+    }
+  ];
+
   system.stateVersion = "21.05";
 
   boot.initrd.luks.reusePassphrases = true;
