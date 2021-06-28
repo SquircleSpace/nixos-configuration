@@ -188,4 +188,23 @@ in
     passwordPath = "/var/lib/borg/password";
     snapshotPath = "/crypt/snapshots/backup";
   };
+
+  users.extraUsers.command = {
+    createHome = false;
+    home = "/var/empty";
+    isSystemUser = true;
+    openssh.authorizedKeys.keys = [
+      ''command="/run/wrappers/bin/doas ${pkgs.systemd}/bin/systemctl suspend" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAbpjRKHraUCNHijRzHdPQI6XmgfT0Gj/TlXQ6pcYbOY root@pifer''
+    ];
+    useDefaultShell = true;
+  };
+  security.doas.extraRules = [
+    {
+      users = ["command"];
+      cmd = "${pkgs.systemd}/bin/systemctl";
+      args = ["suspend"];
+      runAs = "root";
+      noPass = true;
+    }
+  ];
 }
