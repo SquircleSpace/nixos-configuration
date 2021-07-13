@@ -31,4 +31,7 @@
       keepEnv = true;
     }
   ];
+
+  # Nix flakes requires git to be in the PATH.  Its silly.
+  environment.systemPackages = [ pkgs.gitFull ];
 }
