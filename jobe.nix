@@ -4,7 +4,7 @@ let
 in
 {
   imports = [
-    ./hardware-configuration.nix
+    ./jobe-hardware.nix
     ./common.nix
     ./vpn.nix
     ./ui.nix
