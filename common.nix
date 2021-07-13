@@ -31,13 +31,4 @@
       keepEnv = true;
     }
   ];
-
-  system.activationScripts = {
-    "Protect /etc/nixos/user-passwords/" = ''
-      if [ -d /etc/nixos/user-passwords/ ]; then
-        chown -R root:root /etc/nixos/user-passwords/
-        chmod -R go-rwx /etc/nixos/user-passwords/
-      fi
-    '';
-  };
 }

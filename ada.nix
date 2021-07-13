@@ -65,6 +65,7 @@ let
     (optionalList config.services.xserver.desktopManager.plasma5.enable kdePackages)
     [ emacsPackage ]
   ];
+  passwordPath = "/etc/nixos/user-passwords/ada";
 in
 {
   users.extraUsers.ada = {
@@ -72,7 +73,16 @@ in
     home = "/home/ada";
     description = "Ada";
     extraGroups = [ "wheel" "networkmanager" ];
-    passwordFile = assertPath "/etc/nixos/user-passwords/ada" "Must give ada a password";
+    passwordFile = assertPath passwordPath "Must give ada a password";
     packages = packages;
+  };
+
+  system.activationScripts = {
+    "Protect ${passwordPath}" = ''
+      if [ -e ${passwordPath} ]; then
+        chown -R root:root ${passwordPath}
+        chmod -R go-rwx ${passwordPath}
+      fi
+    '';
   };
 }
