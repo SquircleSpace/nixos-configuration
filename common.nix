@@ -34,4 +34,12 @@
 
   # Nix flakes requires git to be in the PATH.  Its silly.
   environment.systemPackages = [ pkgs.gitFull ];
+
+  # Enable flakes!
+  nix = {
+    package = pkgs.nixUnstable;
+    extraOptions = ''
+      experimental-features = nix-command flakes
+    '';
+  };
 }
