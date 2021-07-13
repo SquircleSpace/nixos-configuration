@@ -1,7 +1,5 @@
 { config, pkgs, lib, ... }:
 let
-  assertPath = import ./assertPath.nix lib;
-
   dirname = path: let
     parts = lib.splitString "/" (assert (lib.assertMsg (path != "") "Path cannot be empty"); path);
     head = lib.head parts;
@@ -124,10 +122,10 @@ let
     startAt = cfg.startAt;
     environment = {
       "BORG_REMOTE_PATH" = cfg.server.borgCommand;
-      "BORG_RSH" = "ssh -i ${assertPath cfg.privateKeyPath "Private key must exist"}";
+      "BORG_RSH" = "ssh -i ${cfg.privateKeyPath}";
     };
     encryption.mode = "repokey";
-    encryption.passCommand = "cat \"${assertPath cfg.passwordPath "Encryption password must exist"}\"";
+    encryption.passCommand = "cat \"${cfg.passwordPath}\"";
     compression = "auto,lzma";
     prune.keep = {
       within = "1d"; # Keep all archives from the last day

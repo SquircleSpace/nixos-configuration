@@ -1,6 +1,5 @@
 { config, pkgs, lib, ...}:
 let
-  assertPath = import ./assertPath.nix lib;
   nonUIPackages = with pkgs; [
     aspellDicts.en
     btrfs-progs
@@ -73,7 +72,7 @@ in
     home = "/home/ada";
     description = "Ada";
     extraGroups = [ "wheel" "networkmanager" ];
-    passwordFile = assertPath passwordPath "Must give ada a password";
+    passwordFile = passwordPath;
     packages = packages;
   };
 
