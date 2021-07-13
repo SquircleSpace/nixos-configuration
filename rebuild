@@ -2,10 +2,10 @@
 
 set -e
 
-if ! [ -L /etc/nixos/configuration.nix ]; then
-    echo "Must set /etc/nixos/configuration.nix to be a symlink to a system config" >&2
-    exit 1
+here=$(dirname $0)
+flake="$here"
+if ! [ -z "${TARGET_HOSTNAME}" ]; then
+    flake="$flake#${TARGET_HOSTNAME}"
 fi
 
-git archive --format=tar HEAD | doas tar -x -C /etc/nixos
-doas nixos-rebuild "$@"
+doas nixos-rebuild --flake $flake "$@"
