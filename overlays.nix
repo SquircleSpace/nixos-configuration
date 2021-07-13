@@ -41,6 +41,9 @@
             sha256="0zk3w4dvpcdixv6c6hpaf0akazin8h1l4zfl2lff1mmp4y89i57b";
           };
         });
+
+      keyboard-configurator = assert ! (super ? "keyboard-configurator");
+        super.callPackage ./system76-keyboard-configurator.nix {};
     })
   ];
 }
