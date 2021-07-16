@@ -105,7 +105,7 @@ let
     }
     check "$1"
   '';
-  shellQuote = str: "'" + (lib.replaceChars ["'"] ["'\''"] str) + "'";
+  shellQuote = import ./shellQuote.nix lib;
   mkActivationScript = name: cfg: lib.nameValuePair "Protect borgbackup for ${name}" ''
     chown root:root ${shellQuote cfg.privateKeyPath} ${shellQuote cfg.passwordPath}
     chmod go-rwx ${shellQuote cfg.privateKeyPath} ${shellQuote cfg.passwordPath}

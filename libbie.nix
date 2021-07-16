@@ -2,6 +2,7 @@
 {
   imports = [
     ./libbie-hardware.nix
+    ./flake-autoupdate.nix
     ./common.nix
     ./ui.nix
     ./ada.nix
