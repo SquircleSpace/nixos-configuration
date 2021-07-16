@@ -64,7 +64,7 @@ let
     (optionalList config.services.xserver.desktopManager.plasma5.enable kdePackages)
     [ emacsPackage ]
   ];
-  passwordPath = "/etc/nixos/user-passwords/ada";
+  passwordPath = "/etc/user-passwords/ada";
 in
 {
   users.extraUsers.ada = {
