@@ -126,4 +126,6 @@
     steam.run
     wine
   ];
+
+  services.flakeAutoUpdate."/etc/nixos".enable = true;
 }
