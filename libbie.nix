@@ -127,4 +127,7 @@
   ];
 
   services.flakeAutoUpdate."/etc/nixos".enable = true;
+
+  documentation.dev.enable = true;
+  documentation.man.generateCaches = true;
 }
