@@ -19,10 +19,12 @@ let
     options = {
       author = mkOption {
         type = nullOr identity;
+        default = null;
         description = "The author info git should use";
       };
       committer = mkOption {
         type = nullOr identity;
+        default = null;
         description = "The committer info git should use";
       };
     };
