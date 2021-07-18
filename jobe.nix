@@ -206,4 +206,7 @@ in
       noPass = true;
     }
   ];
+
+  documentation.dev.enable = true;
+  documentation.man.generateCaches = true;
 }
