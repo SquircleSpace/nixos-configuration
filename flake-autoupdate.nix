@@ -33,7 +33,7 @@ let
     options = {
       enable = mkOption {
         type = bool;
-        default = true;
+        default = false;
         description = "Whether to enable auto-update of flake.lock.";
       };
       gitConfig = mkOption {
