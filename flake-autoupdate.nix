@@ -101,6 +101,7 @@ let
       CPUSchedulingPolicy = "idle";
       IOSchedulingClass = "idle";
       ReadWritePaths = [ cfg.path ];
+      Type = "oneshot";
     };
     wantedBy = lib.mkIf cfg.startOnAutoUpgrade ["nixos-upgrade.service"];
     before = lib.mkIf cfg.startOnAutoUpgrade ["nixos-upgrade.service"];
