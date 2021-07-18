@@ -91,10 +91,6 @@ let
     cd ${shellQuote cfg.path}
     ${config.nix.package}/bin/nix flake update --commit-lock-file
   '';
-  startLink = {
-    wantedBy = ["nixos-upgrade.service"];
-    before = ["nixos-upgrade.service"];
-  };
   mkService = name: cfg: lib.nameValuePair cfg.serviceName {
     description = "Update flake.lock at ${cfg.path}";
     inherit (cfg) startAt enable;
@@ -106,7 +102,9 @@ let
       IOSchedulingClass = "idle";
       ReadWritePaths = [ cfg.path ];
     };
-  } // (if cfg.startOnAutoUpgrade then startLink else {});
+    wantedBy = lib.mkIf cfg.startOnAutoUpgrade ["nixos-upgrade.service"];
+    before = lib.mkIf cfg.startOnAutoUpgrade ["nixos-upgrade.service"];
+  };
   mkTimer = name: cfg: lib.nameValuePair cfg.serviceName {
     timerConfig.Persistent = cfg.persistent;    
   };
