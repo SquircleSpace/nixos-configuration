@@ -89,7 +89,11 @@ let
                // transformIdentity "AUTHOR" cfg.gitConfig.author;
   mkScript = cfg: ''
     cd ${shellQuote cfg.path}
-    ${config.nix.package}/bin/nix flake update --commit-lock-file
+    if [ -e flake-autoupdate.inhibit ]; then
+        echo "Not updating flake due to inhibition file"
+        exit 1
+    fi
+    exec ${config.nix.package}/bin/nix flake update --commit-lock-file
   '';
   mkService = name: cfg: lib.nameValuePair cfg.serviceName {
     description = "Update flake.lock at ${cfg.path}";
@@ -103,7 +107,7 @@ let
       ReadWritePaths = [ cfg.path ];
       Type = "oneshot";
     };
-    wantedBy = lib.mkIf cfg.startOnAutoUpgrade ["nixos-upgrade.service"];
+    requiredBy = lib.mkIf cfg.startOnAutoUpgrade ["nixos-upgrade.service"];
     before = lib.mkIf cfg.startOnAutoUpgrade ["nixos-upgrade.service"];
   };
   mkTimer = name: cfg: lib.nameValuePair cfg.serviceName {
