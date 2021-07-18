@@ -2,6 +2,7 @@
 {
   imports = [
     ./overlays.nix
+    ./flake-autoupdate.nix
   ];
 
   # Manage that network
