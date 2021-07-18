@@ -89,7 +89,7 @@ let
                // transformIdentity "AUTHOR" cfg.gitConfig.author;
   mkScript = cfg: ''
     cd ${shellQuote cfg.path}
-    ${pkgs.nix}/bin/nix flake update --commit-lock-file
+    ${config.nix.package}/bin/nix flake update --commit-lock-file
   '';
   startLink = {
     wantedBy = ["nixos-upgrade.service"];
