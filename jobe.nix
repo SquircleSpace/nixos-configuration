@@ -16,9 +16,6 @@ in
   # Hello!  My name is
   networking.hostName = "Jobe";
 
-  # Updates are important
-  system.autoUpgrade.enable = true;
-  system.autoUpgrade.flake = "/etc/nixos";
   services.flakeAutoUpdate."/etc/nixos".enable = true;
   # Updates fill up my disk
   nix.gc.automatic = true;
