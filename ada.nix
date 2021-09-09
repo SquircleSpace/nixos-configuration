@@ -83,8 +83,8 @@ in
   system.activationScripts = {
     "Protect ${passwordPath}" = ''
       if [ -e ${passwordPath} ]; then
-        chown -R root:root ${passwordPath}
-        chmod -R go-rwx ${passwordPath}
+        chown root:root ${passwordPath}
+        chmod go-rwx ${passwordPath}
       fi
     '';
   };
