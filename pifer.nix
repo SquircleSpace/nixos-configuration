@@ -33,6 +33,7 @@ in
 {
   imports = [
     ./pifer-hardware.nix
+    ./common.nix
     ./homebridge-module.nix
   ];
 
