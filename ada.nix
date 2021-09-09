@@ -1,24 +1,17 @@
 { config, pkgs, lib, ...}:
 let
   nonUIPackages = with pkgs; [
-    aspellDicts.en
     btrfs-progs
     file
     gdb
     git
-    gitAndTools.git-filter-repo
     glances
-    graphviz
     htop
-    ispell
     lldb
     lsof
     mosh
-    pandoc
     psmisc
-    sbcl
     smartmontools
-    stow
     tmux
     unzip
     w3m
@@ -26,15 +19,22 @@ let
     xxd
   ];
   uiPackages = with pkgs; [
+    aspellDicts.en
     bitwarden
     caffeine-ng
     chromium
     firefox
     gimp
+    gitAndTools.git-filter-repo
     gparted
+    graphviz
+    ispell
     nextcloud-client
+    pandoc
     paprefs
     pavucontrol
+    sbcl
+    stow
     terminator
     vlc
     (signal-desktop.overrideAttrs (old: {
