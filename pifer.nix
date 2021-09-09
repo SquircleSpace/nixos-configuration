@@ -95,15 +95,13 @@ in
 
   networking.networkmanager.enable = false;
 
-  system.activationScripts."Protect /etc/nixos/user-passwords/" = ''
-    chown -R root:root /etc/nixos/user-passwords/
-    chmod -R go-rwx /etc/nixos/user-passwords/*
-    chown nextcloud:nextcloud /etc/nixos/user-passwords/nextcloud-root
-    chmod +x /etc/nixos/user-passwords/
+  system.activationScripts."Protect /etc/user-passwords/nextcloud-root" = ''
+    chmod go-rwx /etc/user-passwords/nextcloud-root
+    chown nextcloud:nextcloud /etc/user-passwords/nextcloud-root
   '';
 
   services.nextcloud.enable = true;
-  services.nextcloud.config.adminpassFile = "/etc/nixos/user-passwords/nextcloud-root";
+  services.nextcloud.config.adminpassFile = "/etc/user-passwords/nextcloud-root";
   services.nextcloud.config.overwriteProtocol = "https";
   services.nextcloud.hostName = "cloud.squircle.space";
   services.nextcloud.autoUpdateApps.enable = true;
