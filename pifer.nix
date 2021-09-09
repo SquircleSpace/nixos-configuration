@@ -34,6 +34,7 @@ in
   imports = [
     ./pifer-hardware.nix
     ./common.nix
+    ./ada.nix
     ./homebridge-module.nix
   ];
 
@@ -86,11 +87,7 @@ in
   users.mutableUsers = false;
 
   users.users.ada = {
-    description = "Ada";
-    isNormalUser = true;
-    extraGroups = [ "wheel" ];
     uid = 1000;
-    passwordFile = "/etc/nixos/user-passwords/ada";
     openssh.authorizedKeys.keyFiles = [ ./ada-pubkey ./phone-pubkey ./libbie.pub ];
   };
 
