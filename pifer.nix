@@ -1,9 +1,7 @@
 { config, lib, pkgs, ... }:
 let
-  rawBorgPasswordPath = "/var/lib/borg/password";
-  borgPasswordPath = assert (lib.assertMsg (builtins.pathExists rawBorgPasswordPath) "Make sure to put the encryption password in place!"); rawBorgPasswordPath;
-  rawBorgPrivateKeyPath = "/var/lib/borg/id_ed25519";
-  borgPrivateKeyPath = assert (lib.assertMsg (builtins.pathExists rawBorgPrivateKeyPath) "Make sure to put a private key in place!"); rawBorgPrivateKeyPath;
+  borgPasswordPath = "/var/lib/borg/password";
+  borgPrivateKeyPath = "/var/lib/borg/id_ed25519";
   defaultBorgConfig = {
     paths = [ "/var" "/etc" ];
     exclude = [ "/var/log" ];
