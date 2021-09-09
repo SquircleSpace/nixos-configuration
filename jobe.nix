@@ -164,6 +164,9 @@ in
     }
   ];
 
+  # For cross-compiling to ARM
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+
   services.borgbackup.repos.pifer = {
     allowSubRepos = true;
     authorizedKeysAppendOnly = [
@@ -206,4 +209,7 @@ in
       noPass = true;
     }
   ];
+
+  documentation.dev.enable = true;
+  documentation.man.generateCaches = true;
 }

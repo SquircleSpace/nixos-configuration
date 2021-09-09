@@ -68,19 +68,6 @@
 
   time.timeZone = "America/Los_Angeles";
 
-  environment.etc."systemd/system-sleep/unlock-after-hibernate".source = pkgs.writeScript "post-hibernate.sh" ''
-    #! ${pkgs.bash}/bin/bash
-
-    if [ "$1" == "post" ] && [ "$2" == "hibernate" ]; then
-      ${pkgs.systemd}/bin/loginctl --no-ask-password unlock-sessions
-    fi
-  '';
-
-  services.xserver.displayManager.autoLogin = {
-    enable = true;
-    user = "ada";
-  };
-
   hardware.bluetooth.enable = true;
   services.blueman.enable = true;
 
@@ -127,4 +114,7 @@
   ];
 
   services.flakeAutoUpdate."/etc/nixos".enable = true;
+
+  documentation.dev.enable = true;
+  documentation.man.generateCaches = true;
 }

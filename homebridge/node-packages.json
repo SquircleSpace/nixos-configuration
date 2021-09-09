@@ -1,0 +1,7 @@
+[
+  "homebridge",
+  "homebridge-hue",
+  "homebridge-dyson-link",
+  "homebridge-wol",
+  "homebridge-config-ui-x"
+]

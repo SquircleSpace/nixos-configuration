@@ -28,6 +28,10 @@
           { nixpkgs.overlays = [ nix.overlay ]; }
         ];
       };
+
+      nixosConfigurations.pifer = nixosSystem {
+        system = "aarch64-linux";
+        modules = [ ./pifer.nix ];
+      };
     };
 }
-
