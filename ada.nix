@@ -64,6 +64,10 @@ let
     (optionalList config.services.xserver.desktopManager.plasma5.enable kdePackages)
     [ emacsPackage ]
   ];
+  groups = lib.flatten [
+    [ "wheel" ]
+    (optionalList config.networking.networkmanager.enable [ "networkmanager" ])
+  ];
   passwordPath = "/etc/user-passwords/ada";
 in
 {
@@ -71,7 +75,7 @@ in
     isNormalUser = true;
     home = "/home/ada";
     description = "Ada";
-    extraGroups = [ "wheel" "networkmanager" ];
+    extraGroups = groups;
     passwordFile = passwordPath;
     packages = packages;
   };
