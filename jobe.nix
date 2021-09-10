@@ -166,6 +166,7 @@ in
 
   # For cross-compiling to ARM
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+  users.extraUsers.ada.extraGroups = [ "kvm" ];
 
   services.borgbackup.repos.pifer = {
     allowSubRepos = true;
