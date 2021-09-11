@@ -144,7 +144,9 @@ in
     discord
     lutris
     nvtop
-    steam
+    (steam.override {
+      extraPkgs = pkgs: with pkgs; [ pango harfbuzz libthai ];
+    })
     steam.run
     wine
     (import ./minecraft.nix { inherit pkgs; })
