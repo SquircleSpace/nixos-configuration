@@ -129,8 +129,8 @@ let
     compression = "auto,lzma";
     prune.keep = {
       within = "1d"; # Keep all archives from the last day
-      daily = 14;
-      weekly = 26;
+      daily = 5;
+      weekly = 13;
       monthly = 6;
       yearly = 5;
     };
