@@ -1,10 +1,12 @@
 { config, pkgs, lib, ...}:
 let
+  gitRemoteDoas = pkgs.callPackage ./git-remote-doas {};
   nonUIPackages = with pkgs; [
     btrfs-progs
     file
     gdb
     git
+    gitRemoteDoas
     glances
     htop
     lldb
