@@ -48,6 +48,7 @@ in
   nix.gc.options = "--delete-older-than 21d";
   nix.gc.dates = "Mon *-*-* 00:03:15";
   system.autoUpgrade.enable = true;
+  system.autoUpgrade.flake = "/etc/nixos";
   system.autoUpgrade.allowReboot = true;
   system.autoUpgrade.dates = "Mon *-*-* 00:04:40";
   services.flakeAutoUpdate."/etc/nixos".enable = true;
