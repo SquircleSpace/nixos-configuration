@@ -6,7 +6,6 @@
     ./ui.nix
     ./ada.nix
     ./ssh.nix
-    ./backup.nix
   ];
 
   hardware.system76.enableAll = true;
@@ -99,6 +98,7 @@
     privateKeyPath = "/var/lib/borg/id_ed25519";
     passwordPath = "/var/lib/borg/password";
     snapshotPath = "/btrfs/snapshots/backup";
+    command = "borg-rsync.net";
   };
 
   nixpkgs.config.allowUnfree = true;
