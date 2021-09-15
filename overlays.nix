@@ -44,6 +44,21 @@
 
       keyboard-configurator = assert ! (super ? "keyboard-configurator");
         super.callPackage ./system76-keyboard-configurator.nix {};
+
+      etc-nixos-post-receive-hook = self.writeScript "nixos-post-receive-hook.sh" ''
+        #! ${self.bash}/bin/bash
+        if [[ $# = 0 ]]; then
+          exit 0
+        fi
+
+        while arg=$1; shift; do
+          if [[ "$arg" != "refs/heads/master" ]]; then
+            continue
+          fi
+          ${self.git}/bin/git checkout master
+          break
+        done
+      '';
     })
   ];
 }

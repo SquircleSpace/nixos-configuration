@@ -114,6 +114,10 @@
   ];
 
   services.flakeAutoUpdate."/etc/nixos".enable = true;
+  environment.etc."nixos/.git/hooks/post-receive" = {
+    enable = true;
+    source = pkgs.etc-nixos-post-receive-hook;
+  };
 
   documentation.dev.enable = true;
   documentation.man.generateCaches = true;
