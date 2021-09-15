@@ -6,7 +6,6 @@
     ./ui.nix
     ./ada.nix
     ./ssh.nix
-    ./backup.nix
   ];
 
   hardware.system76.enableAll = true;

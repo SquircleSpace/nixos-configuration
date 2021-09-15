@@ -3,6 +3,7 @@
   imports = [
     ./overlays.nix
     ./flake-autoupdate.nix
+    ./backup.nix
   ];
   config = {
     # Manage that network
