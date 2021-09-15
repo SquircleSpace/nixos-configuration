@@ -42,6 +42,7 @@ let
         type = nullOr str;
         example = "borg-remote";
         description = "A command name to add to the system for interacting with this repo";
+        default = null;
       };
       paths = mkOption {
         type = listOf path;
