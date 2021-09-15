@@ -98,7 +98,6 @@
     privateKeyPath = "/var/lib/borg/id_ed25519";
     passwordPath = "/var/lib/borg/password";
     snapshotPath = "/btrfs/snapshots/backup";
-    command = "borg-rsync.net";
   };
 
   nixpkgs.config.allowUnfree = true;
