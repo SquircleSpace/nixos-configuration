@@ -52,6 +52,10 @@ in
   system.autoUpgrade.allowReboot = true;
   system.autoUpgrade.dates = "Mon *-*-* 00:04:40";
   services.flakeAutoUpdate."/etc/nixos".enable = true;
+  environment.etc."nixos/.git/hooks/post-receive" = {
+    enable = true;
+    source = pkgs.etc-nixos-post-receive-hook;
+  };
 
   boot.consoleLogLevel = lib.mkDefault 7;
 

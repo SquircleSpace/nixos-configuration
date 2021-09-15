@@ -16,6 +16,10 @@ in
   networking.hostName = "Jobe";
 
   services.flakeAutoUpdate."/etc/nixos".enable = true;
+  environment.etc."nixos/.git/hooks/post-receive" = {
+    enable = true;
+    source = pkgs.etc-nixos-post-receive-hook;
+  };
   # Updates fill up my disk
   nix.gc.automatic = true;
   nix.gc.options = "--delete-older-than 10d";
