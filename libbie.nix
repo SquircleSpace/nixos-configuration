@@ -5,6 +5,7 @@
     ./common.nix
     ./ui.nix
     ./ada.nix
+    ./sasha.nix
     ./ssh.nix
   ];
 
