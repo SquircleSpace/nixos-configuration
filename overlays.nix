@@ -56,6 +56,7 @@
             continue
           fi
           ${self.git}/bin/git checkout master
+          ${self.git}/bin/git reset --hard master
           break
         done
       '';
