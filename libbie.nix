@@ -87,7 +87,7 @@
   system.stateVersion = "21.05";
 
   services.borgbackup.smartjobs."rsync" = {
-    paths = [ "/home" ];
+    paths = [ "/home/ada" ];
     subvolumes = [ "/home" ];
     exclude = [
       "/home/ada/.cache"
