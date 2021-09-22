@@ -38,12 +38,6 @@ let
   };
   smartjobType = with lib; with types; submodule {
     options = {
-      command = mkOption {
-        type = nullOr str;
-        example = "borg-remote";
-        description = "A command name to add to the system for interacting with this repo";
-        default = null;
-      };
       paths = mkOption {
         type = listOf path;
         example = [ "/home" ];
@@ -112,24 +106,6 @@ let
     check "$1"
   '';
   shellQuote = import ./shellQuote.nix lib;
-  mkHandyScript = cfg: pkgs.writeScript "${cfg.command}.sh" ''
-    #! ${pkgs.bash}/bin/bash
-    export BORG_REMOTE_PATH=${shellQuote cfg.server.borgCommand}
-    export BORG_RSH="${pkgs.openssh}/bin/ssh -i "${shellQuote cfg.privateKeyPath}
-    export BORG_PASSCOMMAND="cat "${shellQuote cfg.passwordPath}
-    export BORG_REPO=${shellQuote cfg.server.user}@${shellQuote cfg.server.hostname}:${shellQuote cfg.repoName}
-    exec ${pkgs.borgbackup}/bin/borg "$@"
-  '';
-  mkScriptEnvironment = cfg: pkgs.stdenv.mkDerivation rec {
-    name = cfg.command;
-    unpackPhase = "true";
-    installPhase = "true";
-    buildPhase = ''
-      mkdir -p $out/bin
-      ln -s ${mkHandyScript cfg} $out/bin/${shellQuote cfg.command}
-    '';
-  };
-  hasCommand = cfg: cfg.command != null;
   mkActivationScript = name: cfg: lib.nameValuePair "Protect borgbackup for ${name}" ''
     chown root:root ${shellQuote cfg.privateKeyPath} ${shellQuote cfg.passwordPath}
     chmod go-rwx ${shellQuote cfg.privateKeyPath} ${shellQuote cfg.passwordPath}
@@ -220,6 +196,5 @@ in
     system.activationScripts = lib.mapAttrs' mkActivationScript config.services.borgbackup.smartjobs;
     programs.ssh.knownHosts = lib.mapAttrs' mkKnownHosts config.services.borgbackup.smartjobs;
     systemd.timers = lib.mapAttrs' mkTimerConfig config.services.borgbackup.smartjobs;
-    environment.systemPackages = map mkScriptEnvironment (lib.filter hasCommand (lib.attrValues config.services.borgbackup.smartjobs));
   };
 }

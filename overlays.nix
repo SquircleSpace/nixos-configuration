@@ -42,6 +42,10 @@
           };
         });
 
+      steam = (super.steam.override {
+        extraPkgs = pkgs: with pkgs; [ pango harfbuzz libthai ];
+      });
+
       keyboard-configurator = assert ! (super ? "keyboard-configurator");
         super.callPackage ./system76-keyboard-configurator.nix {};
 

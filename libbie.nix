@@ -5,6 +5,7 @@
     ./common.nix
     ./ui.nix
     ./ada.nix
+    ./sasha.nix
     ./ssh.nix
   ];
 
@@ -86,7 +87,7 @@
   system.stateVersion = "21.05";
 
   services.borgbackup.smartjobs."rsync" = {
-    paths = [ "/home" ];
+    paths = [ "/home/ada" ];
     subvolumes = [ "/home" ];
     exclude = [
       "/home/ada/.cache"
@@ -98,7 +99,6 @@
     privateKeyPath = "/var/lib/borg/id_ed25519";
     passwordPath = "/var/lib/borg/password";
     snapshotPath = "/btrfs/snapshots/backup";
-    command = "borg-rsync.net";
   };
 
   nixpkgs.config.allowUnfree = true;
