@@ -218,7 +218,7 @@ in
 
   users.extraUsers.photosync = {
     createHome = false;
-    home = "/crypt/photos/phone";
+    home = "/var/empty";
     isSystemUser = true;
     openssh.authorizedKeys.keys = [
       "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDhrzdlK/9//pdTBMFpsfJIxO8/428hyoLfYd5HDmwj7ZUSSwKlJCDPPVzPOlK1U4VWy7hauVgw5UjIKKPtmg1IZjc9o7ADOVsYMz89NUchMzojX+oyMbnKcrFuTo0d7GMMksmtJAKT7Cwy7W3fjy/jBs0AKVISqIKx1/5/+jpWZvTxAQwUfcIn3mgMQcTBdrn7feWGh+wqqAkpRui8mbNKrEOuXex8Z1jGW3TSEi11NBUUs+i38mj70ScdnfaZIVWDWUekiOewWrSbagKKKcLZMsybI1+NuCY+PgdltNKaxgAaZdnSi6WMeRPmk4qn6ID3cVKeVsLEXJ8i+kp6xdA8fMIx+Loq+BaI1NhNJZl869ocb+T2NUYR4qaNyB/Am4ElYRzM6AbSUke6FCRuI5Eu7iHg03R1WzDfrLeKJSF6wadwU6d/W0sRIJCfI9VfH1d53VYp4OICN9Ep8bDuwroXWp1c+msZgnaFMokKl/rKIayGwmsFSZ5vMbPDgLrwRgE= ada@Jobe"
