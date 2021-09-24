@@ -51,16 +51,14 @@
 
       etc-nixos-post-receive-hook = self.writeScript "nixos-post-receive-hook.sh" ''
         #! ${self.bash}/bin/bash
-        if [[ $# = 0 ]]; then
-          exit 0
-        fi
-
-        while arg=$1; shift; do
-          if [[ "$arg" != "refs/heads/master" ]]; then
+        while read oldSHA newSHA ref; do
+          if [[ "$ref" != "refs/heads/master" ]]; then
             continue
           fi
-          ${self.git}/bin/git checkout master
-          ${self.git}/bin/git reset --hard master
+          export GIT_WORK_TREE=$(cd $GIT_DIR/../ ; pwd)
+          env | grep GIT
+          echo ${self.git}/bin/git checkout -f --detach $newSHA
+          ${self.git}/bin/git checkout -f --detach $newSHA
           break
         done
       '';
