@@ -147,6 +147,7 @@ in
     discord
     lutris
     nvtop
+    steam
     steam.run
     wine
     (import ./minecraft.nix { inherit pkgs; })
