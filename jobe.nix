@@ -10,6 +10,7 @@ in
     ./ui.nix
     ./ada.nix
     ./ssh.nix
+    ./sasha.nix
   ];
 
   # Hello!  My name is
