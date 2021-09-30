@@ -183,7 +183,7 @@ in
   users.extraUsers.borg.isSystemUser = true;
 
   services.borgbackup.smartjobs."rsync" = {
-    paths = [ "/home" "/crypt/photos" ];
+    paths = [ "/home/ada" "/crypt/photos" ];
     subvolumes = [ "/home" "/crypt/photos" ];
     exclude = [
       "/home/ada/Downloads"
