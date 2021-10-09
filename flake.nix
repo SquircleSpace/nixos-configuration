@@ -17,7 +17,11 @@
     in {
       nixosConfigurations.Jobe = nixosSystem {
         system = "x86_64-linux";
-        modules = [ ./jobe.nix ];
+        modules = [
+          ./jobe.nix
+          dwarffs.nixosModules.dwarffs
+          { nixpkgs.overlays = [ nix.overlay ]; }
+        ];
       };
 
       nixosConfigurations.Libbie = nixosSystem {
