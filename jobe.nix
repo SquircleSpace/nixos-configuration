@@ -148,16 +148,14 @@ in
     discord
     lutris
     nvtop
-    steam
     steam.run
     wine
     (import ./minecraft.nix { inherit pkgs; })
   ];
 
+  programs.steam.enable = true;
+  programs.steam.remotePlay.openFirewall = true;
   hardware.steam-hardware.enable = true;
-  # Open ports for steam remote play
-  networking.firewall.allowedTCPPorts = [ 27036 ];
-  networking.firewall.allowedUDPPorts = [ 27031 27032 27033 27034 27035 27036 ];
 
   # ESYNC support in some Proton games requires a LOT of file descriptors
   systemd.extraConfig = "DefaultLimitNOFILE=1048576";
