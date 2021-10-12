@@ -57,8 +57,8 @@
           fi
           export GIT_WORK_TREE=$(cd $GIT_DIR/../ ; pwd)
           env | grep GIT
-          echo ${self.git}/bin/git checkout -f --detach $newSHA
-          ${self.git}/bin/git checkout -f --detach $newSHA
+          echo ${self.git}/bin/git checkout -f master
+          ${self.git}/bin/git checkout -f master
           break
         done
       '';
