@@ -36,6 +36,7 @@ in
     ./common.nix
     ./ada.nix
     ./homebridge-module.nix
+    ./rss4email.nix
   ];
 
   boot.loader.grub.enable = false;
