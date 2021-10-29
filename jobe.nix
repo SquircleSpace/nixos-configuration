@@ -221,7 +221,7 @@ in
     home = "/var/empty";
     isSystemUser = true;
     openssh.authorizedKeys.keys = [
-      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDhrzdlK/9//pdTBMFpsfJIxO8/428hyoLfYd5HDmwj7ZUSSwKlJCDPPVzPOlK1U4VWy7hauVgw5UjIKKPtmg1IZjc9o7ADOVsYMz89NUchMzojX+oyMbnKcrFuTo0d7GMMksmtJAKT7Cwy7W3fjy/jBs0AKVISqIKx1/5/+jpWZvTxAQwUfcIn3mgMQcTBdrn7feWGh+wqqAkpRui8mbNKrEOuXex8Z1jGW3TSEi11NBUUs+i38mj70ScdnfaZIVWDWUekiOewWrSbagKKKcLZMsybI1+NuCY+PgdltNKaxgAaZdnSi6WMeRPmk4qn6ID3cVKeVsLEXJ8i+kp6xdA8fMIx+Loq+BaI1NhNJZl869ocb+T2NUYR4qaNyB/Am4ElYRzM6AbSUke6FCRuI5Eu7iHg03R1WzDfrLeKJSF6wadwU6d/W0sRIJCfI9VfH1d53VYp4OICN9Ep8bDuwroXWp1c+msZgnaFMokKl/rKIayGwmsFSZ5vMbPDgLrwRgE= ada@Jobe"
+      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCh6G74U+/DYTYiCxuxIJCg3VFmJogkJrxwQuFn7K4jMZoZBXq4wUvIL+cFi2mlpmBANhmkuKrohf3wIXUuvwmtSIGXfVDrYMoVdrm2gx+Pvo5FHysZA9qSn3KlSJa5Q/C51o7oP9yrmAuMJDdh+Acv+sBIw3JdR6qErwOEkJ02M5jwdF76cRm+xXU/jfObEcRBE/L73+MxZ2kXPzk7RlcsNfhzEDWe5SDMr2wGEygXUYENWdoS30DHCGiLHaXu5Ft/7SCJUVcrtciAVQvWwcb5OyESXo02T4QX7cTdBNhQhRb7HUFyPttESRby25t/VdEMpZ54R7QQGfHMfUv/FKW5mZ0rgYnMvnQarQs+75fjY0iBuUR/ZaPCwpZr2cnxFbK/JarhCDZMBRM/F28QgOr+UMi/BMO/Lp48orGRUdATc+lRlzv4S6QQRC6qTXySfL6yoxtPz8NHnBwp/1QVH+3xhgWZG/v5Icw1NZPTGu6N/T7hzKBigKJCiaBrwKd/iGk= ada@blues"
     ];
     useDefaultShell = true;
   };
