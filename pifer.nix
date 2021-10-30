@@ -36,6 +36,7 @@ in
     ./common.nix
     ./ada.nix
     ./homebridge-module.nix
+    ./rss4email.nix
   ];
 
   boot.loader.grub.enable = false;
@@ -121,59 +122,6 @@ in
       }
     '';
   };
-
-#   services.bitwarden_rs.enable = true;
-#   services.bitwarden_rs.config = {
-#     domain = "https://bw.squircle.space";
-#     signupsAllowed = false;
-#     invitationsAllowed = false;
-#     websocketPort = 3012;
-#     rocketPort = 8222;
-#     smtpHost = "smtp.dreamhost.com";
-#     smtpSsl = true;
-#     smtpExplicitTls = true;
-#     smtpPort = 465;
-#     smtpFrom = "bw@squircle.space";
-#     smtpFromName = "Bitwarden_RS";
-#     smtpPassword = "MXeQdbX3";
-#     smtpUsername = "bw@squircle.space";
-#   };
-#   services.nginx.virtualHosts."bw.squircle.space" = {
-#     forceSSL = true;
-#     enableACME = true;
-#     locations."/" = {
-#       proxyPass = "http://localhost:8222";
-#       proxyWebsockets = true;
-#       extraConfig = ''
-#         allow 192.168.0.0/16;
-#         allow 2601:0645:4000:0010::/64;
-# #        deny all;
-#       '';
-#     };
-#     locations."/notifications/hub" = {
-#       proxyPass = "http://localhost:3012";
-#       proxyWebsockets = true;
-#       extraConfig = ''
-#         allow 192.168.0.0/16;
-#         allow 2601:0645:4000:0010::/64;
-# #        deny all;
-#       '';
-#     };
-#     locations."/notifications/hub/negotiate" = {
-#       proxyPass = "http://localhost:8222";
-#       proxyWebsockets = true;
-#       extraConfig = ''
-#         allow 192.168.0.0/16;
-#         allow 2601:0645:4000:0010::/64;
-# #        deny all;
-#       '';
-#     };
-#     extraConfig = ''
-#       if ($host != "bw.squircle.space") {
-#         return 444;
-#       }
-#     '';
-#   };
 
   networking.firewall.allowedTCPPorts = [ 22 80 443 41177 8080 21064 ];
   networking.firewall.enable = true;
