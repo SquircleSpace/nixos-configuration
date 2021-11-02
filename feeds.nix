@@ -31,8 +31,6 @@ let
         "http://www.egscomics.com/egsnp/rss";
       "EGS Sketchbook" =
         "http://www.egscomics.com/sketchbook/rss";
-      "I want to be a cute anime girl" =
-        "https://www.webtoons.com/en/challenge/i-want-to-be-a-cute-anime-girl/rss?title_no=349416";
       "A Lesson Is Learned But The Damage Is Irreversible" =
         "http://www.kafsemo.org/rss/filters/live/http___www_alessonislearned_com_archive_php.rss";
       "Daily Life of Dia" =
