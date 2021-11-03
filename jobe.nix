@@ -165,6 +165,11 @@ in
     }
   ];
 
+  services.beesd.filesystems."crypt" = {
+    hashTableSizeMB = 4096;
+    spec = "/crypt";
+  };
+
   # For cross-compiling to ARM
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
   users.extraUsers.ada.extraGroups = [ "kvm" ];
