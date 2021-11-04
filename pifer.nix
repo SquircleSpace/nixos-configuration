@@ -135,10 +135,6 @@ in
     '';
   };
 
-  services.borgbackup.jobs."local" = mkBorgConfig {
-    repo = "borg@jobe.lan:main";
-  };
-
   services.borgbackup.jobs."rsync" = mkBorgConfig {
     repo = "7995@usw-s007.rsync.net:borg/pifer/main";
     environment = {
