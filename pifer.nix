@@ -45,6 +45,28 @@ in
   boot.loader.raspberryPi.uboot.configurationLimit = 3;
   boot.kernelPackages = pkgs.linuxPackages_rpi4;
 
+  fileSystems."/" = {
+    device = "/dev/disk/by-uuid/9d373950-72e0-44ab-9253-1bf37bc30edf";
+    fsType = "btrfs";
+    options = [ "subvolid=324" ];
+  };
+
+  fileSystems."/nix" = {
+    device = "/dev/disk/by-uuid/9d373950-72e0-44ab-9253-1bf37bc30edf";
+    fsType = "btrfs";
+    options = [ "subvolid=323" ];
+  };
+
+  fileSystems."/btrfs" = {
+    device = "/dev/disk/by-uuid/9d373950-72e0-44ab-9253-1bf37bc30edf";
+    fsType = "btrfs";
+  };
+
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/4A80-CA73";
+    fsType = "vfat";
+  };
+
   nix.gc.automatic = true;
   nix.gc.options = "--delete-older-than 21d";
   nix.gc.dates = "Mon *-*-* 00:03:15";
