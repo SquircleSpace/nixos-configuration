@@ -11,6 +11,7 @@ in
     ./ada.nix
     ./ssh.nix
     ./sasha.nix
+    ./photosync.nix
   ];
 
   # Hello!  My name is
