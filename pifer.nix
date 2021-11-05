@@ -48,13 +48,13 @@ in
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/9d373950-72e0-44ab-9253-1bf37bc30edf";
     fsType = "btrfs";
-    options = [ "subvolid=324" ];
+    options = [ "subvol=/root" ];
   };
 
   fileSystems."/nix" = {
     device = "/dev/disk/by-uuid/9d373950-72e0-44ab-9253-1bf37bc30edf";
     fsType = "btrfs";
-    options = [ "subvolid=323" ];
+    options = [ "subvol=/nix" ];
   };
 
   fileSystems."/btrfs" = {
