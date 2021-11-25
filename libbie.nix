@@ -81,7 +81,6 @@
   '';
 
   powerManagement.powertop.enable = true;
-  services.tlp.enable = true;
   networking.networkmanager.wifi.powersave = true;
 
   system.stateVersion = "21.05";
