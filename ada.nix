@@ -57,6 +57,10 @@ let
     okular
     yakuake
   ];
+  gnomePackages = with pkgs.gnome; [
+    gnome-tweak-tool
+    gnome-shell-extensions
+  ];
   isUI = config.services.xserver.enable;
   emacsPackage = with pkgs; if isUI then emacs else emacs-nox;
   optionalList = condition: list: if condition then list else [];
@@ -64,6 +68,7 @@ let
     nonUIPackages
     (optionalList isUI uiPackages)
     (optionalList config.services.xserver.desktopManager.plasma5.enable kdePackages)
+    (optionalList config.services.xserver.desktopManager.gnome.enable gnomePackages)
     [ emacsPackage ]
   ];
   groups = lib.flatten [
