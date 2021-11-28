@@ -61,7 +61,7 @@
   };
 
   swapDevices = [
-    { device = "/dev/disk/by-uuid/66f6b8d1-4760-4ac4-998e-26b5176c0682"; }
+    { device = "/dev/disk/by-uuid/c594e4ec-5d60-401b-b4ff-84a7c239cb92"; }
   ];
 
   networking.hostName = "Libbie";
