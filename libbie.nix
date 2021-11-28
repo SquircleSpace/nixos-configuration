@@ -86,6 +86,8 @@
   services.logind.lidSwitch = "suspend-then-hibernate";
   services.logind.lidSwitchDocked = "ignore";
   services.logind.lidSwitchExternalPower = "suspend";
+  services.upower.enable = true;
+  services.upower.criticalPowerAction = "HybridSleep";
 
   system.stateVersion = "21.05";
 
