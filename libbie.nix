@@ -83,6 +83,10 @@
   powerManagement.powertop.enable = true;
   networking.networkmanager.wifi.powersave = true;
 
+  services.logind.lidSwitch = "suspend-then-hibernate";
+  services.logind.lidSwitchDocked = "ignore";
+  services.logind.lidSwitchExternalPower = "suspend";
+
   system.stateVersion = "21.05";
 
   services.borgbackup.smartjobs."rsync" = {
