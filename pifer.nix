@@ -71,7 +71,7 @@ in
 
   i18n.defaultLocale = "en_US.UTF-8";
 
-  time.timeZone = "America/LosAngeles";
+  time.timeZone = "America/Los_Angeles";
 
   environment.systemPackages = with pkgs; [
     emacs-nox tmux rsync
