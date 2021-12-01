@@ -1,26 +1,5 @@
 { config, lib, pkgs, ... }:
 let
-  borgPasswordPath = "/var/lib/borg/password";
-  borgPrivateKeyPath = "/var/lib/borg/id_ed25519";
-  defaultBorgConfig = {
-    paths = [ "/var" "/etc" ];
-    exclude = [ "/var/log" ];
-    encryption.mode = "repokey";
-    encryption.passCommand = "cat ${borgPasswordPath}";
-    startAt = "daily";
-    environment = {
-      "BORG_RSH" = "ssh -i ${borgPrivateKeyPath}";
-    };
-    prune.keep = {
-      within = "1d"; # Keep all archives from the last day
-      daily = 14;
-      weekly = 26;
-      monthly = 6;
-      yearly = 5;
-    };
-  };
-  mkBorgConfig = overrides: lib.recursiveUpdate defaultBorgConfig overrides;
-
   postSensor = pkgs.writeScript "postSensor" ''
     
   '';
@@ -44,6 +23,28 @@ in
   boot.loader.raspberryPi.version = 4;
   boot.loader.raspberryPi.uboot.configurationLimit = 3;
   boot.kernelPackages = pkgs.linuxPackages_rpi4;
+
+  fileSystems."/" = {
+    device = "/dev/disk/by-uuid/9d373950-72e0-44ab-9253-1bf37bc30edf";
+    fsType = "btrfs";
+    options = [ "subvol=/root" ];
+  };
+
+  fileSystems."/nix" = {
+    device = "/dev/disk/by-uuid/9d373950-72e0-44ab-9253-1bf37bc30edf";
+    fsType = "btrfs";
+    options = [ "subvol=/nix" ];
+  };
+
+  fileSystems."/btrfs" = {
+    device = "/dev/disk/by-uuid/9d373950-72e0-44ab-9253-1bf37bc30edf";
+    fsType = "btrfs";
+  };
+
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/4A80-CA73";
+    fsType = "vfat";
+  };
 
   nix.gc.automatic = true;
   nix.gc.options = "--delete-older-than 21d";
@@ -70,7 +71,7 @@ in
 
   i18n.defaultLocale = "en_US.UTF-8";
 
-  time.timeZone = "America/LosAngeles";
+  time.timeZone = "America/Los_Angeles";
 
   environment.systemPackages = with pkgs; [
     emacs-nox tmux rsync
@@ -135,21 +136,16 @@ in
     '';
   };
 
-  services.borgbackup.jobs."local" = mkBorgConfig {
-    repo = "borg@jobe.lan:main";
+  services.borgbackup.smartjobs."rsync" = {
+    paths = ["/var" "/etc"];
+    exclude = [ "/var/log" ];
+    subvolumes = [ "/" ];
+    server = import ./server-rsync.net.nix;
+    repoName = "borg/pifer/main";
+    privateKeyPath = "/var/lib/borg/id_ed25519";
+    passwordPath = "/var/lib/borg/password";
+    snapshotPath = "/btrfs/snapshots/backup";
   };
-
-  services.borgbackup.jobs."rsync" = mkBorgConfig {
-    repo = "7995@usw-s007.rsync.net:borg/pifer/main";
-    environment = {
-      "BORG_REMOTE_PATH" = "borg1";
-    };
-  };
-
-  system.activationScripts."Protect borg password" = ''
-    chown -R root:root /var/lib/borg
-    chmod -R go-rwx /var/lib/borg
-  '';
 
   services.home-assistant.enable = true;
   services.home-assistant.openFirewall = true;

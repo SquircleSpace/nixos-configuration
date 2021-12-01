@@ -26,27 +26,27 @@
 
   boot.initrd.luks.devices.crypted = {
     allowDiscards = true;
-    device = "/dev/disk/by-uuid/66df9155-0a7a-420c-b2df-1cbe9120c232";
+    device = "/dev/disk/by-uuid/e6c8ba08-a85b-483f-bd1b-0b2452f7cfef";
     preLVM = true;
   };
 
   fileSystems."/" = {
-    device = "/dev/disk/by-uuid/2ff8a826-b407-4ae5-b371-2e040216a9e0";
+    device = "/dev/disk/by-uuid/e901b8a1-c8da-49e9-a868-3043bea918e9";
     fsType = "btrfs";
     options = [ "subvol=/subvolumes/root" "discard" "noatime" ];
   };
   fileSystems."/home" = {
-    device = "/dev/disk/by-uuid/2ff8a826-b407-4ae5-b371-2e040216a9e0";
+    device = "/dev/disk/by-uuid/e901b8a1-c8da-49e9-a868-3043bea918e9";
     fsType = "btrfs";
     options = [ "subvol=/subvolumes/home" "discard" "noatime" ];
   };
   fileSystems."/nix" = {
-    device = "/dev/disk/by-uuid/2ff8a826-b407-4ae5-b371-2e040216a9e0";
+    device = "/dev/disk/by-uuid/e901b8a1-c8da-49e9-a868-3043bea918e9";
     fsType = "btrfs";
     options = [ "subvol=/subvolumes/nix" "discard" "noatime" ];
   };
   fileSystems."/btrfs" = {
-    device = "/dev/disk/by-uuid/2ff8a826-b407-4ae5-b371-2e040216a9e0";
+    device = "/dev/disk/by-uuid/e901b8a1-c8da-49e9-a868-3043bea918e9";
     fsType = "btrfs";
     options = [ "discard" "noatime" ];
   };
@@ -56,12 +56,12 @@
   };
 
   fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/7C33-E4CC";
+    device = "/dev/disk/by-uuid/B1BE-2BE0";
     fsType = "vfat";
   };
 
   swapDevices = [
-    { device = "/dev/disk/by-uuid/fb60397a-f288-408e-b6ad-5ecb95fb7534"; }
+    { device = "/dev/disk/by-uuid/c594e4ec-5d60-401b-b4ff-84a7c239cb92"; }
   ];
 
   networking.hostName = "Libbie";
@@ -81,8 +81,13 @@
   '';
 
   powerManagement.powertop.enable = true;
-  services.tlp.enable = true;
   networking.networkmanager.wifi.powersave = true;
+
+  services.logind.lidSwitch = "suspend-then-hibernate";
+  services.logind.lidSwitchDocked = "ignore";
+  services.logind.lidSwitchExternalPower = "suspend";
+  services.upower.enable = true;
+  services.upower.criticalPowerAction = "HybridSleep";
 
   system.stateVersion = "21.05";
 

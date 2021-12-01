@@ -175,16 +175,6 @@ in
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
   users.extraUsers.ada.extraGroups = [ "kvm" ];
 
-  services.borgbackup.repos.pifer = {
-    allowSubRepos = true;
-    authorizedKeysAppendOnly = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINKi5JMv0RCL4XLdTkACef/dgQdkVgVOoUdTcoCGD3ww ada@squircle.space"
-    ];
-    path = "/crypt/borg/pifer";
-    user = "borg";
-  };
-  users.extraUsers.borg.isSystemUser = true;
-
   services.borgbackup.smartjobs."rsync" = {
     paths = [ "/home/ada" "/crypt/photos" ];
     subvolumes = [ "/home" "/crypt/photos" ];
