@@ -45,14 +45,9 @@ in
 
   powerManagement.cpuFreqGovernor = "ondemand";
 
-  services.wakeonlan.interfaces = [
-    {
-      interface = "eno1";
-      method = "magicpacket";
-    }
-  ];
+  networking.interfaces.eno1.wakeOnLan.enable = true;
 
-  system.stateVersion = "21.05";
+  system.stateVersion = "21.11";
 
   boot.initrd.luks.reusePassphrases = true;
 
@@ -139,6 +134,7 @@ in
     boot-windows = {
       source = "${boot-windows}/bin/boot-windows";
       owner = "root";
+      group = "root";
       setuid = true;
     };
   };
@@ -197,7 +193,10 @@ in
       ''command="/run/wrappers/bin/doas ${pkgs.systemd}/bin/systemctl suspend" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAbpjRKHraUCNHijRzHdPQI6XmgfT0Gj/TlXQ6pcYbOY root@pifer''
     ];
     useDefaultShell = true;
+    group = "command";
   };
+  users.groups.command = {};
+
   security.doas.extraRules = [
     {
       users = ["command"];

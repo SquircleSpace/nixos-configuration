@@ -22,7 +22,7 @@
         ];
       });
     in {
-      nixosConfigurations.Jobe = nixosSystem nixpkgs2105 {
+      nixosConfigurations.Jobe = nixosSystem nixpkgs2111 {
         system = "x86_64-linux";
         modules = [
           ./jobe.nix
