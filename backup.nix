@@ -64,8 +64,8 @@ let
       };
       startAt = mkOption {
         type = str;
-        example = "daily";
-        default = "weekly";
+        example = "weekly";
+        default = "daily";
         description = "When to initiate the backup expressed as a systemd timer string.";
       };
       privateKeyPath = mkOption {
