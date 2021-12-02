@@ -113,7 +113,7 @@ in
   services.nextcloud.config.overwriteProtocol = "https";
   services.nextcloud.hostName = "cloud.squircle.space";
   services.nextcloud.autoUpdateApps.enable = true;
-  services.nextcloud.package = pkgs.nextcloud21;
+  services.nextcloud.package = pkgs.nextcloud22;
   services.nginx.virtualHosts."cloud.squircle.space" = {
     forceSSL = true;
     enableACME = true;
@@ -153,7 +153,7 @@ in
   services.home-assistant.lovelaceConfigWritable = true;
   services.home-assistant.package = (pkgs.home-assistant.override {
     extraComponents = [
-      "apple_tv"
+      # "apple_tv" # Tests seem to be failing on NixOS 21.11 for now.  I wasn't using it anyway.
       "automation"
       "default_config"
       "ffmpeg"
