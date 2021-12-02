@@ -79,11 +79,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1637765285,
-        "narHash": "sha256-T35QOOhrhPQ/pOUQrjrwwiihOTMALicXonpU47Wpf4M=",
+        "lastModified": 1638391648,
+        "narHash": "sha256-b+K+6zSbJ7uTPeKhY3lu2DoP9uc79oXeS1wW7guwXRY=",
         "owner": "NixOS",
         "repo": "nix",
-        "rev": "d58f149140582330bc994d215e54b2a4fc1149ff",
+        "rev": "782837d9345b70023c682a177c074333d1cb7baa",
         "type": "github"
       },
       "original": {
@@ -107,6 +107,38 @@
         "type": "indirect"
       }
     },
+    "nixpkgs2105": {
+      "locked": {
+        "lastModified": 1638196344,
+        "narHash": "sha256-fkOqSkfOkl8tqxDd+zJU4kAgyLXp/ouaP+U9gpjEZZs=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "2553aee74fed8c2205a4aeb3ffd206ca14ede60f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-21.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs2111": {
+      "locked": {
+        "lastModified": 1638371214,
+        "narHash": "sha256-0kE6KhgH7n0vyuX4aUoGsGIQOqjIx2fJavpCWtn73rc=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "a640d8394f34714578f3e6335fc767d0755d78f9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-21.11",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs_2": {
       "locked": {
         "lastModified": 1632864508,
@@ -122,34 +154,19 @@
         "type": "indirect"
       }
     },
-    "nixpkgs_3": {
-      "locked": {
-        "lastModified": 1637615379,
-        "narHash": "sha256-wL5+nm7z+42IHyhc52P3aAj1Kp2fQ6C8IyPBihj7Bjg=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "09650059d7f5ae59a7f0fb2dd3bfc6d2042a74de",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "nixos-21.05",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
         "dwarffs": "dwarffs",
         "nix": "nix_2",
-        "nixpkgs": "nixpkgs_3",
+        "nixpkgs2105": "nixpkgs2105",
+        "nixpkgs2111": "nixpkgs2111",
         "rss4email": "rss4email"
       }
     },
     "rss4email": {
       "inputs": {
         "nixpkgs": [
-          "nixpkgs"
+          "nixpkgs2105"
         ]
       },
       "locked": {
