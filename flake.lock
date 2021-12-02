@@ -79,11 +79,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1638391648,
-        "narHash": "sha256-b+K+6zSbJ7uTPeKhY3lu2DoP9uc79oXeS1wW7guwXRY=",
+        "lastModified": 1638447470,
+        "narHash": "sha256-DREkiGilBlNzBqonvVrIBNSsYWv1PZuvfXFhaSGeXsM=",
         "owner": "NixOS",
         "repo": "nix",
-        "rev": "782837d9345b70023c682a177c074333d1cb7baa",
+        "rev": "2ff71b021379a2c9bbdcb789a93cdc585b3520ca",
         "type": "github"
       },
       "original": {
@@ -105,22 +105,6 @@
         "id": "nixpkgs",
         "ref": "nixos-20.09-small",
         "type": "indirect"
-      }
-    },
-    "nixpkgs2105": {
-      "locked": {
-        "lastModified": 1638196344,
-        "narHash": "sha256-fkOqSkfOkl8tqxDd+zJU4kAgyLXp/ouaP+U9gpjEZZs=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "2553aee74fed8c2205a4aeb3ffd206ca14ede60f",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "nixos-21.05",
-        "repo": "nixpkgs",
-        "type": "github"
       }
     },
     "nixpkgs2111": {
@@ -158,7 +142,6 @@
       "inputs": {
         "dwarffs": "dwarffs",
         "nix": "nix_2",
-        "nixpkgs2105": "nixpkgs2105",
         "nixpkgs2111": "nixpkgs2111",
         "rss4email": "rss4email"
       }
@@ -166,15 +149,15 @@
     "rss4email": {
       "inputs": {
         "nixpkgs": [
-          "nixpkgs2105"
+          "nixpkgs2111"
         ]
       },
       "locked": {
-        "lastModified": 1635014312,
-        "narHash": "sha256-QcJKmx7DVtOqEcAvEk8PDTTykEk8yWdZYDXtaZ1Epq0=",
+        "lastModified": 1638437706,
+        "narHash": "sha256-5HooGe6H+JVLZ+zp0C//8GxLTBeIN8JQowcfQuWhrEU=",
         "owner": "SquircleSpace",
         "repo": "rss4email",
-        "rev": "d37f4714026f5a3b68654f19da483cbc99af92c7",
+        "rev": "8e65c178ccf6aa65b6c556b98805fdfa657e79ca",
         "type": "github"
       },
       "original": {
