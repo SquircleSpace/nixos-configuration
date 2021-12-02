@@ -153,7 +153,7 @@ in
   services.home-assistant.lovelaceConfigWritable = true;
   services.home-assistant.package = (pkgs.home-assistant.override {
     extraComponents = [
-      "apple_tv"
+      # "apple_tv" # Tests seem to be failing on NixOS 21.11 for now.  I wasn't using it anyway.
       "automation"
       "default_config"
       "ffmpeg"
