@@ -4,6 +4,7 @@
       "inputs": {
         "nix": "nix",
         "nixpkgs": [
+          "dwarffs",
           "nix",
           "nixpkgs"
         ]
@@ -78,11 +79,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1638447470,
-        "narHash": "sha256-DREkiGilBlNzBqonvVrIBNSsYWv1PZuvfXFhaSGeXsM=",
+        "lastModified": 1638912280,
+        "narHash": "sha256-o08m5Da1jES1H5qDczHZrppcH/VG8JvMbVqRdygE4CM=",
         "owner": "NixOS",
         "repo": "nix",
-        "rev": "2ff71b021379a2c9bbdcb789a93cdc585b3520ca",
+        "rev": "167e864697ecfb7ce20faa02c01d000696d3d425",
         "type": "github"
       },
       "original": {
@@ -108,11 +109,11 @@
     },
     "nixpkgs2111": {
       "locked": {
-        "lastModified": 1638371214,
-        "narHash": "sha256-0kE6KhgH7n0vyuX4aUoGsGIQOqjIx2fJavpCWtn73rc=",
+        "lastModified": 1638887115,
+        "narHash": "sha256-emjtIeqyJ84Eb3X7APJruTrwcfnHQKs55XGljj62prs=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "a640d8394f34714578f3e6335fc767d0755d78f9",
+        "rev": "1bd4bbd49bef217a3d1adea43498270d6e779d65",
         "type": "github"
       },
       "original": {
