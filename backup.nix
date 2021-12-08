@@ -1,5 +1,10 @@
 { config, pkgs, lib, ... }:
 let
+  cleanup = pkgs.writeScript "btrfs-cleanup" ''
+    #! ${pkgs.bash}/bin/bash
+    PATH="${pkgs.btrfs-progs}/bin/:$PATH"
+    . ${./btrfs-cleanup.sh}
+  '';
   dirname = path: let
     parts = lib.splitString "/" (assert (lib.assertMsg (path != "") "Path cannot be empty"); path);
     head = lib.head parts;
@@ -152,7 +157,7 @@ let
       fi
 
       if [ -d "$SNAPSHOT_PATH" ]; then
-        rm -rdf "$SNAPSHOT_PATH"
+        ${cleanup} "$SNAPSHOT_PATH" || exit $?
       elif [ -e "$SNAPSHOT_PATH" ]; then
         echo "$SNAPSHOT_PATH already exists but isn't a directory!" >&2
         exit 1
