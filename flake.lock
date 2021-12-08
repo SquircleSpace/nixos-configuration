@@ -4,9 +4,7 @@
       "inputs": {
         "nix": "nix",
         "nixpkgs": [
-          "dwarffs",
-          "nix",
-          "nixpkgs"
+          "nixpkgs2111"
         ]
       },
       "locked": {
