@@ -148,7 +148,10 @@ in
     wine
     (import ./minecraft.nix { inherit pkgs; })
   ];
-  users.extraUsers.ada.openssh.authorizedKeys.keyFiles = [ ./libbie.pub ];
+  users.extraUsers.ada.openssh.authorizedKeys.keyFiles = [
+    ./libbie.pub
+    ./phone.pub
+  ];
 
   programs.steam.enable = true;
   programs.steam.remotePlay.openFirewall = true;
