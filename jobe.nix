@@ -148,7 +148,10 @@ in
     wine
     (import ./minecraft.nix { inherit pkgs; })
   ];
-  users.extraUsers.ada.openssh.authorizedKeys.keyFiles = [ ./libbie.pub ];
+  users.extraUsers.ada.openssh.authorizedKeys.keyFiles = [
+    ./libbie.pub
+    ./phone.pub
+  ];
 
   programs.steam.enable = true;
   programs.steam.remotePlay.openFirewall = true;
@@ -162,11 +165,6 @@ in
       device = "/dev/disk/by-uuid/d82294ec-e7fb-4225-b6d0-9296dba8a23b";
     }
   ];
-
-  services.beesd.filesystems."crypt" = {
-    hashTableSizeMB = 4096;
-    spec = "/crypt";
-  };
 
   # For cross-compiling to ARM
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
