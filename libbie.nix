@@ -98,6 +98,8 @@
       "/home/ada/.cache"
       "/home/ada/Downloads"
       "/home/ada/.local/share/Steam"
+      "/home/ada/.local/share/flatpak"
+      "/home/ada/.var/app/com.valvesoftware.Steam/.steam"
     ];
     server = import ./server-rsync.net.nix;
     repoName = "borg/libbie/main";
