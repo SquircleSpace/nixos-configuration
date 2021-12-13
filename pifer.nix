@@ -96,7 +96,7 @@ in
 
   users.users.ada = {
     uid = 1000;
-    openssh.authorizedKeys.keyFiles = [ ./ada-pubkey ./phone-pubkey ./libbie.pub ];
+    openssh.authorizedKeys.keyFiles = [ ./jobe.pub ./phone.pub ./libbie.pub ];
   };
 
   system.stateVersion = "20.09";
