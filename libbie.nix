@@ -83,7 +83,7 @@
   powerManagement.powertop.enable = true;
   networking.networkmanager.wifi.powersave = true;
 
-  services.logind.lidSwitch = "suspend-then-hibernate";
+  services.logind.lidSwitch = "suspend";
   services.logind.lidSwitchDocked = "ignore";
   services.logind.lidSwitchExternalPower = "suspend";
   services.upower.enable = true;
