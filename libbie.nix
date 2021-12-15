@@ -83,7 +83,7 @@
   powerManagement.powertop.enable = true;
   networking.networkmanager.wifi.powersave = true;
 
-  services.logind.lidSwitch = "suspend-then-hibernate";
+  services.logind.lidSwitch = "suspend";
   services.logind.lidSwitchDocked = "ignore";
   services.logind.lidSwitchExternalPower = "suspend";
   services.upower.enable = true;
@@ -98,6 +98,8 @@
       "/home/ada/.cache"
       "/home/ada/Downloads"
       "/home/ada/.local/share/Steam"
+      "/home/ada/.local/share/flatpak"
+      "/home/ada/.var/app/com.valvesoftware.Steam/.steam"
     ];
     server = import ./server-rsync.net.nix;
     repoName = "borg/libbie/main";
@@ -112,7 +114,6 @@
   hardware.pulseaudio.support32Bit = true;
 
   users.extraUsers.ada.packages = with pkgs; [
-    discord
     steam.run
     wine
   ];
@@ -126,6 +127,7 @@
   documentation.dev.enable = true;
   documentation.man.generateCaches = true;
 
-  programs.steam.enable = true;
   hardware.steam-hardware.enable = true;
+
+  services.flatpak.enable = true;
 }
