@@ -122,6 +122,7 @@ let
   mkTimerConfig = name: cfg: lib.nameValuePair "borgbackup-job-${name}" {
     timerConfig.Persistent = true;
   };
+  snapshotsRootDirectory = cfg: lib.any (x: x == "/") cfg.subvolumes;
   mkBorgbackupJob = name: cfg: lib.nameValuePair name {
     repo = "${cfg.server.user}@${cfg.server.hostname}:${cfg.repoName}";
     startAt = cfg.startAt;
@@ -149,6 +150,22 @@ let
         [ "$(stat -f --format="%T" "$1")" == "btrfs" ] && [ "$(stat --format="%i" "$1")" == "256" ]
       }
 
+      capture() {
+        SUBVOL_PATH="$1"
+        echo >&2 "Capturing $SUBVOL_PATH"
+        if ! is_subvolume "$SUBVOL_PATH"; then
+          echo "$SUBVOL_PATH is not a subvolume!  Refusing to proceed." >&2
+          exit 1
+        fi
+        mkdir -p "$(dirname "$SNAPSHOT_PATH/$SUBVOL_PATH")"
+        ${pkgs.btrfs-progs}/bin/btrfs subvolume snapshot "$SUBVOL_PATH" "$SNAPSHOT_PATH/$SUBVOL_PATH"
+      }
+
+      seal() {
+        echo >&2 "Sealing $SNAPSHOT_PATH/$1"
+        ${pkgs.btrfs-progs}/bin/btrfs property set -t subvol "$SNAPSHOT_PATH/$1" ro true
+      }
+
       SNAPSHOT_PATH=${shellQuote cfg.snapshotPath}
       SNAPSHOT_PATH_DIRNAME="$(dirname "$SNAPSHOT_PATH")"
       SNAPSHOT_PATH_BASENAME="$(basename "$SNAPSHOT_PATH")"
@@ -156,35 +173,38 @@ let
         exit 1
       fi
 
-      if [ -d "$SNAPSHOT_PATH" ]; then
+      if is_subvolume "$SNAPSHOT_PATH"; then
+        echo >&2 "Cleaning up $SNAPSHOT_PATH"
         ${cleanup} "$SNAPSHOT_PATH" || exit $?
       elif [ -e "$SNAPSHOT_PATH" ]; then
-        echo "$SNAPSHOT_PATH already exists but isn't a directory!" >&2
+        echo "$SNAPSHOT_PATH already exists but isn't a snapshot!" >&2
         exit 1
       fi
 
       # TODO: Verify subvol path doesn't include /../
       BACKUP_TIME="$(date --rfc-3339=seconds)"
 
+      ${lib.optionalString (! snapshotsRootDirectory cfg) ''
+        # Set up a root subvol for this backup
+        ${pkgs.btrfs-progs}/bin/btrfs subvolume create "$SNAPSHOT_PATH"
+      ''}
+
       # Create snapshots
     '' +
     (lib.concatMapStrings (subvol: ''
-      SUBVOL_PATH=${shellQuote subvol}
-      if ! is_subvolume "$SUBVOL_PATH"; then
-        echo "$SUBVOL_PATH is not a subvolume!  Refusing to proceed." >&2
-        exit 1
-      fi
-      mkdir -p "$(dirname "$SNAPSHOT_PATH"/"$SUBVOL_PATH")"
-      ${pkgs.btrfs-progs}/bin/btrfs subvolume snapshot "$SUBVOL_PATH" "$SNAPSHOT_PATH"/"$SUBVOL_PATH"
-    '') (lib.sort (x: y: x < y) cfg.subvolumes));
+      capture ${shellQuote subvol}
+    '') (lib.sort (x: y: x < y) cfg.subvolumes)) + ''
+
+      # Seal snapshots
+    '' + (lib.concatMapStrings (subvol: ''
+      seal ${shellQuote subvol}
+    '') (lib.sort (x: y: x > y) cfg.subvolumes)) +
+    (lib.optionalString (! snapshotsRootDirectory cfg) ''
+      seal /
+    '');
 
     postHook = ''
       if [ $exitStatus = 0 ]; then
-    '' +
-    (lib.concatMapStrings (subvol: ''
-        SUBVOL_PATH=${shellQuote subvol}
-        ${pkgs.btrfs-progs}/bin/btrfs property set -t subvol "$SNAPSHOT_PATH"/"$SUBVOL_PATH" ro true
-    '') (lib.sort (x: y: x > y) cfg.subvolumes)) + ''
         mv "$SNAPSHOT_PATH" "$SNAPSHOT_PATH_DIRNAME"/"$BACKUP_TIME"."$SNAPSHOT_PATH_BASENAME"
       fi
     '';
