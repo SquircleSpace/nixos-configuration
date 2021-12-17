@@ -1,10 +1,16 @@
 { config, pkgs, lib, ... }:
 let
-  cleanup = pkgs.writeScript "btrfs-cleanup" ''
-    #! ${pkgs.bash}/bin/bash
-    PATH="${pkgs.btrfs-progs}/bin/:$PATH"
-    . ${./btrfs-cleanup.sh}
-  '';
+  cleanup = pkgs.stdenv.mkDerivation {
+    name = "btrfs-subvolume-cleanup";
+    version = "1.0.0";
+    unpackPhase = "true";
+    buildPhase = "true";
+    buildInputs = [ pkgs.makeWrapper ];
+    installPhase = ''
+      mkdir -p $out/bin
+      makeWrapper ${./btrfs-cleanup.sh} $out/bin/btrfs-subvolume-cleanup --prefix PATH : "${pkgs.btrfs-progs}/bin"
+    '';
+  };
   dirname = path: let
     parts = lib.splitString "/" (assert (lib.assertMsg (path != "") "Path cannot be empty"); path);
     head = lib.head parts;
@@ -212,5 +218,6 @@ in
     system.activationScripts = lib.mapAttrs' mkActivationScript config.services.borgbackup.smartjobs;
     programs.ssh.knownHosts = lib.mapAttrs' mkKnownHosts config.services.borgbackup.smartjobs;
     systemd.timers = lib.mapAttrs' mkTimerConfig config.services.borgbackup.smartjobs;
+    environment.systemPackages = [ cleanup ];
   };
 }
