@@ -1,10 +1,16 @@
 { config, pkgs, lib, ... }:
 let
-  cleanup = pkgs.writeScript "btrfs-cleanup" ''
-    #! ${pkgs.bash}/bin/bash
-    PATH="${pkgs.btrfs-progs}/bin/:$PATH"
-    . ${./btrfs-cleanup.sh}
-  '';
+  cleanup = pkgs.stdenv.mkDerivation {
+    name = "btrfs-subvolume-cleanup";
+    version = "1.0.0";
+    unpackPhase = "true";
+    buildPhase = "true";
+    buildInputs = [ pkgs.makeWrapper ];
+    installPhase = ''
+      mkdir -p $out/bin
+      makeWrapper ${./btrfs-cleanup.sh} $out/bin/btrfs-subvolume-cleanup --prefix PATH : "${pkgs.btrfs-progs}/bin"
+    '';
+  };
   dirname = path: let
     parts = lib.splitString "/" (assert (lib.assertMsg (path != "") "Path cannot be empty"); path);
     head = lib.head parts;
@@ -122,6 +128,7 @@ let
   mkTimerConfig = name: cfg: lib.nameValuePair "borgbackup-job-${name}" {
     timerConfig.Persistent = true;
   };
+  snapshotsRootDirectory = cfg: lib.any (x: x == "/") cfg.subvolumes;
   mkBorgbackupJob = name: cfg: lib.nameValuePair name {
     repo = "${cfg.server.user}@${cfg.server.hostname}:${cfg.repoName}";
     startAt = cfg.startAt;
@@ -140,53 +147,63 @@ let
       yearly = 5;
     };
 
-    paths = map (p: "${cfg.snapshotPath}/${p}") cfg.paths;
+    paths = map (p: "./${p}") cfg.paths;
     readWritePaths = [ (dirname cfg.snapshotPath) ];
-    exclude = map (p: "${cfg.snapshotPath}/${p}") cfg.exclude;
+    exclude = map (p: "./${p}") cfg.exclude;
 
     preHook = ''
       is_subvolume() {
-        [ "$(stat -f --format="%T" "$1")" == "btrfs" ] && [ "$(stat --format="%i" "$1")" == "256" ]
+        [ -e "$1" ] && [ "$(stat -f --format="%T" "$1")" == "btrfs" ] && [ "$(stat --format="%i" "$1")" == "256" ]
       }
 
-      SNAPSHOT_PATH=${shellQuote cfg.snapshotPath}
-      SNAPSHOT_PATH_DIRNAME="$(dirname "$SNAPSHOT_PATH")"
-      SNAPSHOT_PATH_BASENAME="$(basename "$SNAPSHOT_PATH")"
-      if ! ${checkSnapshotPathIsSafe} "$SNAPSHOT_PATH_DIRNAME"; then
-        exit 1
-      fi
+      capture() {
+        SUBVOL_PATH="$1"
+        echo >&2 "Capturing $SUBVOL_PATH"
+        if ! is_subvolume "$SUBVOL_PATH"; then
+          echo "$SUBVOL_PATH is not a subvolume!  Refusing to proceed." >&2
+          exit 1
+        fi
+        mkdir -p "$(dirname "$SNAPSHOT_PATH/$SUBVOL_PATH")"
+        ${pkgs.btrfs-progs}/bin/btrfs subvolume snapshot "$SUBVOL_PATH" "$SNAPSHOT_PATH/$SUBVOL_PATH"
+      }
 
-      if [ -d "$SNAPSHOT_PATH" ]; then
-        ${cleanup} "$SNAPSHOT_PATH" || exit $?
-      elif [ -e "$SNAPSHOT_PATH" ]; then
-        echo "$SNAPSHOT_PATH already exists but isn't a directory!" >&2
+      seal() {
+        echo >&2 "Sealing $SNAPSHOT_PATH/$1"
+        ${pkgs.btrfs-progs}/bin/btrfs property set -t subvol "$SNAPSHOT_PATH/$1" ro true
+      }
+
+      SNAPSHOT_PATH=${shellQuote cfg.snapshotPath}/"$(date --rfc-3339=seconds)"
+      mkdir -p "$(dirname "$SNAPSHOT_PATH")"
+      ${checkSnapshotPathIsSafe} "$(dirname "$SNAPSHOT_PATH")" || exit $?
+
+      if [ -e "$SNAPSHOT_PATH" ]; then
+        echo "$SNAPSHOT_PATH already exists!" >&2
         exit 1
       fi
 
       # TODO: Verify subvol path doesn't include /../
-      BACKUP_TIME="$(date --rfc-3339=seconds)"
+
+      ${lib.optionalString (! snapshotsRootDirectory cfg) ''
+        # Set up a root subvol for this backup
+        ${pkgs.btrfs-progs}/bin/btrfs subvolume create "$SNAPSHOT_PATH"
+      ''}
 
       # Create snapshots
     '' +
     (lib.concatMapStrings (subvol: ''
-      SUBVOL_PATH=${shellQuote subvol}
-      if ! is_subvolume "$SUBVOL_PATH"; then
-        echo "$SUBVOL_PATH is not a subvolume!  Refusing to proceed." >&2
-        exit 1
-      fi
-      mkdir -p "$(dirname "$SNAPSHOT_PATH"/"$SUBVOL_PATH")"
-      ${pkgs.btrfs-progs}/bin/btrfs subvolume snapshot "$SUBVOL_PATH" "$SNAPSHOT_PATH"/"$SUBVOL_PATH"
-    '') (lib.sort (x: y: x < y) cfg.subvolumes));
+      capture ${shellQuote subvol}
+    '') (lib.sort (x: y: x < y) cfg.subvolumes)) + ''
 
-    postHook = ''
-      if [ $exitStatus = 0 ]; then
-    '' +
-    (lib.concatMapStrings (subvol: ''
-        SUBVOL_PATH=${shellQuote subvol}
-        ${pkgs.btrfs-progs}/bin/btrfs property set -t subvol "$SNAPSHOT_PATH"/"$SUBVOL_PATH" ro true
-    '') (lib.sort (x: y: x > y) cfg.subvolumes)) + ''
-        mv "$SNAPSHOT_PATH" "$SNAPSHOT_PATH_DIRNAME"/"$BACKUP_TIME"."$SNAPSHOT_PATH_BASENAME"
-      fi
+      # Seal snapshots
+    '' + (lib.concatMapStrings (subvol: ''
+      seal ${shellQuote subvol}
+    '') (lib.sort (x: y: x > y) cfg.subvolumes)) +
+    (lib.optionalString (! snapshotsRootDirectory cfg) ''
+      seal /
+    '') + ''
+
+      # Move into the backup directory so we can use relative paths for backup
+      cd "$SNAPSHOT_PATH"
     '';
   };
 in
@@ -201,5 +218,6 @@ in
     system.activationScripts = lib.mapAttrs' mkActivationScript config.services.borgbackup.smartjobs;
     programs.ssh.knownHosts = lib.mapAttrs' mkKnownHosts config.services.borgbackup.smartjobs;
     systemd.timers = lib.mapAttrs' mkTimerConfig config.services.borgbackup.smartjobs;
+    environment.systemPackages = [ cleanup ];
   };
 }
