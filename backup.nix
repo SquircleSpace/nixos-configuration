@@ -141,13 +141,13 @@ let
       yearly = 5;
     };
 
-    paths = map (p: "${cfg.snapshotPath}/${p}") cfg.paths;
+    paths = map (p: "./${p}") cfg.paths;
     readWritePaths = [ (dirname cfg.snapshotPath) ];
-    exclude = map (p: "${cfg.snapshotPath}/${p}") cfg.exclude;
+    exclude = map (p: "./${p}") cfg.exclude;
 
     preHook = ''
       is_subvolume() {
-        [ "$(stat -f --format="%T" "$1")" == "btrfs" ] && [ "$(stat --format="%i" "$1")" == "256" ]
+        [ -e "$1" ] && [ "$(stat -f --format="%T" "$1")" == "btrfs" ] && [ "$(stat --format="%i" "$1")" == "256" ]
       }
 
       capture() {
@@ -166,23 +166,16 @@ let
         ${pkgs.btrfs-progs}/bin/btrfs property set -t subvol "$SNAPSHOT_PATH/$1" ro true
       }
 
-      SNAPSHOT_PATH=${shellQuote cfg.snapshotPath}
-      SNAPSHOT_PATH_DIRNAME="$(dirname "$SNAPSHOT_PATH")"
-      SNAPSHOT_PATH_BASENAME="$(basename "$SNAPSHOT_PATH")"
-      if ! ${checkSnapshotPathIsSafe} "$SNAPSHOT_PATH_DIRNAME"; then
-        exit 1
-      fi
+      SNAPSHOT_PATH=${shellQuote cfg.snapshotPath}/"$(date --rfc-3339=seconds)"
+      mkdir -p "$(dirname "$SNAPSHOT_PATH")"
+      ${checkSnapshotPathIsSafe} "$(dirname "$SNAPSHOT_PATH")" || exit $?
 
-      if is_subvolume "$SNAPSHOT_PATH"; then
-        echo >&2 "Cleaning up $SNAPSHOT_PATH"
-        ${cleanup} "$SNAPSHOT_PATH" || exit $?
-      elif [ -e "$SNAPSHOT_PATH" ]; then
-        echo "$SNAPSHOT_PATH already exists but isn't a snapshot!" >&2
+      if [ -e "$SNAPSHOT_PATH" ]; then
+        echo "$SNAPSHOT_PATH already exists!" >&2
         exit 1
       fi
 
       # TODO: Verify subvol path doesn't include /../
-      BACKUP_TIME="$(date --rfc-3339=seconds)"
 
       ${lib.optionalString (! snapshotsRootDirectory cfg) ''
         # Set up a root subvol for this backup
@@ -201,12 +194,10 @@ let
     '') (lib.sort (x: y: x > y) cfg.subvolumes)) +
     (lib.optionalString (! snapshotsRootDirectory cfg) ''
       seal /
-    '');
+    '') + ''
 
-    postHook = ''
-      if [ $exitStatus = 0 ]; then
-        mv "$SNAPSHOT_PATH" "$SNAPSHOT_PATH_DIRNAME"/"$BACKUP_TIME"."$SNAPSHOT_PATH_BASENAME"
-      fi
+      # Move into the backup directory so we can use relative paths for backup
+      cd "$SNAPSHOT_PATH"
     '';
   };
 in
