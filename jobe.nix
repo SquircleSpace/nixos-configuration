@@ -174,6 +174,7 @@ in
     paths = [ "/home/ada" "/crypt/photos" ];
     subvolumes = [ "/home" "/crypt/photos" ];
     exclude = [
+      "/home/ada/.cache"
       "/home/ada/Downloads"
       "/home/ada/.local/share/Steam"
     ];
