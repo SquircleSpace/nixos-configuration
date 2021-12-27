@@ -141,7 +141,6 @@ in
 
   users.extraUsers.ada.packages = with pkgs; [
     darktable
-    discord
     lutris
     nvtop
     steam.run
