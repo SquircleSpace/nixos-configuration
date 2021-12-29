@@ -141,7 +141,6 @@ in
 
   users.extraUsers.ada.packages = with pkgs; [
     darktable
-    discord
     lutris
     nvtop
     steam.run
@@ -156,6 +155,8 @@ in
   programs.steam.enable = true;
   programs.steam.remotePlay.openFirewall = true;
   hardware.steam-hardware.enable = true;
+
+  services.flatpak.enable = true;
 
   # ESYNC support in some Proton games requires a LOT of file descriptors
   systemd.extraConfig = "DefaultLimitNOFILE=1048576";
@@ -174,8 +175,11 @@ in
     paths = [ "/home/ada" "/crypt/photos" ];
     subvolumes = [ "/home" "/crypt/photos" ];
     exclude = [
+      "/home/ada/.cache"
       "/home/ada/Downloads"
       "/home/ada/.local/share/Steam"
+      "/home/ada/.local/share/flatpak"
+      "/home/ada/.var/app/com.valvesoftware.Steam"
     ];
     server = import ./server-rsync.net.nix;
     repoName = "borg/jobe/main";
