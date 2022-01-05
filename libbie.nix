@@ -111,7 +111,6 @@
   nixpkgs.config.allowUnfree = true;
 
   hardware.opengl.driSupport32Bit = true;
-  hardware.pulseaudio.support32Bit = true;
 
   users.extraUsers.ada.packages = with pkgs; [
     steam.run
