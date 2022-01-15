@@ -16,6 +16,7 @@ in
     ./ada.nix
     ./homebridge-module.nix
     ./rss4email.nix
+    ./pi-hole.nix
   ];
 
   boot.loader.grub.enable = false;
