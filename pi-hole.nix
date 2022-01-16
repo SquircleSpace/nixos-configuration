@@ -15,4 +15,10 @@
       "/var/lib/pihole/etc/dnsmasq.d:/etc/dnsmasq.d"
     ];
   };
+
+  services.nginx.virtualHosts."pi.hole" = {
+    extraConfig = ''
+      return 301 http://pi.hole:8080$request_uri;
+    '';
+  };
 }
