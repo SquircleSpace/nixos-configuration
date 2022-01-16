@@ -225,4 +225,10 @@ in
     };
     http = {};
   };
+
+  services.nginx.virtualHosts."home.lan" = {
+    extraConfig = ''
+      return 301 http://$host:8123$request_uri;
+    '';
+  };
 }
