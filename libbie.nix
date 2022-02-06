@@ -16,13 +16,6 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.kernelPatches = [
-    {
-      name = "system76-acpi-update";
-      patch = ./system76-acpi.patch;
-      extraConfig = "";
-    }
-  ];
 
   boot.initrd.luks.devices.crypted = {
     allowDiscards = true;
