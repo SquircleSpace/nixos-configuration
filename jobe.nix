@@ -29,6 +29,7 @@ in
   # We're self respecting and use EFI boot around here
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   time.timeZone = "America/Los_Angeles";
 
