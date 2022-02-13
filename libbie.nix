@@ -107,7 +107,7 @@
 
   users.extraUsers.ada.packages = with pkgs; [
     steam.run
-    wine
+    wineWowPackages.stable
   ];
 
   services.flakeAutoUpdate."/etc/nixos".enable = true;
