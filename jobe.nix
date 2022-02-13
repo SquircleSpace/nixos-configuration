@@ -143,7 +143,7 @@ in
     lutris
     nvtop
     steam.run
-    wine
+    wineWowPackages.stable
     (import ./minecraft.nix { inherit pkgs; })
   ];
   users.extraUsers.ada.openssh.authorizedKeys.keyFiles = [
