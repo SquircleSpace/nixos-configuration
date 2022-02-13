@@ -16,13 +16,6 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.kernelPatches = [
-    {
-      name = "system76-acpi-update";
-      patch = ./system76-acpi.patch;
-      extraConfig = "";
-    }
-  ];
 
   boot.initrd.luks.devices.crypted = {
     allowDiscards = true;
@@ -83,7 +76,7 @@
   powerManagement.powertop.enable = true;
   networking.networkmanager.wifi.powersave = true;
 
-  services.logind.lidSwitch = "suspend";
+  services.logind.lidSwitch = "suspend-then-hibernate";
   services.logind.lidSwitchDocked = "ignore";
   services.logind.lidSwitchExternalPower = "suspend";
   services.upower.enable = true;
@@ -111,7 +104,6 @@
   nixpkgs.config.allowUnfree = true;
 
   hardware.opengl.driSupport32Bit = true;
-  hardware.pulseaudio.support32Bit = true;
 
   users.extraUsers.ada.packages = with pkgs; [
     steam.run
@@ -127,6 +119,7 @@
   documentation.dev.enable = true;
   documentation.man.generateCaches = true;
 
+  programs.steam.enable = true;
   hardware.steam-hardware.enable = true;
 
   services.flatpak.enable = true;

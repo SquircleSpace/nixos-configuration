@@ -16,6 +16,7 @@ in
     ./ada.nix
     ./homebridge-module.nix
     ./rss4email.nix
+    ./pi-hole.nix
   ];
 
   boot.loader.grub.enable = false;
@@ -223,5 +224,11 @@ in
       themes = "!include_dir_merge_named themes";
     };
     http = {};
+  };
+
+  services.nginx.virtualHosts."home.lan" = {
+    extraConfig = ''
+      return 301 http://$host:8123$request_uri;
+    '';
   };
 }

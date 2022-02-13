@@ -39,7 +39,6 @@ in
   services.xserver.videoDrivers = ["nvidia"];
   nixpkgs.config.allowUnfree = true;
   hardware.opengl.driSupport32Bit = true;
-  hardware.pulseaudio.support32Bit = true;
   hardware.bluetooth.enable = true;
   services.blueman.enable = true;
 
