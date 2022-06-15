@@ -26,8 +26,6 @@
         system = "x86_64-linux";
         modules = [
           ./jobe.nix
-          dwarffs.nixosModules.dwarffs
-          { nixpkgs.overlays = [ nix.overlay ]; }
         ];
       };
 
@@ -35,8 +33,6 @@
         system = "x86_64-linux";
         modules = [
           ./libbie.nix
-          dwarffs.nixosModules.dwarffs
-          { nixpkgs.overlays = [ nix.overlay ]; }
         ];
       };
 
