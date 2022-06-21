@@ -125,7 +125,7 @@ in
     '';
   };
 
-  networking.firewall.allowedTCPPorts = [ 22 80 443 41177 8080 21064 ];
+  networking.firewall.allowedTCPPorts = [ 22 80 443 41177 8080 21064 8123 ];
   networking.firewall.enable = true;
   security.acme.acceptTerms = true;
   security.acme.email = "cert@squircle.space";
@@ -148,82 +148,20 @@ in
     snapshotPath = "/btrfs/snapshots/backup";
   };
 
-  services.home-assistant.enable = true;
-  services.home-assistant.openFirewall = true;
-  services.home-assistant.configWritable = true;
-  services.home-assistant.lovelaceConfigWritable = true;
-  services.home-assistant.package = (pkgs.home-assistant.override {
-    extraComponents = [
-      # "apple_tv" # Tests seem to be failing on NixOS 21.11 for now.  I wasn't using it anyway.
-      "automation"
-      "default_config"
-      "ffmpeg"
-      "frontend"
-      "group"
-      "homekit"
-      "homekit_controller"
-      "http"
-      "hue"
-      "light"
-      "roomba"
-      "scene"
-    ];
-  }).overrideAttrs (oldAttrs: { doInstallCheck = false; });
-  services.home-assistant.autoExtraComponents = false;
-  services.home-assistant.config = {
-    homeassistant = {
-      name = "Home";
-      unit_system = "metric";
-      time_zone = "UTC";
-      customize = "!include customize.yaml";
-      latitude = 37.763017;
-      longitude = -122.435776;
-    };
-    default_config = null;
-    scene = "!include scenes.yaml";
-    automation = "!include automations.yaml";
-    shell_command = {
-      "up_to_date" = "${upToDate}";
-    };
-    light = [
-      {
-        platform = "group";
-        name = "Entry";
-        entities = [
-          "light.hall_1"
-          "light.hall_2"
-        ];
-      }
-      {
-        platform = "group";
-        name = "Bedroom";
-        entities = [
-          "light.bed_1"
-          "light.bed_2"
-        ];
-      }
-      {
-        platform = "group";
-        name = "Couch";
-        entities = [
-          "light.leftie"
-          "light.rightie"
-        ];
-      }
-      {
-        platform = "group";
-        name = "Living Room";
-        entities = [
-          "light.leftie"
-          "light.rightie"
-          "light.dingle"
-        ];
-      }
-    ];
-    frontend = {
-      themes = "!include_dir_merge_named themes";
-    };
-    http = {};
+  virtualisation.oci-containers.containers.home-assistant = {
+    autoStart = true;
+    environment.TZ = "America/Los_Angeles";
+    image = "ghcr.io/home-assistant/home-assistant:stable";
+    volumes = [ "/var/lib/home-assistant/config:/config" ];
+    extraOptions = [ "--privileged" "--network=host"];
+  };
+
+  virtualisation.oci-containers.containers.zwave-js-server = {
+    autoStart = true;
+    image = "zwavejs/zwavejs2mqtt:latest";
+    volumes = [ "/var/lib/zwave-js-server/:/usr/src/app/store" ];
+    extraOptions = [ "--device=/dev/serial/by-id/usb-Silicon_Labs_Zooz_ZST10_700_Z-Wave_Stick_b2d4b15fc360ec11abd83f7625bfaa52-if00-port0:/dev/zwave" ];
+    ports = [ "8091:8091" "3000:3000" ];
   };
 
   services.nginx.virtualHosts."home.lan" = {
