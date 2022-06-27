@@ -58,7 +58,7 @@ let
     yakuake
   ];
   gnomePackages = with pkgs.gnome; [
-    gnome-tweak-tool
+    gnome-tweaks
     gnome-shell-extensions
   ];
   isUI = config.services.xserver.enable;

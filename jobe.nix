@@ -47,7 +47,7 @@ in
 
   networking.interfaces.eno1.wakeOnLan.enable = true;
 
-  system.stateVersion = "21.11";
+  system.stateVersion = "22.05";
 
   boot.initrd.luks.reusePassphrases = true;
 

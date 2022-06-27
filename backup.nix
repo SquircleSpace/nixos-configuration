@@ -125,9 +125,6 @@ let
     hostNames = [ cfg.server.hostname ];
     publicKeyFile = cfg.server.publicKeyFile;
   };
-  mkTimerConfig = name: cfg: lib.nameValuePair "borgbackup-job-${name}" {
-    timerConfig.Persistent = true;
-  };
   snapshotsRootDirectory = cfg: lib.any (x: x == "/") cfg.subvolumes;
   mkBorgbackupJob = name: cfg: lib.nameValuePair name {
     repo = "${cfg.server.user}@${cfg.server.hostname}:${cfg.repoName}";
@@ -217,7 +214,6 @@ in
     services.borgbackup.jobs = lib.mapAttrs' mkBorgbackupJob config.services.borgbackup.smartjobs;
     system.activationScripts = lib.mapAttrs' mkActivationScript config.services.borgbackup.smartjobs;
     programs.ssh.knownHosts = lib.mapAttrs' mkKnownHosts config.services.borgbackup.smartjobs;
-    systemd.timers = lib.mapAttrs' mkTimerConfig config.services.borgbackup.smartjobs;
     environment.systemPackages = [ cleanup ];
   };
 }
