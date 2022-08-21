@@ -145,7 +145,6 @@ in
     nvtop
     steam.run
     wineWowPackages.stable
-    minecraft
   ];
   users.extraUsers.ada.openssh.authorizedKeys.keyFiles = [
     ./libbie.pub
