@@ -114,7 +114,7 @@ in
   services.nextcloud.config.overwriteProtocol = "https";
   services.nextcloud.hostName = "cloud.squircle.space";
   services.nextcloud.autoUpdateApps.enable = true;
-  services.nextcloud.package = pkgs.nextcloud22;
+  services.nextcloud.package = pkgs.nextcloud23;
   services.nginx.virtualHosts."cloud.squircle.space" = {
     forceSSL = true;
     enableACME = true;
