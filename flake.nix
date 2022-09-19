@@ -37,7 +37,7 @@
         ];
       };
 
-      nixosConfigurations.pifer = nixosSystem nixpkgs2111 {
+      nixosConfigurations.pifer = nixosSystem nixpkgs2205 {
         system = "aarch64-linux";
         modules = [ ./pifer.nix ];
       };
