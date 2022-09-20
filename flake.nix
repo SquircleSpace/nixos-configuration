@@ -5,7 +5,6 @@
   inputs.nixpkgs2205.url = "github:NixOS/nixpkgs/nixos-22.05";
   inputs.nix.url = "github:NixOS/nix";
   inputs.rss4email.url = "github:SquircleSpace/rss4email";
-  inputs.rss4email.inputs.nixpkgs.follows = "nixpkgs2111";
 
   outputs = { self, nixpkgs2111, nixpkgs2205, dwarffs, nix, rss4email }:
     let
