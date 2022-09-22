@@ -17,6 +17,7 @@ in
     ./homebridge-module.nix
     ./rss4email.nix
     ./pi-hole.nix
+    ./tailscale.nix
   ];
 
   boot.loader.grub.enable = false;

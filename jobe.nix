@@ -12,6 +12,7 @@ in
     ./ssh.nix
     ./sasha.nix
     ./photosync.nix
+    ./tailscale.nix
   ];
 
   # Hello!  My name is

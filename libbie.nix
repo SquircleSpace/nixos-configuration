@@ -7,6 +7,7 @@
     ./ada.nix
     ./sasha.nix
     ./ssh.nix
+    ./tailscale.nix
   ];
 
   hardware.system76.enableAll = true;
