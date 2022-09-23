@@ -17,6 +17,8 @@
   };
 
   services.nginx.virtualHosts."pi.hole" = {
+    sslCertificate = "/var/cert/pi.hole.crt";
+    sslCertificateKey = "/var/cert/pi.hole.key";
     extraConfig = ''
       return 301 http://pi.hole:8080$request_uri;
     '';

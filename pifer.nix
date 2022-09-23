@@ -118,7 +118,8 @@ in
   services.nextcloud.package = pkgs.nextcloud23;
   services.nginx.virtualHosts."cloud.squircle.space" = {
     forceSSL = true;
-    enableACME = true;
+    sslCertificate = "/var/cert/cloud.squircle.space.crt";
+    sslCertificateKey = "/var/cert/cloud.squircle.space.key";
     extraConfig = ''
       if ($host != "cloud.squircle.space") {
         return 444;
@@ -128,8 +129,6 @@ in
 
   networking.firewall.allowedTCPPorts = [ 22 80 443 41177 8080 21064 8123 ];
   networking.firewall.enable = true;
-  security.acme.acceptTerms = true;
-  security.acme.email = "cert@squircle.space";
 
   services.nginx.virtualHosts."_" = {
     default = true;
@@ -166,6 +165,8 @@ in
   };
 
   services.nginx.virtualHosts."home.lan" = {
+    sslCertificate = "/var/cert/home.lan.crt";
+    sslCertificateKey = "/var/cert/home.lan.key";
     extraConfig = ''
       return 301 http://$host:8123$request_uri;
     '';
