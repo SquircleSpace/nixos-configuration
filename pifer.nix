@@ -8,6 +8,19 @@ let
     ${pkgs.systemd}/bin/systemctl is-active nixos-upgrade.service || ! ${pkgs.systemd}/bin/systemctl is-failed nixos-upgrade.service
     ${postSensor} systemUpToDate $?
   '';
+  homeAssistantVirtualHostConfig = {
+    sslCertificate = "/var/cert/home.lan.crt";
+    sslCertificateKey = "/var/cert/home.lan.key";
+    extraConfig = ''
+      allow 100.0.0.0/8;
+      allow 192.168.1.0/24;
+      allow 127.0.0.1;
+      deny all;
+    '';
+    locations."/" = {
+      proxyPass = "http://localhost:8123";
+    };
+  };
 in
 {
   imports = [
@@ -164,11 +177,6 @@ in
     ports = [ "8091:8091" "3000:3000" ];
   };
 
-  services.nginx.virtualHosts."home.lan" = {
-    sslCertificate = "/var/cert/home.lan.crt";
-    sslCertificateKey = "/var/cert/home.lan.key";
-    extraConfig = ''
-      return 301 http://$host:8123$request_uri;
-    '';
-  };
+  services.nginx.virtualHosts."home.lan" = homeAssistantVirtualHostConfig;
+  services.nginx.virtualHosts."home.squircle.space" = homeAssistantVirtualHostConfig;
 }

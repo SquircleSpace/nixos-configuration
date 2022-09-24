@@ -1,4 +1,19 @@
 { config, pkgs, ... }:
+let
+  piholeVirtualHostConfig = {
+    sslCertificate = "/var/cert/pi.hole.crt";
+    sslCertificateKey = "/var/cert/pi.hole.key";
+    extraConfig = ''
+      allow 100.0.0.0/8;
+      allow 192.168.1.0/24;
+      allow 127.0.0.1;
+      deny all;
+    '';
+    locations."/" = {
+      proxyPass = "http://localhost:8080";
+    };
+  };
+in
 {
   virtualisation.oci-containers.containers."pi-hole" = {
     image = "pihole/pihole:latest";
@@ -16,11 +31,6 @@
     ];
   };
 
-  services.nginx.virtualHosts."pi.hole" = {
-    sslCertificate = "/var/cert/pi.hole.crt";
-    sslCertificateKey = "/var/cert/pi.hole.key";
-    extraConfig = ''
-      return 301 http://pi.hole:8080$request_uri;
-    '';
-  };
+  services.nginx.virtualHosts."pi.hole" = piholeVirtualHostConfig;
+  services.nginx.virtualHosts."pihole.squircle.space" = piholeVirtualHostConfig;
 }
