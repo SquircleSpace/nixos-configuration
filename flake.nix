@@ -40,5 +40,10 @@
         system = "aarch64-linux";
         modules = [ ./pifer.nix ];
       };
+
+      nixosConfigurations.crypt = nixosSystem nixpkgs2205 {
+        system = "aarch64-linux";
+        modules = [ ./crypt.nix ];
+      };
     };
 }
