@@ -13,6 +13,7 @@ let
     lsof
     mosh
     psmisc
+    roswell
     smartmontools
     tmux
     unzip
