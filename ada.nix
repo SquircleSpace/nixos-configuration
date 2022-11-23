@@ -35,7 +35,6 @@ let
     pandoc
     paprefs
     pavucontrol
-    sbcl
     stow
     terminator
     vlc
