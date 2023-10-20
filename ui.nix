@@ -5,12 +5,8 @@
   ];
 
   services.xserver.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
-  services.xserver.displayManager.gdm.enable = true;
-
-  services.xserver.desktopManager.gnome.sessionPath = [
-    pkgs.gnomeExtensions.appindicator
-  ];
+  services.xserver.desktopManager.plasma5.enable = true;
+  services.xserver.displayManager.sddm.enable = true;
 
   # Hardware acceleration for video decoding
   nixpkgs.config.packageOverrides = pkgs: {
