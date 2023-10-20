@@ -1,11 +1,10 @@
 { config, pkgs, ... }:
 {
   imports = [
-    ./libbie-hardware.nix
+    ./plasma-hardware.nix
     ./common.nix
     ./ui.nix
     ./ada.nix
-    ./sasha.nix
     ./ssh.nix
     ./tailscale.nix
   ];
