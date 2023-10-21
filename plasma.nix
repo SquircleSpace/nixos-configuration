@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 {
   imports = [
     ./plasma-hardware.nix
@@ -57,4 +57,12 @@
   documentation.man.generateCaches = true;
 
   services.flatpak.enable = true;
+
+  specialisation."nonui".configuration = {
+    services.xserver.enable = lib.mkForce false;
+    services.xserver.desktopManager.plasma5.enable = lib.mkForce false;
+    services.xserver.displayManager.sddm.enable = lib.mkForce false;
+    boot.plymouth.enable = lib.mkForce false;
+    services.flatpak.enable = lib.mkForce false;
+  };
 }
