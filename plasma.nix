@@ -18,6 +18,8 @@
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.bootspec.enable = true;
 
+  services.fwupd.enable = true;
+
   services.btrfs.autoScrub = {
     enable = true;
     fileSystems = [ "/" ];
