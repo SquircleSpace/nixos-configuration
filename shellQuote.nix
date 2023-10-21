@@ -1,1 +1,1 @@
-lib: str: "'" + (lib.replaceChars ["'"] ["'\''"] str) + "'"
+lib: str: "'" + (lib.replaceStrings ["'"] ["'\''"] str) + "'"

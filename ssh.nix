@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 {
   services.openssh.enable = true;
-  services.openssh.passwordAuthentication = false;
-  services.openssh.permitRootLogin = "no";
+  services.openssh.settings.PasswordAuthentication = false;
+  services.openssh.settings.PermitRootLogin = "no";
   services.openssh.startWhenNeeded = true;
 }

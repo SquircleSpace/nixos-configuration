@@ -94,7 +94,7 @@ in
 
   services.openssh.enable = true;
   services.openssh.passwordAuthentication = false;
-  services.openssh.permitRootLogin = "no";
+  services.openssh.settings.PermitRootLogin = "no";
 
   services.fail2ban.enable = true;
   services.fail2ban.bantime-increment.enable = true;

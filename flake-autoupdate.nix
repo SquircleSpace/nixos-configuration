@@ -71,7 +71,7 @@ let
 
     config = mkMerge [
       {
-        serviceName = mkDefault ("flake-autoupdate-" + lib.replaceChars ["/"] ["-"] name);
+        serviceName = mkDefault ("flake-autoupdate-" + lib.replaceStrings ["/"] ["-"] name);
         path = mkDefault name;
       }
       {

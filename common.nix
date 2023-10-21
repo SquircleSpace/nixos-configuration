@@ -17,8 +17,8 @@
     programs.firejail.enable = lib.mkDefault true;
 
     # Keep tmp temporary!
-    boot.tmpOnTmpfs = lib.mkDefault true;
-    boot.cleanTmpDir = lib.mkDefault true;
+    boot.tmp.useTmpfs = lib.mkDefault true;
+    boot.tmp.cleanOnBoot = lib.mkDefault true;
 
     programs.gnupg.agent.enable = lib.mkDefault true;
     programs.gnupg.agent.enableSSHSupport = lib.mkDefault true;
