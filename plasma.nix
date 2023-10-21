@@ -20,6 +20,8 @@
 
   services.fwupd.enable = true;
 
+  services.fprintd.enable = true;
+
   services.btrfs.autoScrub = {
     enable = true;
     fileSystems = [ "/" ];
