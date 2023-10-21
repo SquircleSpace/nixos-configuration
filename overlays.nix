@@ -46,8 +46,8 @@
           fi
           export GIT_WORK_TREE=$(cd $GIT_DIR/../ ; pwd)
           env | grep GIT
-          echo ${self.git}/bin/git checkout -f master
-          ${self.git}/bin/git checkout -f master
+          echo ${self.git}/bin/git checkout -f --detach master
+          ${self.git}/bin/git checkout -f --detach master
           break
         done
       '';
