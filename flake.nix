@@ -8,10 +8,14 @@
     url = "github:nix-community/lanzaboote/v0.3.0";
     inputs.nixpkgs.follows = "nixpkgs2305";
   };
+  inputs.kmonad = {
+    url = "github:kmonad/kmonad?dir=nix";
+    inputs.nixpkgs.follows = "nixpkgs2305";
+  };
   inputs.nix.url = "github:NixOS/nix";
   inputs.rss4email.url = "github:SquircleSpace/rss4email";
 
-  outputs = { self, nixpkgs2111, nixpkgs2205, nixpkgs2305, lanzaboote, dwarffs, nix, rss4email }:
+  outputs = { self, nixpkgs2111, nixpkgs2205, nixpkgs2305, lanzaboote, kmonad, dwarffs, nix, rss4email }:
     let
       revisionModule = nixpkgs: {...}: {
         system.configurationRevision = nixpkgs.lib.mkIf (self ? rev) self.rev;
@@ -47,7 +51,7 @@
       };
       nixosConfigurations.plasma = nixosSystem nixpkgs2305 {
         system = "x86_64-linux";
-	modules = [ lanzaboote.nixosModules.lanzaboote ./plasma.nix ];
+	modules = [ lanzaboote.nixosModules.lanzaboote kmonad.nixosModules.default ./plasma.nix ];
       };
     };
 }
