@@ -57,6 +57,9 @@
   documentation.man.generateCaches = true;
 
   services.flatpak.enable = true;
+  services.packagekit.enable = true;
+  # https://github.com/NixOS/nixpkgs/issues/49793
+  services.packagekit.settings.Daemon.DefaultBackend = "test_nop";
 
   services.kmonad = {
     enable = true;
