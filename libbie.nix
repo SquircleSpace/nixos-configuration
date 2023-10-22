@@ -83,7 +83,7 @@
   services.upower.enable = true;
   services.upower.criticalPowerAction = "HybridSleep";
 
-  system.stateVersion = "21.05";
+  system.stateVersion = "23.05";
 
   services.borgbackup.smartjobs."rsync" = {
     paths = [ "/home/ada" ];
