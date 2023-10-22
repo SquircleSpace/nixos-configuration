@@ -7,7 +7,7 @@ in
     ./jobe-hardware.nix
     ./common.nix
     ./vpn.nix
-    ./ui.nix
+    ./gnome.nix
     ./ada.nix
     ./ssh.nix
     ./sasha.nix

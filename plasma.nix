@@ -3,7 +3,7 @@
   imports = [
     ./plasma-hardware.nix
     ./common.nix
-    ./ui.nix
+    ./kde.nix
     ./ada.nix
     ./ssh.nix
     ./tailscale.nix

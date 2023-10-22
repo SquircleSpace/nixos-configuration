@@ -3,7 +3,7 @@
   imports = [
     ./libbie-hardware.nix
     ./common.nix
-    ./ui.nix
+    ./gnome.nix
     ./ada.nix
     ./sasha.nix
     ./ssh.nix
