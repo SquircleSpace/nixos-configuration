@@ -9,10 +9,6 @@
     # Manage that network
     networking.networkmanager.enable = lib.mkDefault true;
 
-    # Emacs is bestest
-    services.emacs.enable = lib.mkDefault true;
-    services.emacs.defaultEditor = lib.mkDefault true;
-
     # Firejail the things
     programs.firejail.enable = lib.mkDefault true;
 

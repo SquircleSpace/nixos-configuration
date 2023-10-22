@@ -56,7 +56,8 @@ let
     gnome-shell-extensions
   ];
   isUI = config.services.xserver.enable;
-  emacsPackage = with pkgs; if isUI then emacs else emacs-nox;
+  baseEmacsPackage = with pkgs; if isUI then emacs29 else emacs29-nox;
+  emacsPackage = (import ./emacs.nix) { inherit pkgs; emacs = baseEmacsPackage; };
   optionalList = condition: list: if condition then list else [];
   packages = lib.flatten [
     nonUIPackages
