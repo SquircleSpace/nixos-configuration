@@ -69,6 +69,10 @@
 
   users.mutableUsers = false;
 
+  users.extraUsers.ada.openssh.authorizedKeys.keyFiles = [
+    ./plasma.pub
+  ];
+
   powerManagement.powerUpCommands = ''
     echo 70 > /sys/class/power_supply/BAT0/charge_control_start_threshold
     echo 75 > /sys/class/power_supply/BAT0/charge_control_end_threshold
