@@ -38,7 +38,7 @@
         ];
       };
 
-      nixosConfigurations.Libbie = nixosSystem nixpkgs2205 {
+      nixosConfigurations.Libbie = nixosSystem nixpkgs2305 {
         system = "x86_64-linux";
         modules = [
           ./libbie.nix
