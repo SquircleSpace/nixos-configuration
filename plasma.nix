@@ -93,6 +93,21 @@
     };
   };
 
+  services.borgbackup.smartjobs."rsync" = {
+    paths = [ "/home/ada" ];
+    subvolumes = [ "/" "/home" ];
+    exclude = [
+      "/home/ada/.cache"
+      "/home/ada/Downloads"
+      "/home/ada/.local/share/flatpak"
+    ];
+    server = import ./server-rsync.net.nix;
+    repoName = "borg/plasma/main";
+    privateKeyPath = "/var/lib/borg/id_ed25519";
+    passwordPath = "/var/lib/borg/password";
+    snapshotPath = "/btrfs/backups";
+  };
+
   specialisation."nonui".configuration = {
     services.xserver.enable = lib.mkForce false;
     services.xserver.desktopManager.plasma5.enable = lib.mkForce false;
