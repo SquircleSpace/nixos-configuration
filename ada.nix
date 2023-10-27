@@ -23,7 +23,6 @@ let
   ];
   uiPackages = with pkgs; [
     aspellDicts.en
-    bitwarden
     caffeine-ng
     chromium
     firefox
