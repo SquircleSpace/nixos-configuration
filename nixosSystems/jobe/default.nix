@@ -8,7 +8,6 @@ mkNixosSystem {
     self.nixosModules.ada
     self.nixosModules.photosync
     self.nixosModules.tailscale
-    ./boot-windows
 
     ./system.nix
     ./hardware.nix
