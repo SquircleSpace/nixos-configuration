@@ -23,6 +23,9 @@
       callNixosSystem = system: let
         fn = if builtins.isFunction system then system else import system;
       in fn (builtins.intersectAttrs (builtins.functionArgs fn) systemContext);
+
+      allSystems = [ "x86_64-linux" "i686-linux" "aarch64-linux" "aarch64-darwin" ];
+      genAttrs = list: fn: builtins.foldl' (l: r: l // r) {} (builtins.map (key: {"${key}" = fn key;}) list);
     in {
       nixosModules = rec {
         configurationRevision = { lib, ... }: {
@@ -53,6 +56,17 @@
         Libbie = callNixosSystem ./nixosSystems/libbie;
         pifer = callNixosSystem ./nixosSystems/pifer;
       };
+
+      packages = genAttrs allSystems (system: {
+        emacs = import ./emacs.nix {
+          pkgs = nixpkgs2305.legacyPackages."${system}";
+          emacs = nixpkgs2305.legacyPackages."${system}".emacs29;
+        };
+        emacs-nox = import ./emacs.nix {
+          pkgs = nixpkgs2305.legacyPackages."${system}";
+          emacs = nixpkgs2305.legacyPackages."${system}".emacs29-nox;
+        };
+      });
 
       adaExtras.backupServers.rsync = import ./server-rsync.net.nix;
       adaExtras.publicKeys = {
