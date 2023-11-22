@@ -109,7 +109,7 @@ in
   };
 
   # For working on nixpkgs
-  nix.useSandbox = true;
+  nix.settings.sandbox = true;
 
   # Let me tell you where my screens go
   services.xserver.dpi = 150;
