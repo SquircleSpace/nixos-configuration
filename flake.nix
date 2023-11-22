@@ -1,6 +1,5 @@
 {
   inputs.dwarffs.url = "github:edolstra/dwarffs";
-  inputs.dwarffs.inputs.nixpkgs.follows = "nixpkgs2111";
   inputs.nixpkgs2211.url = "github:NixOS/nixpkgs/nixos-22.11";
   inputs.nixpkgs2305.url = "github:NixOS/nixpkgs/nixos-23.05";
   inputs.lanzaboote = {
