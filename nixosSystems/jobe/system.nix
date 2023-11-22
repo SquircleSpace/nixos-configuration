@@ -153,6 +153,7 @@ in
   users.extraUsers.ada.openssh.authorizedKeys.keyFiles = [
     self.adaExtras.publicKeys.libbie
     self.adaExtras.publicKeys.phone
+    self.adaExtras.publicKeys.plasma
   ];
 
   programs.steam.enable = true;

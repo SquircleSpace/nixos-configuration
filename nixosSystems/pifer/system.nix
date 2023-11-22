@@ -140,6 +140,7 @@ in
       self.adaExtras.publicKeys.jobe
       self.adaExtras.publicKeys.phone
       self.adaExtras.publicKeys.libbie
+      self.adaExtras.publicKeys.plasma
     ];
   };
 
