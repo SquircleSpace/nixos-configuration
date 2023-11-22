@@ -6,7 +6,7 @@
     isSystemUser = true;
     useDefaultShell = true;
     group = "photosync";
-    openssh.authorizedKeys.keyFiles = [ self.adaExtras.publicKeys.photosync ];
+    openssh.authorizedKeys.keyFiles = [ self.lib.publicKeys.photosync ];
   };
   users.groups.photosync = {};
 

@@ -137,10 +137,10 @@ in
   users.users.ada = {
     uid = 1000;
     openssh.authorizedKeys.keyFiles = [
-      self.adaExtras.publicKeys.jobe
-      self.adaExtras.publicKeys.phone
-      self.adaExtras.publicKeys.libbie
-      self.adaExtras.publicKeys.plasma
+      self.lib.publicKeys.jobe
+      self.lib.publicKeys.phone
+      self.lib.publicKeys.libbie
+      self.lib.publicKeys.plasma
     ];
   };
 
@@ -184,7 +184,7 @@ in
     paths = ["/var" "/etc"];
     exclude = [ "/var/log" ];
     subvolumes = [ "/" ];
-    server = self.adaExtras.backupServers.rsync;
+    server = self.lib.backupServers.rsync;
     repoName = "borg/pifer/main";
     privateKeyPath = "/var/lib/borg/id_ed25519";
     passwordPath = "/var/lib/borg/password";

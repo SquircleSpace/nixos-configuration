@@ -68,13 +68,15 @@
         };
       });
 
-      adaExtras.backupServers.rsync = import ./server-rsync.net.nix;
-      adaExtras.publicKeys = {
-        jobe = ./jobe.pub;
-        libbie = ./libbie.pub;
-        phone = ./phone.pub;
-        plasma = ./plasma.pub;
-        photosync = ./photosync.pub;
+      lib = {
+        publicKeys = {
+          jobe = ./jobe.pub;
+          libbie = ./libbie.pub;
+          phone = ./phone.pub;
+          plasma = ./plasma.pub;
+          photosync = ./photosync.pub;
+        };
+        backupServers.rsync = import ./server-rsync.net.nix;
       };
     };
 }

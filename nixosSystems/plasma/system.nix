@@ -30,7 +30,7 @@
   users.mutableUsers = false;
 
   users.extraUsers.ada.openssh.authorizedKeys.keyFiles = [
-    self.adaExtras.publicKeys.libbie
+    self.lib.publicKeys.libbie
   ];
 
   powerManagement.powertop.enable = true;
@@ -92,7 +92,7 @@
       "/home/ada/Downloads"
       "/home/ada/.local/share/flatpak"
     ];
-    server = self.adaExtras.backupServers.rsync;
+    server = self.lib.backupServers.rsync;
     repoName = "borg/plasma/main";
     privateKeyPath = "/var/lib/borg/id_ed25519";
     passwordPath = "/var/lib/borg/password";

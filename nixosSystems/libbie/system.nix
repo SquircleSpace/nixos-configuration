@@ -60,7 +60,7 @@
   users.mutableUsers = false;
 
   users.extraUsers.ada.openssh.authorizedKeys.keyFiles = [
-    self.adaExtras.publicKeys.plasma
+    self.lib.publicKeys.plasma
   ];
 
   powerManagement.powerUpCommands = ''
@@ -89,7 +89,7 @@
       "/home/ada/.local/share/flatpak"
       "/home/ada/.var/app/com.valvesoftware.Steam"
     ];
-    server = self.adaExtras.backupServers.rsync;
+    server = self.lib.backupServers.rsync;
     repoName = "borg/libbie/main";
     privateKeyPath = "/var/lib/borg/id_ed25519";
     passwordPath = "/var/lib/borg/password";

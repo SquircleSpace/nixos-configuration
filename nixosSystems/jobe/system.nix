@@ -151,9 +151,9 @@ in
     wineWowPackages.stable
   ];
   users.extraUsers.ada.openssh.authorizedKeys.keyFiles = [
-    self.adaExtras.publicKeys.libbie
-    self.adaExtras.publicKeys.phone
-    self.adaExtras.publicKeys.plasma
+    self.lib.publicKeys.libbie
+    self.lib.publicKeys.phone
+    self.lib.publicKeys.plasma
   ];
 
   programs.steam.enable = true;
@@ -185,7 +185,7 @@ in
       "/home/ada/.local/share/flatpak"
       "/home/ada/.var/app/com.valvesoftware.Steam"
     ];
-    server = self.adaExtras.backupServers.rsync;
+    server = self.lib.backupServers.rsync;
     repoName = "borg/jobe/main";
     privateKeyPath = "/var/lib/borg/id_ed25519";
     passwordPath = "/var/lib/borg/password";
