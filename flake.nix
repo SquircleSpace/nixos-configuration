@@ -1,8 +1,7 @@
 {
   inputs.dwarffs.url = "github:edolstra/dwarffs";
   inputs.dwarffs.inputs.nixpkgs.follows = "nixpkgs2111";
-  inputs.nixpkgs2111.url = "github:NixOS/nixpkgs/nixos-21.11";
-  inputs.nixpkgs2205.url = "github:NixOS/nixpkgs/nixos-22.05";
+  inputs.nixpkgs2211.url = "github:NixOS/nixpkgs/nixos-22.11";
   inputs.nixpkgs2305.url = "github:NixOS/nixpkgs/nixos-23.05";
   inputs.lanzaboote = {
     url = "github:nix-community/lanzaboote/v0.3.0";
@@ -15,7 +14,7 @@
   inputs.nix.url = "github:NixOS/nix";
   inputs.rss4email.url = "github:SquircleSpace/rss4email";
 
-  outputs = { self, nixpkgs2111, nixpkgs2205, nixpkgs2305, lanzaboote, kmonad, dwarffs, nix, rss4email }@inputs:
+  outputs = { self, nixpkgs2211, nixpkgs2305, lanzaboote, kmonad, dwarffs, nix, rss4email }@inputs:
     let
       mkNixosSystem = { nixpkgs, system, modules }: nixpkgs.lib.nixosSystem {
         inherit system modules;
