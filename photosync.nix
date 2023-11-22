@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ self, config, pkgs, lib, ... }:
 {
   users.extraUsers.photosync = {
     createHome = false;
@@ -6,7 +6,7 @@
     isSystemUser = true;
     useDefaultShell = true;
     group = "photosync";
-    openssh.authorizedKeys.keyFiles = [ ./photosync.pub ];
+    openssh.authorizedKeys.keyFiles = [ self.adaExtras.publicKeys.photosync ];
   };
   users.groups.photosync = {};
 

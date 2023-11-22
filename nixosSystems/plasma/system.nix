@@ -1,14 +1,5 @@
-{ config, pkgs, lib, ... }:
+{ self, config, pkgs, lib, ... }:
 {
-  imports = [
-    ./plasma-hardware.nix
-    ./common.nix
-    ./kde.nix
-    ./ada.nix
-    ./ssh.nix
-    ./tailscale.nix
-  ];
-
   boot.loader.systemd-boot.enable = false;
   boot.lanzaboote = {
     enable = true;
@@ -39,7 +30,7 @@
   users.mutableUsers = false;
 
   users.extraUsers.ada.openssh.authorizedKeys.keyFiles = [
-    ./libbie.pub
+    self.adaExtras.publicKeys.libbie
   ];
 
   powerManagement.powertop.enable = true;
@@ -101,7 +92,7 @@
       "/home/ada/Downloads"
       "/home/ada/.local/share/flatpak"
     ];
-    server = import ./server-rsync.net.nix;
+    server = self.adaExtras.backupServers.rsync;
     repoName = "borg/plasma/main";
     privateKeyPath = "/var/lib/borg/id_ed25519";
     passwordPath = "/var/lib/borg/password";

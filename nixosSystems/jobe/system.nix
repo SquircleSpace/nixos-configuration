@@ -1,20 +1,8 @@
-{ config, pkgs, lib, ... }:
+{ self, config, pkgs, lib, ... }:
 let
   boot-windows = import ./boot-windows pkgs;
 in
 {
-  imports = [
-    ./jobe-hardware.nix
-    ./common.nix
-    ./vpn.nix
-    ./gnome.nix
-    ./ada.nix
-    ./ssh.nix
-    ./sasha.nix
-    ./photosync.nix
-    ./tailscale.nix
-  ];
-
   # Hello!  My name is
   networking.hostName = "Jobe";
 
@@ -147,8 +135,8 @@ in
     wineWowPackages.stable
   ];
   users.extraUsers.ada.openssh.authorizedKeys.keyFiles = [
-    ./libbie.pub
-    ./phone.pub
+    self.adaExtras.publicKeys.libbie
+    self.adaExtras.publicKeys.phone
   ];
 
   programs.steam.enable = true;
@@ -180,7 +168,7 @@ in
       "/home/ada/.local/share/flatpak"
       "/home/ada/.var/app/com.valvesoftware.Steam"
     ];
-    server = import ./server-rsync.net.nix;
+    server = self.adaExtras.backupServers.rsync;
     repoName = "borg/jobe/main";
     privateKeyPath = "/var/lib/borg/id_ed25519";
     passwordPath = "/var/lib/borg/password";

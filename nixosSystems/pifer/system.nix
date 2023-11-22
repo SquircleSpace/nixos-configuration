@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ self, config, lib, pkgs, ... }:
 let
   postSensor = pkgs.writeScript "postSensor" ''
     
@@ -24,13 +24,9 @@ let
 in
 {
   imports = [
-    ./pifer-hardware.nix
-    ./common.nix
-    ./ada.nix
     ./homebridge-module.nix
     ./rss4email.nix
     ./pi-hole.nix
-    ./tailscale.nix
   ];
 
   boot.loader.grub.enable = false;
@@ -111,7 +107,11 @@ in
 
   users.users.ada = {
     uid = 1000;
-    openssh.authorizedKeys.keyFiles = [ ./jobe.pub ./phone.pub ./libbie.pub ];
+    openssh.authorizedKeys.keyFiles = [
+      self.adaExtras.publicKeys.jobe
+      self.adaExtras.publicKeys.phone
+      self.adaExtras.publicKeys.libbie
+    ];
   };
 
   system.stateVersion = "20.09";
@@ -154,7 +154,7 @@ in
     paths = ["/var" "/etc"];
     exclude = [ "/var/log" ];
     subvolumes = [ "/" ];
-    server = import ./server-rsync.net.nix;
+    server = self.adaExtras.backupServers.rsync;
     repoName = "borg/pifer/main";
     privateKeyPath = "/var/lib/borg/id_ed25519";
     passwordPath = "/var/lib/borg/password";

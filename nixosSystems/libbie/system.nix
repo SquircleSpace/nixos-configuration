@@ -1,15 +1,5 @@
-{ config, pkgs, ... }:
+{ self, config, pkgs, ... }:
 {
-  imports = [
-    ./libbie-hardware.nix
-    ./common.nix
-    ./gnome.nix
-    ./ada.nix
-    ./sasha.nix
-    ./ssh.nix
-    ./tailscale.nix
-  ];
-
   hardware.system76.enableAll = true;
 
   boot.loader.timeout = 1;
@@ -70,7 +60,7 @@
   users.mutableUsers = false;
 
   users.extraUsers.ada.openssh.authorizedKeys.keyFiles = [
-    ./plasma.pub
+    self.adaExtras.publicKeys.plasma
   ];
 
   powerManagement.powerUpCommands = ''
@@ -99,7 +89,7 @@
       "/home/ada/.local/share/flatpak"
       "/home/ada/.var/app/com.valvesoftware.Steam"
     ];
-    server = import ./server-rsync.net.nix;
+    server = self.adaExtras.backupServers.rsync;
     repoName = "borg/libbie/main";
     privateKeyPath = "/var/lib/borg/id_ed25519";
     passwordPath = "/var/lib/borg/password";

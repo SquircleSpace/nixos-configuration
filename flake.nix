@@ -15,43 +15,53 @@
   inputs.nix.url = "github:NixOS/nix";
   inputs.rss4email.url = "github:SquircleSpace/rss4email";
 
-  outputs = { self, nixpkgs2111, nixpkgs2205, nixpkgs2305, lanzaboote, kmonad, dwarffs, nix, rss4email }:
+  outputs = { self, nixpkgs2111, nixpkgs2205, nixpkgs2305, lanzaboote, kmonad, dwarffs, nix, rss4email }@inputs:
     let
-      revisionModule = nixpkgs: {...}: {
-        system.configurationRevision = nixpkgs.lib.mkIf (self ? rev) self.rev;
+      mkNixosSystem = { nixpkgs, system, modules }: nixpkgs.lib.nixosSystem {
+        inherit system modules;
+        specialArgs = { inherit self; nixpkgs-flake = nixpkgs; };
       };
-      nixpkgsPinModule = nixpkgs: {...}: {
-        nix.registry.nixpkgs.flake = nixpkgs;
-      };
-      nixosSystem = nixpkgs: cfg: nixpkgs.lib.nixosSystem (cfg // {
-        modules = cfg.modules ++ [
-          (revisionModule nixpkgs)
-          (nixpkgsPinModule nixpkgs)
-          rss4email.nixosModule
-        ];
-      });
+      systemContext = inputs // { inherit mkNixosSystem; };
+      callNixosSystem = system: let
+        fn = if builtins.isFunction system then system else import system;
+      in fn (builtins.intersectAttrs (builtins.functionArgs fn) systemContext);
     in {
-      nixosConfigurations.Jobe = nixosSystem nixpkgs2205 {
-        system = "x86_64-linux";
-        modules = [
-          ./jobe.nix
-        ];
+      nixosModules = rec {
+        configurationRevision = { lib, ... }: {
+          system.configurationRevision = lib.mkIf (self ? rev) self.rev;
+        };
+        nixpkgsPinModule = { nixpkgs-flake, ... }: {
+          nix.registry.nixpkgs.flake = nixpkgs-flake;
+        };
+
+        common = import ./common.nix;
+        ssh = import ./ssh.nix;
+        backup = import ./backup.nix;
+        flakeAutoupdate = import ./flake-autoupdate.nix;
+        gnome = import ./gnome.nix;
+        kde = import ./kde.nix;
+        ada = import ./ada.nix;
+        tailscale = import ./tailscale.nix;
+        photosync = import ./photosync.nix;
+
+        default = { ... }: {
+          imports = [ configurationRevision nixpkgsPinModule common ssh ];
+        };
       };
 
-      nixosConfigurations.Libbie = nixosSystem nixpkgs2305 {
-        system = "x86_64-linux";
-        modules = [
-          ./libbie.nix
-        ];
+      nixosConfigurations = {
+        plasma = callNixosSystem ./nixosSystems/plasma;
+        Jobe = callNixosSystem ./nixosSystems/jobe;
+        Libbie = callNixosSystem ./nixosSystems/libbie;
+        pifer = callNixosSystem ./nixosSystems/pifer;
       };
 
-      nixosConfigurations.pifer = nixosSystem nixpkgs2205 {
-        system = "aarch64-linux";
-        modules = [ ./pifer.nix ];
-      };
-      nixosConfigurations.plasma = nixosSystem nixpkgs2305 {
-        system = "x86_64-linux";
-	modules = [ lanzaboote.nixosModules.lanzaboote kmonad.nixosModules.default ./plasma.nix ];
+      adaExtras.backupServers.rsync = import ./server-rsync.net.nix;
+      adaExtras.publicKeys = {
+        libbie = ./libbie.pub;
+        phone = ./phone.pub;
+        plasma = ./plasma.pub;
+        photosync = ./photosync.pub;
       };
     };
 }
