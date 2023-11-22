@@ -1,6 +1,6 @@
-{ self, mkNixosSystem, nixpkgs2211 }:
+{ self, mkNixosSystem, nixpkgs2305 }:
 mkNixosSystem {
-  nixpkgs = nixpkgs2211;
+  nixpkgs = nixpkgs2305;
   system = "aarch64-linux";
   modules = [
     self.nixosModules.default

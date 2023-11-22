@@ -3,6 +3,22 @@ let
   boot-windows = import ./boot-windows pkgs;
 in
 {
+  users.extraUsers.ada.password = builtins.trace ''
+    =====================================================
+    == WARNING WARNING WARNING WARNING WARNING WARNING ==
+    =====================================================
+    This version of NixOS no longer supports the password format you're using.
+    Your password has been changed to "asdf" temporarily.  Regenerate your
+    password file with mkpasswd.
+  '' "asdf";
+  users.motd = "YOU MUST REGENERATE YOUR PASSWORD.";
+  system.activationScripts."Warn about reset password" = ''
+    echo 'This version of NixOS no longer supports the password format you're using.'
+    echo 'Your password has been changed to "asdf" temporarily.  Regenerate your'
+    echo 'password file with mkpasswd.'
+    sleep 20
+  '';
+
   # Hello!  My name is
   networking.hostName = "Jobe";
 
