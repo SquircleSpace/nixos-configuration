@@ -38,6 +38,19 @@ in
     echo 'password file with mkpasswd.'
     sleep 20
   '';
+  nixpkgs.config.permittedInsecurePackages = builtins.trace ''
+    =====================================================
+    == WARNING WARNING WARNING WARNING WARNING WARNING ==
+    =====================================================
+    You have insecure packages installed.  They come from homebridge's
+    node dependency and nextcloud.  You must re-run node2nix for
+    homebridge.  For nextcloud you must allow it to update to 24,
+    perform migrations, then update to the next version, perform
+    migartions, etc. until it is on the current release.
+  '' [
+    "openssl-1.1.1w"
+    "nodejs-14.21.3"
+  ];
 
   imports = [
     ./homebridge-module.nix
