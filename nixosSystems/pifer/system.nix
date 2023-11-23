@@ -93,7 +93,7 @@ in
   system.autoUpgrade.flake = "/etc/nixos";
   system.autoUpgrade.allowReboot = true;
   system.autoUpgrade.dates = "Mon *-*-* 00:04:40";
-  services.flakeAutoUpdate."/etc/nixos".enable = true;
+  system.autoUpgrade.flags = [ "--commit-lock-file" "--recreate-lock-file" ];
   environment.etc."nixos/.git/hooks/post-receive" = {
     enable = true;
     source = pkgs.etc-nixos-post-receive-hook;

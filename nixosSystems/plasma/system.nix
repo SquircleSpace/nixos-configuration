@@ -42,7 +42,9 @@
 
   system.stateVersion = "23.05";
 
-  services.flakeAutoUpdate."/etc/nixos".enable = true;
+  system.autoUpgrade.enable = true;
+  system.autoUpgrade.flake = "/etc/nixos";
+  system.autoUpgrade.flags = [ "--commit-lock-file" "--recreate-lock-file" ];
   environment.etc."nixos/.git/hooks/post-receive" = {
     enable = true;
     source = pkgs.etc-nixos-post-receive-hook;

@@ -49,7 +49,7 @@ let
       startAt = mkOption {
         type = either str (listOf str);
         example = "weekly";
-        default = "daily";
+        default = [];
         description = "When to initiate the update expressed as a systemd timer string.";
       };
       persistent = mkOption {
