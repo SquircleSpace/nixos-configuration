@@ -7,7 +7,6 @@ mkNixosSystem {
     kmonad.nixosModules.default
     self.nixosModules.default
     self.nixosModules.kde
-    self.nixosModules.ada
     self.nixosModules.tailscale
 
     ./system.nix

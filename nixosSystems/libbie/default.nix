@@ -5,7 +5,7 @@ mkNixosSystem {
   modules = [
     self.nixosModules.default
     self.nixosModules.gnome
-    self.nixosModules.ada
+    self.nixosModules.oldAda
     self.nixosModules.tailscale
 
     ./system.nix

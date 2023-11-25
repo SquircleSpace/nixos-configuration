@@ -1,4 +1,5 @@
 {
+  inputs.agenix.url = "github:ryantm/agenix";
   inputs.dwarffs.url = "github:edolstra/dwarffs";
   inputs.nixpkgs2211.url = "github:NixOS/nixpkgs/nixos-22.11";
   inputs.nixpkgs2305.url = "github:NixOS/nixpkgs/nixos-23.05";
@@ -13,7 +14,17 @@
   inputs.nix.url = "github:NixOS/nix";
   inputs.rss4email.url = "github:SquircleSpace/rss4email";
 
-  outputs = { self, nixpkgs2211, nixpkgs2305, lanzaboote, kmonad, dwarffs, nix, rss4email }@inputs:
+  outputs = {
+    self,
+    nixpkgs2211,
+    nixpkgs2305,
+    lanzaboote,
+    kmonad,
+    dwarffs,
+    nix,
+    rss4email,
+    agenix
+  }@inputs:
     let
       mkNixosSystem = { nixpkgs, system, modules, specialArgs ? {} }: nixpkgs.lib.nixosSystem {
         inherit system modules;
@@ -52,12 +63,13 @@
         flakeAutoupdate = import ./flake-autoupdate.nix;
         gnome = import ./gnome.nix;
         kde = import ./kde.nix;
-        ada = import ./ada.nix;
+        oldAda = import ./ada.nix;
         tailscale = import ./tailscale.nix;
         photosync = import ./photosync.nix;
+        ada = import ./modules/ada.nix agenix;
 
         default = { ... }: {
-          imports = [ configurationRevision nixpkgsPinModule common ssh ];
+          imports = [ configurationRevision nixpkgsPinModule common ssh ada ];
         };
       };
 
@@ -77,6 +89,8 @@
           pkgs = nixpkgs2305.legacyPackages."${system}";
           emacs = nixpkgs2305.legacyPackages."${system}".emacs29-nox;
         };
+
+        git-remote-doas = nixpkgs2305.legacyPackages."${system}".callPackage ./git-remote-doas {};
       });
 
       lib = {
