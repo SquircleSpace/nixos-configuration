@@ -25,8 +25,19 @@
       in fn (builtins.intersectAttrs (builtins.functionArgs fn) systemContext);
 
       allSystems = [ "x86_64-linux" "i686-linux" "aarch64-linux" "aarch64-darwin" ];
+      nixosSystems = [ "x86_64-linux" "i686-linux" "aarch64-linux" ];
+
       genAttrs = list: fn: builtins.foldl' (l: r: l // r) {} (builtins.map (key: {"${key}" = fn key;}) list);
+
+      runTestWithNixpkgs = system: nixpkgs: test: (import (nixpkgs2305 + "/nixos/lib") {}).runTest {
+        imports = [test];
+        hostPkgs = nixpkgs.legacyPackages."${system}";
+      };
     in {
+      checks = genAttrs nixosSystems (system: {
+        passwordPriorityOrder = runTestWithNixpkgs system nixpkgs2305 ./checks/passwordPriorityOrder.nix;
+      });
+
       nixosModules = rec {
         configurationRevision = { lib, ... }: {
           system.configurationRevision = lib.mkIf (self ? rev) self.rev;
