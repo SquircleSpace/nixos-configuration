@@ -43,10 +43,12 @@
       runTestWithNixpkgs = system: nixpkgs: test: (import (nixpkgs2305 + "/nixos/lib") {}).runTest {
         imports = [test];
         hostPkgs = nixpkgs.legacyPackages."${system}";
+        defaults.nixpkgs.pkgs = nixpkgs.legacyPackages."${system}";
       };
     in {
       checks = genAttrs nixosSystems (system: {
         passwordPriorityOrder = runTestWithNixpkgs system nixpkgs2305 ./checks/passwordPriorityOrder.nix;
+        adaModule = runTestWithNixpkgs system nixpkgs2305 (import ./checks/ada.nix self);
       });
 
       nixosModules = rec {
@@ -66,7 +68,7 @@
         oldAda = import ./ada.nix;
         tailscale = import ./tailscale.nix;
         photosync = import ./photosync.nix;
-        ada = import ./modules/ada.nix agenix;
+        ada = import ./modules/ada.nix {inherit agenix self;};
 
         default = { ... }: {
           imports = [ configurationRevision nixpkgsPinModule common ssh ada ];

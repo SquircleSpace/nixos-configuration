@@ -1,5 +1,5 @@
-agenix:
-{ self, config, pkgs, lib, ... }:
+{ self, agenix }:
+{ config, pkgs, lib, ... }:
 let
   cfg = config.squircle.space.ada;
   gitRemoteDoas = self.packages."${pkgs.system}".git-remote-doas;
