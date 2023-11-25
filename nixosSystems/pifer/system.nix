@@ -136,12 +136,6 @@ in
 
   users.users.ada = {
     uid = 1000;
-    openssh.authorizedKeys.keyFiles = [
-      self.lib.publicKeys.jobe
-      self.lib.publicKeys.phone
-      self.lib.publicKeys.libbie
-      self.lib.publicKeys.plasma
-    ];
   };
 
   system.stateVersion = "20.09";

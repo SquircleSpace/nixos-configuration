@@ -152,11 +152,6 @@ in
     steam.run
     wineWowPackages.stable
   ];
-  users.extraUsers.ada.openssh.authorizedKeys.keyFiles = [
-    self.lib.publicKeys.libbie
-    self.lib.publicKeys.phone
-    self.lib.publicKeys.plasma
-  ];
 
   programs.steam.enable = true;
   programs.steam.remotePlay.openFirewall = true;

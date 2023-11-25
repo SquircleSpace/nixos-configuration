@@ -69,13 +69,7 @@
       });
 
       lib = {
-        publicKeys = {
-          jobe = ./jobe.pub;
-          libbie = ./libbie.pub;
-          phone = ./phone.pub;
-          plasma = ./plasma.pub;
-          photosync = ./photosync.pub;
-        };
+        publicKeys = import ./publicKeys.nix;
         backupServers.rsync = import ./server-rsync.net.nix;
       };
     };

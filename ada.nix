@@ -78,6 +78,7 @@ in
     extraGroups = groups;
     passwordFile = passwordPath;
     packages = packages;
+    openssh.authorizedKeys.keys = self.lib.publicKeys.trustedClients;
   };
 
   system.activationScripts = {

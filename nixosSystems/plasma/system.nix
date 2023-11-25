@@ -29,10 +29,6 @@
 
   users.mutableUsers = false;
 
-  users.extraUsers.ada.openssh.authorizedKeys.keyFiles = [
-    self.lib.publicKeys.libbie
-  ];
-
   powerManagement.powertop.enable = true;
   networking.networkmanager.wifi.powersave = true;
 
