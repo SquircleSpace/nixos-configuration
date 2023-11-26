@@ -82,16 +82,16 @@
       };
 
       packages = genAttrs allSystems (system: {
-        emacs = import ./emacs.nix {
+        emacs = import ./packages/emacs.nix {
           pkgs = nixpkgs2305.legacyPackages."${system}";
           emacs = nixpkgs2305.legacyPackages."${system}".emacs29;
         };
-        emacs-nox = import ./emacs.nix {
+        emacs-nox = import ./packages/emacs.nix {
           pkgs = nixpkgs2305.legacyPackages."${system}";
           emacs = nixpkgs2305.legacyPackages."${system}".emacs29-nox;
         };
 
-        git-remote-doas = nixpkgs2305.legacyPackages."${system}".callPackage ./git-remote-doas {};
+        git-remote-doas = nixpkgs2305.legacyPackages."${system}".callPackage ./packages/git-remote-doas {};
       });
 
       lib = {
