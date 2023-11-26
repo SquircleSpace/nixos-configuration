@@ -75,10 +75,10 @@
       };
 
       nixosConfigurations = {
-        plasma = callNixosSystem ./nixosSystems/plasma;
-        Jobe = callNixosSystem ./nixosSystems/jobe;
-        Libbie = callNixosSystem ./nixosSystems/libbie;
-        pifer = callNixosSystem ./nixosSystems/pifer;
+        plasma = callNixosSystem ./nixosConfigurations/plasma;
+        Jobe = callNixosSystem ./nixosConfigurations/jobe;
+        Libbie = callNixosSystem ./nixosConfigurations/libbie;
+        pifer = callNixosSystem ./nixosConfigurations/pifer;
       };
 
       packages = genAttrs allSystems (system: {
