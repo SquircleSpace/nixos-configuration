@@ -65,7 +65,6 @@
         flakeAutoupdate = import ./flake-autoupdate.nix;
         gnome = import ./gnome.nix;
         kde = import ./kde.nix;
-        oldAda = import ./ada.nix;
         tailscale = import ./tailscale.nix;
         photosync = import ./photosync.nix;
         ada = import ./modules/ada.nix {inherit agenix self;};
