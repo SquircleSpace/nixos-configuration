@@ -5,7 +5,6 @@ mkNixosSystem {
   modules = [
     self.nixosModules.default
     self.nixosModules.gnome
-    self.nixosModules.oldAda
     self.nixosModules.photosync
     self.nixosModules.tailscale
 

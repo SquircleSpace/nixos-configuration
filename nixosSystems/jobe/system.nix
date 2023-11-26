@@ -3,21 +3,14 @@ let
   boot-windows = import ./boot-windows pkgs;
 in
 {
-  users.extraUsers.ada.password = builtins.trace ''
-    =====================================================
-    == WARNING WARNING WARNING WARNING WARNING WARNING ==
-    =====================================================
-    This version of NixOS no longer supports the password format you're using.
-    Your password has been changed to "asdf" temporarily.  Regenerate your
-    password file with mkpasswd.
-  '' "asdf";
-  users.motd = "YOU MUST REGENERATE YOUR PASSWORD.";
-  system.activationScripts."Warn about reset password" = ''
-    echo 'This version of NixOS no longer supports the password format you're using.'
-    echo 'Your password has been changed to "asdf" temporarily.  Regenerate your'
-    echo 'password file with mkpasswd.'
-    sleep 20
-  '';
+  squircle.space.ada.enable = true;
+  squircle.space.ada.extraPackages = with pkgs; [
+    darktable
+    lutris
+    nvtop
+    steam.run
+    wineWowPackages.stable
+  ];
 
   # Hello!  My name is
   networking.hostName = "Jobe";
@@ -145,14 +138,6 @@ in
     };
   };
 
-  users.extraUsers.ada.packages = with pkgs; [
-    darktable
-    lutris
-    nvtop
-    steam.run
-    wineWowPackages.stable
-  ];
-
   programs.steam.enable = true;
   programs.steam.remotePlay.openFirewall = true;
   hardware.steam-hardware.enable = true;
@@ -170,7 +155,7 @@ in
 
   # For cross-compiling to ARM
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
-  users.extraUsers.ada.extraGroups = [ "kvm" ];
+  squircle.space.ada.extraGroups = ["kvm"];
 
   services.borgbackup.smartjobs."rsync" = {
     paths = [ "/home/ada" "/crypt/photos" ];
