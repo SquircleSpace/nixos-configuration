@@ -1,9 +1,5 @@
 { config, pkgs, lib, ... }:
 {
-  imports = [
-    ./flake-autoupdate.nix
-    ./backup.nix
-  ];
   config = {
     # Manage that network
     networking.networkmanager.enable = lib.mkDefault true;

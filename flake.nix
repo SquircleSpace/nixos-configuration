@@ -59,18 +59,26 @@
           nix.registry.nixpkgs.flake = nixpkgs-flake;
         };
 
-        common = import ./common.nix;
-        ssh = import ./ssh.nix;
-        backup = import ./backup.nix;
-        flakeAutoupdate = import ./flake-autoupdate.nix;
-        gnome = import ./gnome.nix;
-        kde = import ./kde.nix;
-        tailscale = import ./tailscale.nix;
-        photosync = import ./photosync.nix;
+        common = import ./modules/common.nix;
+        ssh = import ./modules/ssh.nix;
+        backup = import ./modules/backup.nix;
+        flakeAutoupdate = import ./modules/flake-autoupdate.nix;
+        gnome = import ./modules/gnome.nix;
+        kde = import ./modules/kde.nix;
+        tailscale = import ./modules/tailscale.nix;
+        photosync = import ./modules/photosync.nix;
         ada = import ./modules/ada.nix {inherit agenix self;};
 
         default = { ... }: {
-          imports = [ configurationRevision nixpkgsPinModule common ssh ada ];
+          imports = [
+            configurationRevision
+            nixpkgsPinModule
+            common
+            flakeAutoupdate
+            backup
+            ssh
+            ada
+          ];
         };
       };
 
