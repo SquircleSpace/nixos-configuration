@@ -5,7 +5,6 @@ mkNixosSystem {
   specialArgs = { nixpkgs2211-flake = nixpkgs2211; };
   modules = [
     self.nixosModules.default
-    self.nixosModules.oldAda
     self.nixosModules.tailscale
     rss4email.nixosModule
 
