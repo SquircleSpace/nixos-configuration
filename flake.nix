@@ -90,12 +90,10 @@
       };
 
       packages = genAttrs allSystems (system: {
-        emacs = import ./packages/emacs.nix {
-          pkgs = nixpkgs2305.legacyPackages."${system}";
+        emacs = nixpkgs2305.legacyPackages."${system}".callPackage ./packages/emacs.nix {
           emacs = nixpkgs2305.legacyPackages."${system}".emacs29;
         };
-        emacs-nox = import ./packages/emacs.nix {
-          pkgs = nixpkgs2305.legacyPackages."${system}";
+        emacs-nox = nixpkgs2305.legacyPackages."${system}".callPackage ./packages/emacs.nix {
           emacs = nixpkgs2305.legacyPackages."${system}".emacs29-nox;
         };
 

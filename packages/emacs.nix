@@ -1,6 +1,6 @@
-{ pkgs, emacs }:
+{ emacsPackagesFor, emacs }:
 let
-  emacsWithPackages = (pkgs.emacsPackagesFor emacs).emacsWithPackages;
+  emacsWithPackages = (emacsPackagesFor emacs).emacsWithPackages;
 in
   emacsWithPackages (epkgs: (with epkgs.melpaStablePackages; [
     magit
