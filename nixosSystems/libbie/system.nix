@@ -1,5 +1,7 @@
 { self, config, pkgs, ... }:
 {
+  squircle.space.ada.enable = true;
+
   hardware.system76.enableAll = true;
 
   boot.loader.timeout = 1;
@@ -96,7 +98,7 @@
 
   hardware.opengl.driSupport32Bit = true;
 
-  users.extraUsers.ada.packages = with pkgs; [
+  squircle.space.ada.extraPackages = with pkgs; [
     steam.run
     wineWowPackages.stable
   ];
