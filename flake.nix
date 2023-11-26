@@ -92,6 +92,8 @@
         };
 
         git-remote-doas = nixpkgs2305.legacyPackages."${system}".callPackage ./packages/git-remote-doas {};
+
+        etc-nixos-post-receive-hook = nixpkgs2305.legacyPackages."${system}".callPackage ./packages/etc-nixos-post-receive-hook.nix {};
       });
 
       lib = {

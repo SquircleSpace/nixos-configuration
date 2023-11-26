@@ -1,7 +1,6 @@
 { config, pkgs, lib, ... }:
 {
   imports = [
-    ./overlays.nix
     ./flake-autoupdate.nix
     ./backup.nix
   ];

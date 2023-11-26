@@ -45,7 +45,7 @@
   system.autoUpgrade.flags = [ "--commit-lock-file" "--recreate-lock-file" ];
   environment.etc."nixos/.git/hooks/post-receive" = {
     enable = true;
-    source = pkgs.etc-nixos-post-receive-hook;
+    source = self.packages."${pkgs.system}".etc-nixos-post-receive-hook;
   };
 
   documentation.dev.enable = true;
