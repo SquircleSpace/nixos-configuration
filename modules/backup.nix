@@ -129,6 +129,7 @@ let
   mkBorgbackupJob = name: cfg: lib.nameValuePair name {
     repo = "${cfg.server.user}@${cfg.server.hostname}:${cfg.repoName}";
     startAt = cfg.startAt;
+    persistentTimer = true;
     environment = {
       "BORG_REMOTE_PATH" = cfg.server.borgCommand;
       "BORG_RSH" = "ssh -i ${cfg.privateKeyPath}";
