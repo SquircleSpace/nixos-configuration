@@ -164,7 +164,7 @@ let
         mkdir -p "$(dirname "$SNAPSHOT_PATH/$SUBVOL_PATH")"
         # Clear out empty placeholder directories that get mounted on
         if [ -e "$SNAPSHOT_PATH/$SUBVOL_PATH" ]; then
-          rmdir "$SNAPSHOT_PATH/$SUBVOL_PATH"
+          rm -rdf "$SNAPSHOT_PATH/$SUBVOL_PATH"
         fi
         ${pkgs.btrfs-progs}/bin/btrfs subvolume snapshot "$SUBVOL_PATH" "$SNAPSHOT_PATH/$SUBVOL_PATH"
       }
