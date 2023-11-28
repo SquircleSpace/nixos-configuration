@@ -1,5 +1,5 @@
 # This test ensures that user password options have the priority order
-# I expect in modules/ada.nix.
+# I expect in nixosModules/ada.nix.
 let
   baseAdaConfig = {
     isNormalUser = true;
