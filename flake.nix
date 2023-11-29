@@ -103,8 +103,8 @@
       });
 
       lib = {
-        publicKeys = import ./publicKeys.nix;
-        backupServers.rsync = import ./server-rsync.net.nix;
+        publicKeys = import ./lib/publicKeys.nix;
+        backupServers.rsync = import ./lib/server-rsync.net.nix;
       };
     };
 }
