@@ -17,6 +17,7 @@
     # No sudo!
     security.sudo.enable = lib.mkDefault false;
     security.doas.enable = lib.mkDefault true;
+    programs.bash.interactiveShellInit = "complete -cf doas";
     security.doas.extraRules = [
       {
         groups = [ "wheel" ];
