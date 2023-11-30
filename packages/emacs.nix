@@ -1,29 +1,33 @@
-{ emacsPackagesFor, emacs }:
+{ emacsPackagesFor, emacs, writeTextDir }:
 let
   emacsWithPackages = (emacsPackagesFor emacs).emacsWithPackages;
 in
-  emacsWithPackages (epkgs: (with epkgs.melpaStablePackages; [
-    magit
-    haskell-mode
-    ido-yes-or-no
-    slime
-    ac-slime
-    smartparens
-    unfill
-    volatile-highlights
-    define-word
-    nix-mode
-    exec-path-from-shell
-    beacon
-    diminish
-    flx-ido
-  ])
-  ++ (with epkgs.melpaPackages; [
-    python-mode
-    git-gutter
-    git-gutter-fringe
-  ])
-  ++ (with epkgs.elpaPackages; [
-    undo-tree
-    auctex
-  ]))
+emacsWithPackages (epkgs: [
+  (writeTextDir "share/emacs/site-lisp/default.el"
+    (builtins.readFile ./emacs-config.el))
+]
+++ (with epkgs.melpaStablePackages; [
+  beacon
+  consult
+  define-word
+  diminish
+  exec-path-from-shell
+  haskell-mode
+  magit
+  marginalia
+  nix-mode
+  orderless
+  slime
+  smartparens
+  volatile-highlights
+])
+++ (with epkgs.melpaPackages; [
+  git-gutter
+  git-gutter-fringe
+  python-mode
+])
+++ (with epkgs.elpaPackages; [
+  auctex
+  undo-tree
+  vertico
+]))
