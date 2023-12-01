@@ -1,4 +1,11 @@
-{ emacsPackagesFor, emacs, writeText, runCommand, lib, extraInitFiles ? [] }:
+{ emacsPackagesFor
+, emacs
+, writeText
+, runCommand
+, lib
+, extraInitFiles ? []
+, extraPackages ? []
+}:
 let
   emacsWithPackages = (emacsPackagesFor emacs).emacsWithPackages;
   withNativeCompilation = emacs.withNativeCompilation or emacs.nativeComp or false;
@@ -73,4 +80,8 @@ initPackages
   auctex
   undo-tree
   vertico
-]))
+])
+++ (if builtins.isFunction extraPackages
+    then extraPackages epkgs
+    else extraPackages)
+)
