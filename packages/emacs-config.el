@@ -1,3 +1,8 @@
+;; -*- lexical-binding: t -*-
+
+;; https://github.com/jwiegley/use-package/issues/436
+(require 'use-package)
+
 ;; ===============================
 ;; completion
 ;; ===============================
