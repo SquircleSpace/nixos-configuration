@@ -58,6 +58,7 @@ emacsWithPackages (epkgs:
 initPackages
 ++ (with epkgs.melpaStablePackages; [
   beacon
+  company
   consult
   define-word
   diminish
@@ -68,6 +69,7 @@ initPackages
   nix-mode
   orderless
   slime
+  slime-company
   smartparens
   volatile-highlights
 ])

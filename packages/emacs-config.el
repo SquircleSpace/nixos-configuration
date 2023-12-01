@@ -1,6 +1,6 @@
 ;; -*- lexical-binding: t -*-
 
-;; https://github.com/jwiegley/use-package/issues/436
+;; https://web.archive.org/web/20201206011037/https://github.com/jwiegley/use-package/issues/436
 (require 'use-package)
 
 ;; ===============================
@@ -10,13 +10,42 @@
 (use-package vertico
   :config (vertico-mode)
   :demand t)
+
 (use-package marginalia
   :config (marginalia-mode)
   :demand t)
+
 (use-package orderless
   :demand t
   :custom
-  (completion-styles '(orderless basic)))
+  (completion-styles '(substring orderless basic)))
+
+;; ===============================
+;; company
+;; ===============================
+
+;; Orderless and company don't play nicely together, sadly.  Well,
+;; they do, but the orderless completion style isn't very nice for
+;; company, and there doesn't seem to be a better way of changing
+;; completion-styles just for company.
+;; https://web.archive.org/web/20231118143102/https://www.reddit.com/r/emacs/comments/nichkl/how_to_use_different_completion_styles_in_the/
+
+(use-package company
+  :preface
+  (defun ada-company-capf-around-advice (orig-fun &rest args)
+    ;; dynamic scoping saves the day!
+    (let ((completion-styles '(basic partial-completion emacs22)))
+      (apply orig-fun args)))
+  :hook (after-init . global-company-mode)
+  :config
+  (advice-add 'company-capf :around #'ada-company-capf-around-advice))
+
+(use-package slime-company
+  :after (slime company)
+  :config
+  (progn
+    (add-to-list 'slime-contribs 'slime-company)
+    (slime-company-init)))
 
 ;; ===============================
 ;; consult
