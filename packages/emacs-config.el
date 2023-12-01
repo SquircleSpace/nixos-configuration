@@ -52,10 +52,19 @@
 ;; ===============================
 
 (use-package consult
-  :bind (("M-g g" . consult-goto-line)
-         ("M-g M-g" . consult-goto-line)
-         ("M-]" . consult-grep)
-         ("C-x C-d" . consult-find)))
+  :bind
+  (("M-g g" . consult-goto-line)
+   ("M-g M-g" . consult-goto-line)
+   ("M-]" . consult-grep)
+   ("C-x C-d" . consult-find))
+  :preface
+  (setf completion-in-region-function
+        ;; https://web.archive.org/web/20231120220521/https://github.com/minad/vertico#completion-at-point-and-completion-in-region
+        (lambda (&rest args)
+          (apply (if vertico-mode
+                     #'consult-completion-in-region
+                   #'completion--in-region)
+                 args))))
 
 ;; ===============================
 ;; rgrep-fast
