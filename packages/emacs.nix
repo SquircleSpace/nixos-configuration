@@ -73,9 +73,9 @@ emacsWithPackages (epkgs:
     marginalia
     nix-mode
     orderless
+    paredit
     python-mode
     sly
-    smartparens
     undo-tree
     vertico
     volatile-highlights

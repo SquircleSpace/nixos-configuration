@@ -190,16 +190,13 @@ point reaches the beginning or end of the buffer, stop there."
     (diminish 'undo-tree-mode)
     (setf undo-tree-auto-save-history nil)))
 
-(use-package smartparens
-  :demand t
-  :config
-  (progn
-    (setf sp-autoskip-closing-pair t)
-    (sp-use-paredit-bindings)
-    (smartparens-global-mode 1)
-    (show-smartparens-global-mode 1)
-    (setf sp-highlight-pair-overlay nil)
-    (diminish 'smartparens-mode)))
+(use-package paredit
+  :hook ((lisp-data-mode . paredit-mode)
+         (lisp-mode . paredit-mode)))
+
+(use-package elec-pair
+  :init
+  (electric-pair-mode 1))
 
 (use-package windmove
   :demand t
