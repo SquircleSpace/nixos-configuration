@@ -53,36 +53,33 @@ let
   compoundInitPackage = compile { sourceFile = compoundInitFile; installName = "default.el"; };
 
   initPackages = if (builtins.tail initFiles != []) then [compoundInitPackage] ++ defaultPackages else [trivialInitPackage];
+
+  prioritizedEpkgs = epkgs: epkgs.elpaPackages // epkgs.melpaPackages;
 in
 emacsWithPackages (epkgs:
-initPackages
-++ (with epkgs.melpaStablePackages; [
-  beacon
-  company
-  consult
-  define-word
-  diminish
-  exec-path-from-shell
-  haskell-mode
-  magit
-  marginalia
-  nix-mode
-  orderless
-  smartparens
-  volatile-highlights
-])
-++ (with epkgs.melpaPackages; [
-  git-gutter
-  git-gutter-fringe
-  python-mode
-  sly
-])
-++ (with epkgs.elpaPackages; [
-  auctex
-  undo-tree
-  vertico
-])
-++ (if builtins.isFunction extraPackages
-    then extraPackages epkgs
-    else extraPackages)
-)
+  initPackages
+  ++ (with (prioritizedEpkgs epkgs); [
+    auctex
+    beacon
+    company
+    consult
+    define-word
+    diminish
+    exec-path-from-shell
+    git-gutter
+    git-gutter-fringe
+    haskell-mode
+    magit
+    marginalia
+    nix-mode
+    orderless
+    python-mode
+    sly
+    smartparens
+    undo-tree
+    vertico
+    volatile-highlights
+  ])
+  ++ (if builtins.isFunction extraPackages
+      then extraPackages epkgs
+      else extraPackages))
