@@ -134,6 +134,9 @@
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
+(use-package expand-region
+  :bind ("C-=" . 'er/expand-region))
+
 ;; Some stuff stolen from Emacs prelude
 (defadvice kill-ring-save (before smart-copy activate compile)
   "When called interactively with no active region, copy a single line instead."

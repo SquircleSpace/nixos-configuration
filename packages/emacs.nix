@@ -66,6 +66,7 @@ emacsWithPackages (epkgs:
     define-word
     diminish
     exec-path-from-shell
+    expand-region
     git-gutter
     git-gutter-fringe
     haskell-mode
