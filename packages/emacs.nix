@@ -68,8 +68,6 @@ initPackages
   marginalia
   nix-mode
   orderless
-  slime
-  slime-company
   smartparens
   volatile-highlights
 ])
@@ -77,6 +75,7 @@ initPackages
   git-gutter
   git-gutter-fringe
   python-mode
+  sly
 ])
 ++ (with epkgs.elpaPackages; [
   auctex

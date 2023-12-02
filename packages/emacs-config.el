@@ -40,13 +40,6 @@
   :config
   (advice-add 'company-capf :around #'ada-company-capf-around-advice))
 
-(use-package slime-company
-  :after (slime company)
-  :config
-  (progn
-    (add-to-list 'slime-contribs 'slime-company)
-    (slime-company-init)))
-
 ;; ===============================
 ;; consult
 ;; ===============================
@@ -294,14 +287,12 @@ point reaches the beginning or end of the buffer, stop there."
           (other . "gnu")))))
 
 ;; ===============================
-;; slime
+;; sly
 ;; ===============================
 
-(use-package slime
+(use-package sly
   :after lisp-mode
-  :defer t
-  :config
-  (setf slime-contribs '(slime-fancy)))
+  :defer t)
 
 ;; ===============================
 ;; macOS
