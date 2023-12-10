@@ -6,6 +6,7 @@ rec {
   users.ada.photosync = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL0ZZVdNVBVhNKQoibirCEzdyseqStY4qhnwdZ5X13XZ";
 
   systems.plasma = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF8o4UTI6QggS1xTlLJI/uoy/fFvLf2kQ7rgwMTGxnX4";
+  systems.pifer = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMZoNhpEnymFLYZqDyEWg/34QPiSTuY0BG7QuB2HCfMV";
 
   trustedClients = with users.ada; [
     jobe
