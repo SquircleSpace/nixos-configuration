@@ -166,14 +166,6 @@ in
     extraOptions = [ "--privileged" "--network=host"];
   };
 
-  virtualisation.oci-containers.containers.zwave-js-server = {
-    autoStart = true;
-    image = "zwavejs/zwavejs2mqtt:latest";
-    volumes = [ "/var/lib/zwave-js-server/:/usr/src/app/store" ];
-    extraOptions = [ "--device=/dev/serial/by-id/usb-Silicon_Labs_Zooz_ZST10_700_Z-Wave_Stick_b2d4b15fc360ec11abd83f7625bfaa52-if00-port0:/dev/zwave" ];
-    ports = [ "8091:8091" "3000:3000" ];
-  };
-
   services.nginx.virtualHosts."home.lan" = homeAssistantVirtualHostConfig;
   services.nginx.virtualHosts."home.squircle.space" = homeAssistantVirtualHostConfig;
 }
