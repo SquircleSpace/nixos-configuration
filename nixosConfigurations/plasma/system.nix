@@ -11,6 +11,9 @@
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.bootspec.enable = true;
 
+  # To allow cross compilation
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+
   services.fwupd.enable = true;
 
   services.btrfs.autoScrub = {
