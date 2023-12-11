@@ -1,4 +1,4 @@
-{ self, config, lib, pkgs, nixpkgs2211-flake, ... }:
+{ self, config, lib, pkgs, ... }:
 let
   postSensor = pkgs.writeScript "postSensor" ''
     
@@ -138,7 +138,7 @@ in
   services.nextcloud.config.overwriteProtocol = "https";
   services.nextcloud.hostName = "cloud.squircle.space";
   services.nextcloud.autoUpdateApps.enable = true;
-  services.nextcloud.package = nixpkgs2211-flake.legacyPackages."aarch64-linux".nextcloud24;
+  services.nextcloud.package = pkgs.nextcloud25;
   services.nginx.virtualHosts."cloud.squircle.space" = {
     forceSSL = true;
     sslCertificate = "/var/cert/cloud.squircle.space.crt";
