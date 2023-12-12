@@ -32,6 +32,7 @@ in
     ./homebridge-module.nix
     ./rss4email.nix
     ./pi-hole.nix
+    ./wg.nix
   ];
 
   boot.loader.grub.enable = false;
