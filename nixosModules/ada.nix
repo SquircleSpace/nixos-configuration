@@ -164,7 +164,7 @@ with lib; with types;
 
     (mkIf (cfg.hashedPasswordFile != null) {
       users.users."${cfg.username}".hashedPassword = fallbackHashedPassword;
-      users.users."${cfg.username}".passwordFile = cfg.hashedPasswordFile;
+      users.users."${cfg.username}".hashedPasswordFile = cfg.hashedPasswordFile;
     })
 
     {
