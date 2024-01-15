@@ -2,6 +2,7 @@
   inputs.agenix.url = "github:ryantm/agenix";
   inputs.dwarffs.url = "github:edolstra/dwarffs";
   inputs.nixpkgs2305.url = "github:NixOS/nixpkgs/nixos-23.05";
+  inputs.nixpkgs2311.url = "github:NixOS/nixpkgs/nixos-23.11";
   inputs.lanzaboote = {
     url = "github:nix-community/lanzaboote/v0.3.0";
     inputs.nixpkgs.follows = "nixpkgs2305";
@@ -16,6 +17,7 @@
   outputs = {
     self,
     nixpkgs2305,
+    nixpkgs2311,
     lanzaboote,
     kmonad,
     dwarffs,
