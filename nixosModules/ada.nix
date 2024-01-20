@@ -157,7 +157,7 @@ with lib; with types;
     (mkIf (cfg.hashedPasswordFile == null && cfg.ageEncryptedHashedPassword != null) {
       users.users."${cfg.username}" = {
         hashedPassword = fallbackHashedPassword;
-        passwordFile = config.age.secrets.adaHashedPassword.path;
+        hashedPasswordFile = config.age.secrets.adaHashedPassword.path;
       };
       age.secrets.adaHashedPassword.file = cfg.ageEncryptedHashedPassword;
     })

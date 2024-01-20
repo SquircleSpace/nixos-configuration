@@ -9,12 +9,12 @@ let
   passwordConfigs = pkgs: {
     password = "a";
     hashedPassword = "$y$j9T$CkMijPV/SVZylz9bYYa9H1$cd1n.uBRwi6cmal4nkcfwqtkrSC56IaU5MWzTYVBSO6"; # b
-    passwordFile = "${pkgs.writeText "password.txt" "$y$j9T$eutg53BKZ.3RAJFI1DaBz.$Bq1UtynN/W3olWfipTn2GCrKfD5cPtP7tw1LuLS81UD"}"; # c
+    hashedPasswordFile = "${pkgs.writeText "password.txt" "$y$j9T$eutg53BKZ.3RAJFI1DaBz.$Bq1UtynN/W3olWfipTn2GCrKfD5cPtP7tw1LuLS81UD"}"; # c
   };
   passwords = {
     password = "a";
     hashedPassword = "b";
-    passwordFile = "c";
+    hashedPasswordFile = "c";
   };
 
   adaConfigWithPasswordFields = pkgs: keys: baseAdaConfig // builtins.foldl' (l: r: l // r) {} (builtins.map (k: {"${k}" = (passwordConfigs pkgs)."${k}";}) keys);
@@ -37,14 +37,14 @@ in
   name = "password-priority-order";
 
   nodes.machine1 = {config, pkgs, ...}: configWithPasswordFields pkgs ["password" "hashedPassword"];
-  nodes.machine2 = {config, pkgs, ...}: configWithPasswordFields pkgs ["password" "passwordFile"];
-  nodes.machine3 = {config, pkgs, ...}: configWithPasswordFields pkgs ["hashedPassword" "passwordFile"];
-  nodes.machine4 = {config, pkgs, ...}: configWithPasswordFields pkgs ["password" "hashedPassword" "passwordFile"];
+  nodes.machine2 = {config, pkgs, ...}: configWithPasswordFields pkgs ["password" "hashedPasswordFile"];
+  nodes.machine3 = {config, pkgs, ...}: configWithPasswordFields pkgs ["hashedPassword" "hashedPasswordFile"];
+  nodes.machine4 = {config, pkgs, ...}: configWithPasswordFields pkgs ["password" "hashedPassword" "hashedPasswordFile"];
 
   testScript = builtins.concatStringsSep "\n" [
     (scriptForMachineAndKeys "machine1" "password")
-    (scriptForMachineAndKeys "machine2" "passwordFile")
-    (scriptForMachineAndKeys "machine3" "passwordFile")
-    (scriptForMachineAndKeys "machine4" "passwordFile")
+    (scriptForMachineAndKeys "machine2" "hashedPasswordFile")
+    (scriptForMachineAndKeys "machine3" "hashedPasswordFile")
+    (scriptForMachineAndKeys "machine4" "hashedPasswordFile")
   ];
 }
