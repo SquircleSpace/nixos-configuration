@@ -18,8 +18,14 @@
 
     peers = [
       {
+        # Sasha Phone
         publicKey = "cJx1AKoCLjql3IBa0fgmQfSzMPMBARgIHU/qusbEzR8=";
         allowedIPs = [ "10.100.0.2/32" ];
+      }
+      {
+        # Sasha computer
+        publicKey = "D9dWHnrcRQ3NU1Kbztvjau6AhvTmKRZDUDV+whk9EDg=";
+        allowedIPs = [ "10.100.0.3/32" ];
       }
     ];
   };
