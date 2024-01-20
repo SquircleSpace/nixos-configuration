@@ -101,13 +101,6 @@ in
   services.fail2ban.enable = true;
   services.fail2ban.bantime-increment.enable = true;
   services.fail2ban.bantime-increment.maxtime = "30d";
-  services.fail2ban.jails = {
-    sshd = ''
-      mode = aggressive
-      enabled = true
-      port = ${lib.concatMapStringsSep "," (p: toString p) config.services.openssh.ports}
-    '';
-  };
 
   users.mutableUsers = false;
 
@@ -126,7 +119,6 @@ in
   services.nextcloud.hostName = "cloud.squircle.space";
   services.nextcloud.autoUpdateApps.enable = true;
   services.nextcloud.package = pkgs.nextcloud27;
-  services.nextcloud.enableBrokenCiphersForSSE = false;
   services.nginx.virtualHosts."cloud.squircle.space" = {
     forceSSL = true;
     sslCertificate = "/var/cert/cloud.squircle.space.crt";

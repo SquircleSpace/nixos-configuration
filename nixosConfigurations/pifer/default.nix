@@ -1,6 +1,6 @@
-{ self, mkNixosSystem, nixpkgs2305, rss4email }:
+{ self, mkNixosSystem, nixpkgs2311, rss4email }:
 mkNixosSystem {
-  nixpkgs = nixpkgs2305;
+  nixpkgs = nixpkgs2311;
   system = "aarch64-linux";
   modules = [
     self.nixosModules.default
