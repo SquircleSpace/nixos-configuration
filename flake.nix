@@ -3,6 +3,7 @@
   inputs.dwarffs.url = "github:edolstra/dwarffs";
   inputs.nixpkgs2305.url = "github:NixOS/nixpkgs/nixos-23.05";
   inputs.nixpkgs2311.url = "github:NixOS/nixpkgs/nixos-23.11";
+  inputs.nixos-hardware.url = "github:NixOS/nixos-hardware/master";
   inputs.lanzaboote = {
     url = "github:nix-community/lanzaboote/v0.3.0";
     inputs.nixpkgs.follows = "nixpkgs2305";
@@ -18,6 +19,7 @@
     self,
     nixpkgs2305,
     nixpkgs2311,
+    nixos-hardware,
     lanzaboote,
     kmonad,
     dwarffs,
