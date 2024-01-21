@@ -35,12 +35,6 @@ in
     ./wg.nix
   ];
 
-  boot.loader.grub.enable = false;
-  boot.loader.raspberryPi.enable = true;
-  boot.loader.raspberryPi.version = 4;
-  boot.loader.raspberryPi.uboot.configurationLimit = 3;
-  boot.kernelPackages = pkgs.linuxPackages_rpi4;
-
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/9d373950-72e0-44ab-9253-1bf37bc30edf";
     fsType = "btrfs";
