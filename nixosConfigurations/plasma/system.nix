@@ -1,6 +1,7 @@
 { self, config, pkgs, lib, ... }:
 {
   squircle.space.ada.enable = true;
+  squircle.space.fprintd.disableOnLidClose = true;
 
   boot.loader.systemd-boot.enable = false;
   boot.lanzaboote = {

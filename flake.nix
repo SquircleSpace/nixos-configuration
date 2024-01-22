@@ -70,6 +70,7 @@
         tailscale = import ./nixosModules/tailscale.nix;
         photosync = import ./nixosModules/photosync.nix;
         ada = import ./nixosModules/ada.nix {inherit agenix self;};
+        fprintdLidSwitch = import ./nixosModules/fprintdLidSwitch.nix;
 
         default = { ... }: {
           imports = [
@@ -80,6 +81,7 @@
             backup
             ssh
             ada
+            fprintdLidSwitch
           ];
         };
       };
