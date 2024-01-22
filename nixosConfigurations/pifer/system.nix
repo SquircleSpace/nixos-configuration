@@ -36,24 +36,24 @@ in
   ];
 
   fileSystems."/" = {
-    device = "/dev/disk/by-uuid/9d373950-72e0-44ab-9253-1bf37bc30edf";
+    device = "/dev/disk/by-uuid/b9755c1c-e633-4498-a4c7-3b07a539d6b9";
     fsType = "btrfs";
     options = [ "subvol=/root" ];
   };
 
   fileSystems."/nix" = {
-    device = "/dev/disk/by-uuid/9d373950-72e0-44ab-9253-1bf37bc30edf";
+    device = "/dev/disk/by-uuid/b9755c1c-e633-4498-a4c7-3b07a539d6b9";
     fsType = "btrfs";
     options = [ "subvol=/nix" ];
   };
 
   fileSystems."/btrfs" = {
-    device = "/dev/disk/by-uuid/9d373950-72e0-44ab-9253-1bf37bc30edf";
+    device = "/dev/disk/by-uuid/b9755c1c-e633-4498-a4c7-3b07a539d6b9";
     fsType = "btrfs";
   };
 
   fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/4A80-CA73";
+    device = "/dev/disk/by-uuid/3BB6-E6F7";
     fsType = "vfat";
   };
 
@@ -71,6 +71,21 @@ in
   };
 
   boot.consoleLogLevel = lib.mkDefault 7;
+
+  # https://web.archive.org/web/20230814074946/https://www.eisfunke.com/posts/2023/nixos-on-raspberry-pi-4.html
+  # https://web.archive.org/web/20230814075812/https://git.eisfunke.com/config/nixos/-/blob/main/devices/amethyst.nix
+  boot.initrd.availableKernelModules = [
+    "usbhid"
+	  "usb_storage"
+	  "vc4"
+	  "pcie_brcmstb" # required for the pcie bus to work
+	  "reset-raspberrypi" # required for vl805 firmware to load
+  ];
+  boot.loader.systemd-boot = {
+    enable = true;
+    configurationLimit = 7;
+  };
+  hardware.enableRedistributableFirmware = true;
 
   networking.hostName = "pifer";
 
