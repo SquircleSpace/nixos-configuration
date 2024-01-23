@@ -26,8 +26,6 @@ let
   uiPackages = with pkgs; [
     aspellDicts.en
     caffeine-ng
-    chromium
-    firefox
     gimp
     gitAndTools.git-filter-repo
     gparted
@@ -38,7 +36,6 @@ let
     paprefs
     pavucontrol
     stow
-    terminator
     vlc
   ];
   kdePackages = with pkgs.plasma5Packages; [
