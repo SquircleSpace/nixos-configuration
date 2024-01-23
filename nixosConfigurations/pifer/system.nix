@@ -31,7 +31,6 @@ in
   imports = [
     ./homebridge-module.nix
     ./rss4email.nix
-    ./pi-hole.nix
     ./wg.nix
   ];
 
@@ -137,6 +136,52 @@ in
         return 444;
       }
     '';
+  };
+
+  services.adguardhome = {
+    enable = true;
+    openFirewall = true;
+    mutableSettings = false;
+    settings = {
+      users = [
+        {
+          name = "ada";
+          # Good luck.
+          password = "$2y$10$7KIPMFc67n5anIJxQAUc7OLwELyG5nqfnFoLA4fQfjzKVkMVPH1wi";
+        }
+      ];
+      http.address = "0.0.0.0:8080";
+      dns.bind_hosts = [ "0.0.0.0" ];
+      dns.upstream_dns = [ "https://dns.cloudflare.com/dns-query" ];
+      dns.bootstrap_dns = [ "1.1.1.1" "1.0.0.1" "2606:4700:4700::1111" "2606:4700:4700::1001" ];
+      statistics.enabled = true;
+      querylog.enabled = false;
+      filters = [
+        {
+          enabled = true;
+          url = "https://adguardteam.github.io/HostlistsRegistry/assets/filter_1.txt";
+          name = "AdGuard DNS filter";
+          id = 1;
+        }
+        {
+          enabled = true;
+          url = "https://adguardteam.github.io/HostlistsRegistry/assets/filter_2.txt";
+          name = "AdAway Default Blocklist";
+          id = 2;
+        }
+      ];
+    };
+  };
+  services.nginx.virtualHosts."pihole.squircle.space" = {
+    forceSSL = true;
+    sslCertificate = "/var/cert/pihole.squircle.space.crt";
+    sslCertificateKey = "/var/cert/pihole.squircle.space.key";
+    extraConfig = ''
+      allow 100.0.0.0/8;
+      allow 127.0.0.1;
+      deny all;
+    '';
+    locations."/".proxyPass = "http://localhost:8080";
   };
 
   networking.firewall.allowedTCPPorts = [ 22 80 443 41177 8080 21064 8123 ];
