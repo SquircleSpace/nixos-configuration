@@ -14,6 +14,7 @@ let
     lldb
     lsof
     mosh
+    parted
     psmisc
     roswell
     smartmontools
