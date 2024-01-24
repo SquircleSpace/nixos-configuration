@@ -10,11 +10,19 @@
   };
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.kernelParams = [ "amdgpu.sg_display=0" ]; # https://community.frame.work/t/tracking-graphical-corruption-in-fedora-39-amd-3-03-bios/39073/27
+  boot.kernelParams = [
+    "amdgpu.sg_display=0" # https://community.frame.work/t/tracking-graphical-corruption-in-fedora-39-amd-3-03-bios/39073/27
+  ] ++ lib.optionals config.boot.plymouth.enable [
+    "quiet"
+    "udev.log_level=3"
+  ];
   boot.bootspec.enable = true;
 
   # To allow cross compilation
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+
+  # Use the fancy new stage 1
+  boot.initrd.systemd.enable = true;
 
   services.fwupd.enable = true;
 
