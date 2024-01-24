@@ -27,6 +27,7 @@ let
   uiPackages = with pkgs; [
     aspellDicts.en
     caffeine-ng
+    firefox
     gimp
     gitAndTools.git-filter-repo
     gparted
