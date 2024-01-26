@@ -59,6 +59,7 @@
         };
         nixpkgsPinModule = { nixpkgs-flake, ... }: {
           nix.registry.nixpkgs.flake = nixpkgs-flake;
+          nix.registry.squirclespace.flake = self;
         };
 
         common = import ./nixosModules/common.nix;
