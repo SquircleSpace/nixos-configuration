@@ -42,15 +42,15 @@
 
       genAttrs = list: fn: builtins.foldl' (l: r: l // r) {} (builtins.map (key: {"${key}" = fn key;}) list);
 
-      runTestWithNixpkgs = system: nixpkgs: test: (import (nixpkgs2305 + "/nixos/lib") {}).runTest {
+      runTestWithNixpkgs = system: nixpkgs: test: (import (nixpkgs + "/nixos/lib") {}).runTest {
         imports = [test];
         hostPkgs = nixpkgs.legacyPackages."${system}";
         defaults.nixpkgs.pkgs = nixpkgs.legacyPackages."${system}";
       };
     in {
       checks = genAttrs nixosSystems (system: {
-        passwordPriorityOrder = runTestWithNixpkgs system nixpkgs2305 ./checks/passwordPriorityOrder.nix;
-        adaModule = runTestWithNixpkgs system nixpkgs2305 (import ./checks/ada.nix self);
+        passwordPriorityOrder = runTestWithNixpkgs system nixpkgs2311 ./checks/passwordPriorityOrder.nix;
+        adaModule = runTestWithNixpkgs system nixpkgs2311 (import ./checks/ada.nix self);
       });
 
       nixosModules = rec {
