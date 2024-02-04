@@ -5,7 +5,6 @@ mkNixosSystem {
   modules = [
     self.nixosModules.default
     self.nixosModules.gnome
-    self.nixosModules.tailscale
 
     ./system.nix
     ./hardware.nix

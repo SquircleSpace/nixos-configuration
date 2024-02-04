@@ -1,6 +1,8 @@
 { self, config, pkgs, ... }:
 {
   squircle.space.ada.enable = true;
+  services.tailscale.enable = true;
+  services.tailscale.openFirewall = true;
 
   hardware.system76.enableAll = true;
 

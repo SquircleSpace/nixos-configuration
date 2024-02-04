@@ -8,7 +8,6 @@ mkNixosSystem {
     nixos-hardware.nixosModules.framework-13-7040-amd
     self.nixosModules.default
     self.nixosModules.kde
-    self.nixosModules.tailscale
 
     ./system.nix
     ./hardware.nix

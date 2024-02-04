@@ -6,7 +6,6 @@ mkNixosSystem {
     self.nixosModules.default
     self.nixosModules.gnome
     self.nixosModules.photosync
-    self.nixosModules.tailscale
 
     ./system.nix
     ./hardware.nix

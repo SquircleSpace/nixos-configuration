@@ -11,6 +11,8 @@ in
     steam.run
     wineWowPackages.stable
   ];
+  services.tailscale.enable = true;
+  services.tailscale.openFirewall = true;
 
   # Hello!  My name is
   networking.hostName = "Jobe";

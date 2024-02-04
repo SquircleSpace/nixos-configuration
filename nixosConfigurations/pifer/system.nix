@@ -35,6 +35,9 @@ in
   users.users.ada = {
     uid = 1000;
   };
+  services.tailscale.enable = true;
+  services.tailscale.openFirewall = true;
+  services.tailscale.useRoutingFeatures = "server";
 
   imports = [
     ./homebridge-module.nix

@@ -2,6 +2,8 @@
 {
   squircle.space.ada.enable = true;
   squircle.space.fprintd.disableOnLidClose = true;
+  services.tailscale.enable = true;
+  services.tailscale.openFirewall = true;
 
   boot.loader.systemd-boot.enable = false;
   boot.lanzaboote = {

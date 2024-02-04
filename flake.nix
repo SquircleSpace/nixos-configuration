@@ -68,7 +68,6 @@
         flakeAutoupdate = import ./nixosModules/flake-autoupdate.nix;
         gnome = import ./nixosModules/gnome.nix;
         kde = import ./nixosModules/kde.nix;
-        tailscale = import ./nixosModules/tailscale.nix;
         photosync = import ./nixosModules/photosync.nix;
         ada = import ./nixosModules/ada.nix {inherit agenix self;};
         fprintdLidSwitch = import ./nixosModules/fprintdLidSwitch.nix;
