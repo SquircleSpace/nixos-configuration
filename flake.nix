@@ -1,24 +1,22 @@
 {
   inputs.agenix.url = "github:ryantm/agenix";
   inputs.dwarffs.url = "github:edolstra/dwarffs";
-  inputs.nixpkgs2305.url = "github:NixOS/nixpkgs/nixos-23.05";
-  inputs.nixpkgs2311.url = "github:NixOS/nixpkgs/nixos-23.11";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
   inputs.nixos-hardware.url = "github:NixOS/nixos-hardware/master";
   inputs.lanzaboote = {
     url = "github:nix-community/lanzaboote/v0.3.0";
-    inputs.nixpkgs.follows = "nixpkgs2305";
+    inputs.nixpkgs.follows = "nixpkgs";
   };
   inputs.kmonad = {
     url = "github:kmonad/kmonad?dir=nix";
-    inputs.nixpkgs.follows = "nixpkgs2305";
+    inputs.nixpkgs.follows = "nixpkgs";
   };
   inputs.nix.url = "github:NixOS/nix";
   inputs.rss4email.url = "github:SquircleSpace/rss4email";
 
   outputs = {
     self,
-    nixpkgs2305,
-    nixpkgs2311,
+    nixpkgs,
     nixos-hardware,
     lanzaboote,
     kmonad,
@@ -49,8 +47,8 @@
       };
     in {
       checks = genAttrs nixosSystems (system: {
-        passwordPriorityOrder = runTestWithNixpkgs system nixpkgs2311 ./checks/passwordPriorityOrder.nix;
-        adaModule = runTestWithNixpkgs system nixpkgs2311 (import ./checks/ada.nix self);
+        passwordPriorityOrder = runTestWithNixpkgs system nixpkgs ./checks/passwordPriorityOrder.nix;
+        adaModule = runTestWithNixpkgs system nixpkgs (import ./checks/ada.nix self);
       });
 
       nixosModules = rec {
@@ -94,16 +92,16 @@
       };
 
       packages = genAttrs allSystems (system: {
-        emacs = nixpkgs2305.legacyPackages."${system}".callPackage ./packages/emacs.nix {
-          emacs = nixpkgs2305.legacyPackages."${system}".emacs29;
+        emacs = nixpkgs.legacyPackages."${system}".callPackage ./packages/emacs.nix {
+          emacs = nixpkgs.legacyPackages."${system}".emacs29;
         };
-        emacs-nox = nixpkgs2305.legacyPackages."${system}".callPackage ./packages/emacs.nix {
-          emacs = nixpkgs2305.legacyPackages."${system}".emacs29-nox;
+        emacs-nox = nixpkgs.legacyPackages."${system}".callPackage ./packages/emacs.nix {
+          emacs = nixpkgs.legacyPackages."${system}".emacs29-nox;
         };
 
-        git-remote-doas = nixpkgs2305.legacyPackages."${system}".callPackage ./packages/git-remote-doas {};
+        git-remote-doas = nixpkgs.legacyPackages."${system}".callPackage ./packages/git-remote-doas {};
 
-        etc-nixos-post-receive-hook = nixpkgs2305.legacyPackages."${system}".callPackage ./packages/etc-nixos-post-receive-hook.nix {};
+        etc-nixos-post-receive-hook = nixpkgs.legacyPackages."${system}".callPackage ./packages/etc-nixos-post-receive-hook.nix {};
       });
 
       lib = {

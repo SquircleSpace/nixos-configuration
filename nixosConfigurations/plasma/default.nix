@@ -1,6 +1,6 @@
-{ self, mkNixosSystem, nixpkgs2311, nixos-hardware, lanzaboote, kmonad }:
+{ self, mkNixosSystem, nixpkgs, nixos-hardware, lanzaboote, kmonad }:
 mkNixosSystem {
-  nixpkgs = nixpkgs2311;
+  nixpkgs = nixpkgs;
   system = "x86_64-linux";
   modules = [
     lanzaboote.nixosModules.lanzaboote
