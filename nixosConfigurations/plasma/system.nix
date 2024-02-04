@@ -4,6 +4,7 @@
   squircle.space.fprintd.disableOnLidClose = true;
   services.tailscale.enable = true;
   services.tailscale.openFirewall = true;
+  services.tailscale.useRoutingFeatures = "server";
 
   boot.loader.systemd-boot.enable = false;
   boot.lanzaboote = {
