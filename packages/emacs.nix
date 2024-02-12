@@ -77,6 +77,7 @@ emacsWithPackages (epkgs:
     paredit
     python-mode
     sly
+    swift-mode
     undo-tree
     vertico
     volatile-highlights
