@@ -2,6 +2,7 @@
   inputs.agenix.url = "github:ryantm/agenix";
   inputs.dwarffs.url = "github:edolstra/dwarffs";
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+  inputs.nixpkgsDarwin.url = "github:NixOS/nixpkgs/nixpkgs-23.11-darwin";
   inputs.nixos-hardware.url = "github:NixOS/nixos-hardware/master";
   inputs.lanzaboote = {
     url = "github:nix-community/lanzaboote/v0.3.0";
@@ -17,6 +18,7 @@
   outputs = {
     self,
     nixpkgs,
+    nixpkgsDarwin,
     nixos-hardware,
     lanzaboote,
     kmonad,
@@ -35,10 +37,10 @@
         fn = if builtins.isFunction system then system else import system;
       in fn (builtins.intersectAttrs (builtins.functionArgs fn) systemContext);
 
-      allSystems = [ "x86_64-linux" "i686-linux" "aarch64-linux" "aarch64-darwin" ];
-      nixosSystems = [ "x86_64-linux" "i686-linux" "aarch64-linux" ];
-
       genAttrs = list: fn: builtins.foldl' (l: r: l // r) {} (builtins.map (key: {"${key}" = fn key;}) list);
+      nixosSystems = genAttrs [ "x86_64-linux" "i686-linux" "aarch64-linux" ] (key: nixpkgs);
+      allSystems = nixosSystems // { "aarch64-darwin" = nixpkgsDarwin; };
+      genSystems = systemSet: fn: builtins.mapAttrs fn systemSet;
 
       runTestWithNixpkgs = system: nixpkgs: test: (import (nixpkgs + "/nixos/lib") {}).runTest {
         imports = [test];
@@ -46,7 +48,7 @@
         defaults.nixpkgs.pkgs = nixpkgs.legacyPackages."${system}";
       };
     in {
-      checks = genAttrs nixosSystems (system: {
+      checks = genSystems nixosSystems (system: nixpkgs: {
         passwordPriorityOrder = runTestWithNixpkgs system nixpkgs ./checks/passwordPriorityOrder.nix;
         adaModule = runTestWithNixpkgs system nixpkgs (import ./checks/ada.nix self);
       });
@@ -91,7 +93,7 @@
         pifer = callNixosSystem ./nixosConfigurations/pifer;
       };
 
-      packages = genAttrs allSystems (system: {
+      packages = genSystems allSystems (system: nixpkgs: {
         emacs = nixpkgs.legacyPackages."${system}".callPackage ./packages/emacs.nix {
           emacs = nixpkgs.legacyPackages."${system}".emacs29;
         };
