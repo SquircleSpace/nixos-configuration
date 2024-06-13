@@ -225,4 +225,10 @@ in
 
   services.nginx.virtualHosts."home.lan" = homeAssistantVirtualHostConfig;
   services.nginx.virtualHosts."home.squircle.space" = homeAssistantVirtualHostConfig;
+
+  services.peroxide = {
+    enable = true;
+    # Only listen for connections originating from tailscale
+    settings.ServerAddress = "100.116.6.81";
+  };
 }
