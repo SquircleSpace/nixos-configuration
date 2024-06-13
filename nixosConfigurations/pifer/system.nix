@@ -134,7 +134,7 @@ in
 
   services.nextcloud.enable = true;
   services.nextcloud.config.adminpassFile = "/etc/user-passwords/nextcloud-root";
-  services.nextcloud.config.overwriteProtocol = "https";
+  services.nextcloud.settings.overwriteProtocol = "https";
   services.nextcloud.hostName = "cloud.squircle.space";
   services.nextcloud.autoUpdateApps.enable = true;
   services.nextcloud.package = pkgs.nextcloud27;

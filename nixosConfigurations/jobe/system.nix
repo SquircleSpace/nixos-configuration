@@ -7,7 +7,7 @@ in
   squircle.space.ada.extraPackages = with pkgs; [
     darktable
     lutris
-    nvtop
+    nvtopPackages.full
     steam.run
     wineWowPackages.stable
   ];

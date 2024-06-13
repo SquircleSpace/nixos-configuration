@@ -1,8 +1,8 @@
 {
   inputs.agenix.url = "github:ryantm/agenix";
   inputs.dwarffs.url = "github:edolstra/dwarffs";
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
-  inputs.nixpkgsDarwin.url = "github:NixOS/nixpkgs/nixpkgs-23.11-darwin";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+  inputs.nixpkgsDarwin.url = "github:NixOS/nixpkgs/nixpkgs-24.05-darwin";
   inputs.nixos-hardware.url = "github:NixOS/nixos-hardware/master";
   inputs.lanzaboote = {
     url = "github:nix-community/lanzaboote/v0.3.0";

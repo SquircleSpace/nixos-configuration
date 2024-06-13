@@ -41,7 +41,7 @@
   hardware.bluetooth.enable = true;
   services.blueman.enable = true;
 
-  services.xserver.libinput.enable = true;
+  services.libinput.enable = true;
 
   users.mutableUsers = false;
 
@@ -112,8 +112,8 @@
 
   specialisation."nonui".configuration = {
     services.xserver.enable = lib.mkForce false;
-    services.xserver.desktopManager.plasma5.enable = lib.mkForce false;
-    services.xserver.displayManager.sddm.enable = lib.mkForce false;
+    services.desktopManager.plasma6.enable = lib.mkForce false;
+    services.displayManager.sddm.enable = lib.mkForce false;
     boot.plymouth.enable = lib.mkForce false;
     services.flatpak.enable = lib.mkForce false;
   };

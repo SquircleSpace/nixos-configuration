@@ -59,7 +59,7 @@
   hardware.bluetooth.enable = true;
   services.blueman.enable = true;
 
-  services.xserver.libinput.enable = true;
+  services.libinput.enable = true;
 
   users.mutableUsers = false;
 
