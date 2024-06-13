@@ -201,7 +201,7 @@ with lib; with types;
         (mkIf cfg.packages.uiUtilities.enable {
           packages = uiPackages;
         })
-        (mkIf (cfg.packages.uiUtilities.enable && config.services.xserver.desktopManager.plasma5.enable) {
+        (mkIf (cfg.packages.uiUtilities.enable && config.services.desktopManager.plasma6.enable) {
           packages = kdePackages;
         })
         (mkIf (cfg.packages.uiUtilities.enable && config.services.xserver.desktopManager.gnome.enable) {
