@@ -41,7 +41,6 @@ in
 
   imports = [
     ./homebridge-module.nix
-    ./rss4email.nix
     ./wg.nix
   ];
 

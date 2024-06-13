@@ -1,7 +1,7 @@
 { config, lib, ... }:
 {
   services.rss4email = {
-    enable = true;
+    enable = false;
     config.feeds = import ./feeds.nix { inherit lib; baseEmail = "rss@squircle.space"; } ;
     config.fromAddress = "rss4email@rss4email.squircle.space";
     config.toEmail = "rss" + "@" + "squircle.spacce";
