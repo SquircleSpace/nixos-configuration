@@ -117,4 +117,8 @@
     boot.plymouth.enable = lib.mkForce false;
     services.flatpak.enable = lib.mkForce false;
   };
+
+  # Minecraft
+  networking.firewall.allowedTCPPorts = [ 25565 ];
+  networking.firewall.allowedUDPPorts = [ 25565 ];
 }
