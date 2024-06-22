@@ -42,6 +42,7 @@
   services.blueman.enable = true;
 
   services.libinput.enable = true;
+  services.libinput.touchpad.disableWhileTyping = true;
 
   users.mutableUsers = false;
 
