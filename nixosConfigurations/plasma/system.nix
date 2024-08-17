@@ -52,6 +52,10 @@
 
   system.stateVersion = "23.05";
 
+  nix.gc.automatic = true;
+  nix.gc.options = "--delete-older-than 7d";
+  nix.gc.dates = "Mon *-*-* 00:03:15";
+  nix.gc.persistent = true;
   system.autoUpgrade.enable = true;
   system.autoUpgrade.flake = "/etc/nixos";
   system.autoUpgrade.flags = [ "--commit-lock-file" "--recreate-lock-file" ];
