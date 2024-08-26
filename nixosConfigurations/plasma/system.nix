@@ -1,6 +1,9 @@
 { self, config, pkgs, lib, ... }:
 {
   squircle.space.ada.enable = true;
+  squircle.space.ada.extraPackages = with pkgs; [
+    darktable
+  ];
   squircle.space.fprintd.disableOnLidClose = true;
   services.tailscale.enable = true;
   services.tailscale.openFirewall = true;
