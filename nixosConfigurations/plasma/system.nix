@@ -3,6 +3,7 @@
   squircle.space.ada.enable = true;
   squircle.space.ada.extraPackages = with pkgs; [
     darktable
+    exiftool
   ];
   squircle.space.fprintd.disableOnLidClose = true;
   services.tailscale.enable = true;
