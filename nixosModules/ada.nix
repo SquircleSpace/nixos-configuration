@@ -23,6 +23,7 @@ let
     w3m
     wget
     xxd
+    zip
   ];
   uiPackages = with pkgs; [
     aspellDicts.en
