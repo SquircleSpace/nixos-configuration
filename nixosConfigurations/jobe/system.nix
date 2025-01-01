@@ -39,6 +39,7 @@ in
 
   # Drivers
   services.xserver.videoDrivers = ["nvidia"];
+  hardware.nvidia.open = false;
   nixpkgs.config.allowUnfree = true;
   hardware.opengl.driSupport32Bit = true;
   hardware.bluetooth.enable = true;
