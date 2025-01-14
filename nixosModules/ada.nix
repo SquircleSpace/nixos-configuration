@@ -173,6 +173,7 @@ with lib; with types;
     (mkIf cfg.packages.uiUtilities.enable {
       fonts.packages = with pkgs; [
         fira-code
+        etBook
       ];
     })
 

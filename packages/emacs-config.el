@@ -322,11 +322,21 @@ point reaches the beginning or end of the buffer, stop there."
 
 (use-package git-gutter
   :demand t
+  :diminish git-gutter-mode
   :config
-  (global-git-gutter-mode t))
+  (global-git-gutter-mode t)
+  (custom-theme-set-faces
+   'user
+   '(git-gutter-fr:added ((t (:inherit (fringe git-gutter:added)))))
+   '(git-gutter-fr:deleted ((t (:inherit (fringe git-gutter:deleted)))))
+   '(git-gutter-fr:modified ((t (:inherit (fringe git-gutter:modified)))))))
 
 (use-package git-gutter-fringe
-  :after git-gutter)
+  :after git-gutter
+  :config
+  (define-fringe-bitmap 'git-gutter-fr:added [224] nil nil '(center repeated))
+  (define-fringe-bitmap 'git-gutter-fr:modified [224] nil nil '(center repeated))
+  (define-fringe-bitmap 'git-gutter-fr:deleted [128 192 224 240] nil nil 'bottom))
 
 (use-package vc
   :defer t
@@ -342,7 +352,7 @@ point reaches the beginning or end of the buffer, stop there."
   :diminish org-num-mode
   :config
   (add-hook 'org-mode-hook 'org-sticky-header-mode)
-  (add-hook 'org-mode-hook 'org-num-mode)
+  (setf org-startup-numerated t)
   (add-hook 'org-mode-hook 'org-bullets-mode)
   (setf org-hide-emphasis-markers t))
 
@@ -355,6 +365,40 @@ point reaches the beginning or end of the buffer, stop there."
 (use-package org-bullets
   :defer t
   :diminish org-bullets-mode)
+
+;; ===============================
+;; Looks
+;; ===============================
+
+(defvar squircle-space-frame-tweaks-applied? nil)
+
+(defun squircle-space-frame-tweaks ()
+  (setf squircle-space-frame-tweaks-applied? t)
+  (load-theme 'doom-bluloco-dark t)
+  (apply 'custom-theme-set-faces
+         'user
+         (append
+          (when (x-list-fonts "Fira Code")
+            '((fixed-pitch ((t (:family "Fira Code" :height 120))))
+              (default ((t (:family "Fira Code" :height 120))))))
+          (when (x-list-fonts "ETBembo")
+            '((variable-pitch ((t (:family "ETBembo" :height 150 :weight thin)))))))))
+
+(if (and (daemonp) (not squircle-space-frame-tweaks-applied?))
+    (add-hook 'server-after-make-frame-hook 'squircle-space-frame-tweaks)
+  (squircle-space-frame-tweaks))
+
+;; ===============================
+;; Olivetti
+;; ===============================
+
+(use-package olivetti
+  :defer t
+  :config
+  (setf olivetti-style 'fancy)
+  (custom-theme-set-faces
+   'user
+   '(olivetti-fringe ((t (:inherit mode-line-inactive))))))
 
 ;; ===============================
 ;; whitespace

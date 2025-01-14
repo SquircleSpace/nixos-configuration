@@ -61,10 +61,12 @@ emacsWithPackages (epkgs:
   ++ (with (prioritizedEpkgs epkgs); [
     auctex
     beacon
+    color-theme-sanityinc-tomorrow
     company
     consult
     define-word
     diminish
+    doom-themes
     exec-path-from-shell
     expand-region
     git-gutter
@@ -73,17 +75,20 @@ emacsWithPackages (epkgs:
     magit
     marginalia
     nix-mode
+    olivetti
     orderless
     org-bullets
     org-sticky-header
     paredit
     python-mode
     sly
+    solarized-theme
     spacemacs-theme
     swift-mode
     undo-tree
     vertico
     volatile-highlights
+    zenburn-theme
   ])
   ++ (if builtins.isFunction extraPackages
       then extraPackages epkgs
