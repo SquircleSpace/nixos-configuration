@@ -16,6 +16,7 @@ let
     mosh
     parted
     psmisc
+    python3
     roswell
     smartmontools
     tmux
@@ -28,6 +29,7 @@ let
   uiPackages = with pkgs; [
     aspellDicts.en
     caffeine-ng
+    exiftool
     firefox
     gimp
     gitAndTools.git-filter-repo
@@ -38,6 +40,7 @@ let
     pandoc
     paprefs
     pavucontrol
+    sbcl
     stow
     vlc
   ];
