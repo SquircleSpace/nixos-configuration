@@ -339,8 +339,22 @@ point reaches the beginning or end of the buffer, stop there."
 
 (use-package org
   :mode (("\\.org$" . org-mode))
+  :diminish org-num-mode
   :config
-  (add-hook 'org-mode-hook 'org-indent-mode))
+  (add-hook 'org-mode-hook 'org-sticky-header-mode)
+  (add-hook 'org-mode-hook 'org-num-mode)
+  (add-hook 'org-mode-hook 'org-bullets-mode)
+  (setf org-hide-emphasis-markers t))
+
+(use-package org-sticky-header
+  :defer t
+  :config
+  (setf org-sticky-header-full-path 'full)
+  :diminish org-sticky-header-mode)
+
+(use-package org-bullets
+  :defer t
+  :diminish org-bullets-mode)
 
 ;; ===============================
 ;; whitespace

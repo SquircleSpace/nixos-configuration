@@ -74,9 +74,12 @@ emacsWithPackages (epkgs:
     marginalia
     nix-mode
     orderless
+    org-bullets
+    org-sticky-header
     paredit
     python-mode
     sly
+    spacemacs-theme
     swift-mode
     undo-tree
     vertico
