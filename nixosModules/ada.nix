@@ -167,6 +167,12 @@ with lib; with types;
       users.users."${cfg.username}".hashedPasswordFile = cfg.hashedPasswordFile;
     })
 
+    (mkIf cfg.packages.uiUtilities.enable {
+      fonts.packages = with pkgs; [
+        fira-code
+      ];
+    })
+
     {
       users.users."${cfg.username}" = mkMerge [
         {
