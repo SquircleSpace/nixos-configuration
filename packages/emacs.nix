@@ -91,5 +91,9 @@ emacsWithPackages (epkgs:
     zenburn-theme
   ])
   ++ (if builtins.isFunction extraPackages
-      then extraPackages epkgs
-      else extraPackages))
+      then
+        extraPackages epkgs
+      else
+        (map
+          (thing: if builtins.isString thing then epkgs."${thing}" else thing)
+          extraPackages)))
