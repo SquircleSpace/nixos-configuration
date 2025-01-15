@@ -404,7 +404,8 @@ point reaches the beginning or end of the buffer, stop there."
             '((fixed-pitch ((t (:family "Fira Code" :height 120))))
               (default ((t (:family "Fira Code" :height 120))))))
           (when (x-list-fonts "ETBembo")
-            '((variable-pitch ((t (:family "ETBembo" :height 160 :weight thin)))))))))
+            '((variable-pitch ((t (:family "ETBembo" :height 160 :weight thin))))))
+          '((fringe ((t (:inherit mode-line-inactive))))))))
 
 (if (and (daemonp) (not squircle-space-frame-tweaks-applied?))
     (add-hook 'server-after-make-frame-hook 'squircle-space-frame-tweaks)
@@ -417,10 +418,7 @@ point reaches the beginning or end of the buffer, stop there."
 (use-package olivetti
   :defer t
   :config
-  (setf olivetti-style 'fancy)
-  (custom-theme-set-faces
-   'user
-   '(olivetti-fringe ((t (:inherit mode-line-inactive))))))
+  (setf olivetti-style 'fancy))
 
 ;; ===============================
 ;; whitespace
