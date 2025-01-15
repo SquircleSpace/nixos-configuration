@@ -182,6 +182,17 @@ point reaches the beginning or end of the buffer, stop there."
                 'prelude-move-beginning-of-line)
 ;; Okay back to my code, now
 
+(defvar-local squircle-space-allow-unfill-on-visual-line-mode t)
+
+(defun squircle-space-fill-advice (original &rest rest)
+  (if (and squircle-space-allow-unfill-on-visual-line-mode
+           visual-line-mode)
+      (let ((fill-column (point-max)))
+        (apply original rest))
+    (apply original rest)))
+
+(advice-add 'fill-paragraph :around 'squircle-space-fill-advice)
+
 (use-package define-word
   :bind (("M-#" . define-word-at-point)))
 
@@ -354,7 +365,18 @@ point reaches the beginning or end of the buffer, stop there."
   (add-hook 'org-mode-hook 'org-sticky-header-mode)
   (setf org-startup-numerated t)
   (add-hook 'org-mode-hook 'org-bullets-mode)
-  (setf org-hide-emphasis-markers t))
+  (setf org-hide-emphasis-markers t)
+  (advice-add 'org-fill-paragraph :around 'squircle-space-fill-advice)
+  ;; https://web.archive.org/web/20241226010147/https://zzamboni.org/post/beautifying-org-mode-in-emacs/
+  (custom-theme-set-faces
+   'user
+   '(org-block ((t (:inherit fixed-pitch))))
+   '(org-code ((t (:inherit (shadow fixed-pitch)))))
+   '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+   '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+   '(org-property-value ((t (:inherit fixed-pitch))) t)
+   '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+   '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))))
 
 (use-package org-sticky-header
   :defer t
@@ -382,7 +404,7 @@ point reaches the beginning or end of the buffer, stop there."
             '((fixed-pitch ((t (:family "Fira Code" :height 120))))
               (default ((t (:family "Fira Code" :height 120))))))
           (when (x-list-fonts "ETBembo")
-            '((variable-pitch ((t (:family "ETBembo" :height 150 :weight thin)))))))))
+            '((variable-pitch ((t (:family "ETBembo" :height 160 :weight thin)))))))))
 
 (if (and (daemonp) (not squircle-space-frame-tweaks-applied?))
     (add-hook 'server-after-make-frame-hook 'squircle-space-frame-tweaks)
