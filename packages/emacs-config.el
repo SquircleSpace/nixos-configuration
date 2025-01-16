@@ -364,6 +364,8 @@ point reaches the beginning or end of the buffer, stop there."
   :config
   (add-hook 'org-mode-hook 'org-sticky-header-mode)
   (setf org-startup-numerated t)
+  (setf org-startup-indented t)
+  (setf org-indent-indentation-per-level 0)
   (add-hook 'org-mode-hook 'org-bullets-mode)
   (setf org-hide-emphasis-markers t)
   (advice-add 'org-fill-paragraph :around 'squircle-space-fill-advice)
