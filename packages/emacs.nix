@@ -79,7 +79,6 @@ emacsWithPackages (epkgs:
     olivetti
     orderless
     org-bullets
-    org-sticky-header
     paredit
     python-mode
     sly

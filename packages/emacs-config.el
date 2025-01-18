@@ -3,6 +3,8 @@
 ;; https://web.archive.org/web/20201206011037/https://github.com/jwiegley/use-package/issues/436
 (require 'use-package)
 
+(require 'cl-lib)
+
 ;; ===============================
 ;; completion
 ;; ===============================
@@ -358,15 +360,103 @@ point reaches the beginning or end of the buffer, stop there."
 ;; Org
 ;; ===============================
 
+(defconst squircle-space-org-header-line
+  '(:eval
+    (list
+     (propertize " " 'display '((space :align-to left-margin)))
+     (squircle-space-get-org-header-line))))
+
+(defconst squircle-space-org-header-line-back-to-top
+  (progn
+    (let ((keymap (make-sparse-keymap)))
+      (define-key keymap (kbd "<header-line> <mouse-1>") 'beginning-of-buffer)
+      (propertize "⮤ Back to top" 'keymap keymap))))
+
+(defun squircle-space-get-org-header-line ()
+  (let ((headings (squircle-space-get-org-headings)))
+    (cond
+     (headings
+      (concat
+       "⮤ "
+       (mapconcat 'identity
+                  headings
+                  " ❯ ")))
+     ((not (equal (window-start) (point-min)))
+      squircle-space-org-header-line-back-to-top))))
+
+(defun squircle-space-get-org-headings ()
+  (cl-block return
+    (save-excursion
+      (let (skip?)
+        (goto-char (window-start))
+        (let ((current (org-element-lineage
+                        (org-element-at-point)
+                        '(headline)
+                        'with-self)))
+          (cond
+           ((and (equal 1 (org-element-property :level current))
+                 (equal (window-start) (org-element-begin current)))
+            (debug)
+            (cl-return-from return nil))
+           ((equal (window-start) (org-element-begin current))
+            (setf skip? t))
+           (t
+            (forward-line -1))))
+
+        (let* (number-prefix
+               titles
+               (current (org-element-lineage
+                         (org-element-at-point)
+                         '(headline)
+                         'with-self)))
+
+          (while current
+            (goto-char (org-element-begin current))
+            (save-match-data
+              (re-search-forward (regexp-quote (org-element-property :title current)) (save-excursion (end-of-line) (point)))
+              (let ((string (match-string 0))
+                    (keymap (make-sparse-keymap))
+                    (begin (org-element-begin current)))
+                (if skip?
+                    (setf skip? nil)
+                  (when (and org-num-mode (null number-prefix))
+                    (save-excursion
+                      (re-search-backward "\\*")
+                      (forward-char)
+                      (cl-block done
+                        (dolist (overlay (overlays-at (point)))
+                          (when (and (overlay-get overlay 'org-num)
+                                     (overlay-get overlay 'after-string))
+                            (setf number-prefix (overlay-get overlay 'after-string))
+                            (cl-return-from done nil))))))
+                  (define-key keymap (kbd "<header-line> <mouse-1>")
+                              (lambda (event)
+                                (interactive "e")
+                                (goto-char begin)))
+                  (setf string (propertize string
+                                           'keymap keymap
+                                           'mouse-face 'underline))
+                  (push string titles))))
+            (setf current (org-element-lineage current 'headline)))
+
+          (when (and number-prefix titles)
+            (setf (car titles)
+                  (concat (propertize number-prefix 'face '(shadow org-level-1)) (car titles))))
+          titles)))))
+
+(defun squircle-space-set-up-org-mode ()
+  (setq-local line-spacing 0.25)
+  (setq-local header-line-format squircle-space-org-header-line))
+
 (use-package org
   :mode (("\\.org$" . org-mode))
   :diminish org-num-mode
   :config
-  (add-hook 'org-mode-hook 'org-sticky-header-mode)
   (setf org-startup-numerated t)
   (setf org-startup-indented t)
   (setf org-indent-indentation-per-level 0)
   (add-hook 'org-mode-hook 'org-bullets-mode)
+  (add-hook 'org-mode-hook 'squircle-space-set-up-org-mode)
   (setf org-hide-emphasis-markers t)
   (advice-add 'org-fill-paragraph :around 'squircle-space-fill-advice)
   ;; https://web.archive.org/web/20241226010147/https://zzamboni.org/post/beautifying-org-mode-in-emacs/
@@ -379,12 +469,6 @@ point reaches the beginning or end of the buffer, stop there."
    '(org-property-value ((t (:inherit fixed-pitch))) t)
    '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
    '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))))
-
-(use-package org-sticky-header
-  :defer t
-  :config
-  (setf org-sticky-header-full-path 'full)
-  :diminish org-sticky-header-mode)
 
 (use-package org-bullets
   :defer t
