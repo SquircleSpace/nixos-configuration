@@ -360,93 +360,106 @@ point reaches the beginning or end of the buffer, stop there."
 ;; Org
 ;; ===============================
 
+(defvar-local squircle-space-org-header-line-content nil)
+(put 'squircle-space-org-header-line-content 'risky-local-variable t)
+
 (defconst squircle-space-org-header-line
   '(:eval
-    (list
-     (propertize " " 'display '((space :align-to left-margin)))
-     (squircle-space-get-org-header-line))))
+    (progn
+      ;; We need to bounce through a symbol to prevent emacs from
+      ;; processing % constructs in the resulting string.
+      (setf squircle-space-org-header-line-content (squircle-space-get-org-header-line))
+      (list
+       (propertize " " 'display '((space :align-to left-margin)))
+       'squircle-space-org-header-line-content))))
 
 (defconst squircle-space-org-header-line-back-to-top
   (progn
     (let ((keymap (make-sparse-keymap)))
       (define-key keymap (kbd "<header-line> <mouse-1>") 'beginning-of-buffer)
-      (propertize "⮤ Back to top" 'keymap keymap))))
+      (concat
+       (propertize "Back to top" 'keymap keymap 'face '(shadow org-level-1) 'mouse-face 'underline)))))
 
 (defun squircle-space-get-org-header-line ()
-  (let ((headings (squircle-space-get-org-headings)))
-    (cond
-     (headings
+  (cl-block return
+    (let ((headings (squircle-space-get-org-headings)))
       (concat
-       "⮤ "
-       (mapconcat 'identity
-                  headings
-                  " ❯ ")))
-     ((not (equal (window-start) (point-min)))
-      squircle-space-org-header-line-back-to-top))))
+       (propertize "⮤ " 'face 'shadow)
+       (cond
+        (headings
+         (mapconcat 'identity
+                    headings
+                    (propertize " > " 'face 'shadow)))
+        ((not (equal (window-start) (point-min)))
+         squircle-space-org-header-line-back-to-top)
+        (t
+         (cl-return-from return nil)))))))
+
+(defun squircle-space-org-ensure-title-fontified (string org-level)
+  (if (get-text-property 0 'face string)
+      string
+    (propertize string 'face (if org-cycle-level-faces
+		                 (nth (% (1- org-level) org-n-level-faces) org-level-faces)
+		               (nth (1- (min org-level org-n-level-faces)) org-level-faces)))))
 
 (defun squircle-space-get-org-headings ()
-  (cl-block return
-    (save-excursion
-      (let (skip?)
-        (goto-char (window-start))
-        (let ((current (org-element-lineage
-                        (org-element-at-point)
-                        '(headline)
-                        'with-self)))
-          (cond
-           ((and (equal 1 (org-element-property :level current))
-                 (equal (window-start) (org-element-begin current)))
-            (debug)
-            (cl-return-from return nil))
-           ((equal (window-start) (org-element-begin current))
-            (setf skip? t))
-           (t
-            (forward-line -1))))
+  (save-excursion
+    ;; Move to the start of the first non-empty line
+    (goto-char (window-start))
+    (let ((first-non-blank (re-search-forward (rx (not space)) nil t)))
+      (when first-non-blank
+        (goto-char first-non-blank)
+        (forward-line 0)))
 
-        (let* (number-prefix
-               titles
-               (current (org-element-lineage
-                         (org-element-at-point)
-                         '(headline)
-                         'with-self)))
+    (let* (number-prefix
+           titles
+           (top (point))
+           (current (org-element-lineage
+                     (org-element-at-point)
+                     '(headline)
+                     'with-self)))
+      ;; Special case.  If the buffer starts with a headline, then
+      ;; we want to skip the current element in the navigation line.
+      (when (equal top (org-element-begin current))
+        (setf current (org-element-lineage current 'headline)))
 
-          (while current
-            (goto-char (org-element-begin current))
-            (save-match-data
-              (re-search-forward (regexp-quote (org-element-property :title current)) (save-excursion (end-of-line) (point)))
-              (let ((string (match-string 0))
-                    (keymap (make-sparse-keymap))
-                    (begin (org-element-begin current)))
-                (if skip?
-                    (setf skip? nil)
-                  (when (and org-num-mode (null number-prefix))
-                    (save-excursion
-                      (re-search-backward "\\*")
-                      (forward-char)
-                      (cl-block done
-                        (dolist (overlay (overlays-at (point)))
-                          (when (and (overlay-get overlay 'org-num)
-                                     (overlay-get overlay 'after-string))
-                            (setf number-prefix (overlay-get overlay 'after-string))
-                            (cl-return-from done nil))))))
-                  (define-key keymap (kbd "<header-line> <mouse-1>")
-                              (lambda (event)
-                                (interactive "e")
-                                (goto-char begin)))
-                  (setf string (propertize string
-                                           'keymap keymap
-                                           'mouse-face 'underline))
-                  (push string titles))))
-            (setf current (org-element-lineage current 'headline)))
+      (while current
+        (goto-char (org-element-begin current))
+        (save-match-data
+          (re-search-forward (regexp-quote (org-element-property :title current)) (save-excursion (end-of-line) (point)))
+          (let* ((string (match-string 0))
+                 (string (squircle-space-org-ensure-title-fontified string (org-element-property :level current)))
+                 (keymap (make-sparse-keymap))
+                 (begin (org-element-begin current)))
+            (when (and org-num-mode (null number-prefix))
+              (save-excursion
+                (re-search-backward (rx "*"))
+                (forward-char)
+                (cl-block done
+                  (dolist (overlay (overlays-at (point)))
+                    (when (and (overlay-get overlay 'org-num)
+                               (overlay-get overlay 'after-string))
+                      (setf number-prefix (overlay-get overlay 'after-string))
+                      (cl-return-from done nil))))))
+            (define-key keymap (kbd "<header-line> <mouse-1>")
+                        (lambda (event)
+                          (interactive "e")
+                          (goto-char begin)))
+            (setf string (propertize string
+                                     'keymap keymap
+                                     'mouse-face 'underline))
+            (push string titles)))
+        (setf current (org-element-lineage current 'headline)))
 
-          (when (and number-prefix titles)
-            (setf (car titles)
-                  (concat (propertize number-prefix 'face '(shadow org-level-1)) (car titles))))
-          titles)))))
+      (when (and number-prefix titles)
+        (setf (car titles)
+              (concat (propertize number-prefix 'face '(shadow org-level-1)) (car titles))))
+      titles)))
 
 (defun squircle-space-set-up-org-mode ()
   (setq-local line-spacing 0.25)
-  (setq-local header-line-format squircle-space-org-header-line))
+  (setq-local header-line-format squircle-space-org-header-line)
+  (face-remap-add-relative 'header-line 'fringe '(:height 0.75) 'default))
 
 (use-package org
   :mode (("\\.org$" . org-mode))
