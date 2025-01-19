@@ -136,6 +136,9 @@
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
+(global-unset-key (kbd "<mouse-2>"))
+(global-unset-key (kbd "<mouse-3>"))
+
 (use-package expand-region
   :bind ("C-=" . 'er/expand-region))
 
@@ -282,7 +285,10 @@ point reaches the beginning or end of the buffer, stop there."
 
 (use-package flyspell
   :hook text-mode
-  :hook (prog-mode . flyspell-prog-mode))
+  :hook (prog-mode . flyspell-prog-mode)
+  :config
+  (keymap-set flyspell-mouse-map "<mouse-2>" nil)
+  (keymap-set flyspell-mouse-map "<mouse-3>" 'flyspell-correct-word))
 
 ;; ===============================
 ;; c
