@@ -450,6 +450,8 @@ point reaches the beginning or end of the buffer, stop there."
             (define-key keymap (kbd "<header-line> <mouse-1>")
                         (lambda (event)
                           (interactive "e")
+                          (select-window (posn-window (event-start event)))
+                          (setf (window-start) begin)
                           (goto-char begin)))
             (setf string (propertize string
                                      'keymap keymap
