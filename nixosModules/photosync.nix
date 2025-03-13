@@ -10,9 +10,21 @@
   };
   users.groups.photosync = {};
   programs.firejail.enable = true;
+  users.extraUsers.ada.extraGroups = ["photosync"];
+
+  fileSystems."/var/lib/photosync" = {
+    depends = [
+      # The mounts above have to be mounted in this given order
+      "/btrfs"
+    ];
+    device = "/btrfs/photos/phone";
+    fsType = "none";
+    options = [
+      "bind"
+    ];
+  };
 
   services.openssh.extraConfig = let
-    closure = pkgs.closureInfo { rootPaths = [pkgs.openssh]; };
     profile = pkgs.stdenv.mkDerivation {
       name = "photosync-sftp-profile";
       unpackPhase = "true";
@@ -25,23 +37,21 @@
         nosound
         novideo
         net none
-        whitelist /btrfs/photos/phone
+        whitelist /var/lib/photosync/
+        read-write /var/lib/photosync/
         private-dev
         private-lib
         private-etc passwd
         private-tmp
         whitelist /run/user/
+        whitelist /nix/store/
         EOF
-
-        cat ${closure}/store-paths | while read storePath; do
-          echo whitelist $storePath
-        done >> $out/profile
       '';
     };
   in
     ''
     Match User photosync
-            ForceCommand /run/wrappers/bin/firejail --quiet --include=${profile}/profile --shell=none ${pkgs.openssh}/libexec/sftp-server
+            ForceCommand /run/wrappers/bin/firejail --quiet --include=${profile}/profile ${pkgs.openssh}/libexec/sftp-server
     Match all
   '';
 }
