@@ -9,6 +9,7 @@
     openssh.authorizedKeys.keys = [ self.lib.publicKeys.users.ada.photosync ];
   };
   users.groups.photosync = {};
+  programs.firejail.enable = true;
 
   services.openssh.extraConfig = let
     closure = pkgs.closureInfo { rootPaths = [pkgs.openssh]; };
@@ -24,7 +25,7 @@
         nosound
         novideo
         net none
-        whitelist /crypt/photos/phone
+        whitelist /btrfs/photos/phone
         private-dev
         private-lib
         private-etc passwd

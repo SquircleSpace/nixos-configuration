@@ -8,6 +8,7 @@ mkNixosSystem {
     nixos-hardware.nixosModules.framework-13-7040-amd
     self.nixosModules.default
     self.nixosModules.kde
+    self.nixosModules.photosync
 
     ./system.nix
     ./hardware.nix
