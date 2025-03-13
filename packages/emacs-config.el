@@ -33,6 +33,7 @@
 ;; https://web.archive.org/web/20231118143102/https://www.reddit.com/r/emacs/comments/nichkl/how_to_use_different_completion_styles_in_the/
 
 (use-package company
+  :diminish company-mode
   :preface
   (defun ada-company-capf-around-advice (orig-fun &rest args)
     ;; dynamic scoping saves the day!
@@ -102,6 +103,11 @@
 ;; ===============================
 ;; misc stuff
 ;; ===============================
+
+(use-package diminish
+  :diminish buffer-face-mode
+  :diminish auto-revert-mode
+  :diminish eldoc-mode)
 
 (set-default 'cursor-type 'box)
 (setf column-number-mode t)
@@ -203,13 +209,14 @@ point reaches the beginning or end of the buffer, stop there."
 
 (use-package undo-tree
   :demand t
+  :diminish undo-tree-mode
   :config
   (progn
     (global-undo-tree-mode 1)
-    (diminish 'undo-tree-mode)
     (setf undo-tree-auto-save-history nil)))
 
 (use-package paredit
+  :diminish paredit-mode
   :hook ((lisp-data-mode . paredit-mode)
          (lisp-mode . paredit-mode)))
 
@@ -286,6 +293,8 @@ point reaches the beginning or end of the buffer, stop there."
 (use-package flyspell
   :hook text-mode
   :hook (prog-mode . flyspell-prog-mode)
+  :diminish flyspell-mode
+  :diminish flyspell-prog-mode
   :config
   (keymap-set flyspell-mouse-map "<mouse-2>" nil)
   (keymap-set flyspell-mouse-map "<mouse-3>" 'flyspell-correct-word))
@@ -467,11 +476,15 @@ point reaches the beginning or end of the buffer, stop there."
 (defun squircle-space-set-up-org-mode ()
   (setq-local line-spacing 0.25)
   (setq-local header-line-format squircle-space-org-header-line)
+  (setq-local mode-line-position-line-format "")
+  (setq-local mode-line-position-column-format "")
+  (setq-local mode-line-position-column-line-format "")
   (face-remap-add-relative 'header-line 'fringe '(:height 0.75) 'default))
 
 (use-package org
   :mode (("\\.org$" . org-mode))
   :diminish org-num-mode
+  :diminish org-indent-mode
   :config
   (setf org-startup-numerated t)
   (setf org-startup-indented t)
@@ -516,7 +529,8 @@ point reaches the beginning or end of the buffer, stop there."
 
 (if (and (daemonp) (not squircle-space-frame-tweaks-applied?))
     (add-hook 'server-after-make-frame-hook 'squircle-space-frame-tweaks)
-  (squircle-space-frame-tweaks))
+  (when (display-graphic-p)
+    (squircle-space-frame-tweaks)))
 
 ;; ===============================
 ;; Olivetti
@@ -524,6 +538,7 @@ point reaches the beginning or end of the buffer, stop there."
 
 (use-package olivetti
   :defer t
+  :diminish olivetti-mode
   :config
   (setf olivetti-style 'fancy))
 
