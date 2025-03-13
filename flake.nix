@@ -95,10 +95,10 @@
 
       packages = genSystems allSystems (system: nixpkgs: {
         emacs = nixpkgs.legacyPackages."${system}".callPackage ./packages/emacs.nix {
-          emacs = nixpkgs.legacyPackages."${system}".emacs29;
+          emacs = nixpkgs.legacyPackages."${system}".emacs30;
         };
         emacs-nox = nixpkgs.legacyPackages."${system}".callPackage ./packages/emacs.nix {
-          emacs = nixpkgs.legacyPackages."${system}".emacs29-nox;
+          emacs = nixpkgs.legacyPackages."${system}".emacs30-nox;
         };
 
         git-remote-doas = nixpkgs.legacyPackages."${system}".callPackage ./packages/git-remote-doas {};
