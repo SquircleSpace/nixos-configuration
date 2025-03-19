@@ -81,7 +81,8 @@ emacsWithPackages (epkgs:
     org-bullets
     paredit
     python-mode
-    sly
+    slime
+    slime-company
     solarized-theme
     spacemacs-theme
     swift-mode

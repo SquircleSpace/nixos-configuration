@@ -315,12 +315,14 @@ point reaches the beginning or end of the buffer, stop there."
           (other . "gnu")))))
 
 ;; ===============================
-;; sly
+;; slime
 ;; ===============================
 
-(use-package sly
+(use-package slime
   :after lisp-mode
-  :defer t)
+  :defer t
+  :config
+  (slime-setup '(slime-fancy slime-company)))
 
 ;; ===============================
 ;; macOS
