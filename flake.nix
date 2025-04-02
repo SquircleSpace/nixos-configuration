@@ -8,10 +8,6 @@
     url = "github:nix-community/lanzaboote/v0.3.0";
     inputs.nixpkgs.follows = "nixpkgs";
   };
-  inputs.kmonad = {
-    url = "github:kmonad/kmonad?dir=nix";
-    inputs.nixpkgs.follows = "nixpkgs";
-  };
   inputs.nix.url = "github:NixOS/nix";
   inputs.rss4email.url = "github:SquircleSpace/rss4email";
 
@@ -21,7 +17,6 @@
     nixpkgsDarwin,
     nixos-hardware,
     lanzaboote,
-    kmonad,
     dwarffs,
     nix,
     rss4email,

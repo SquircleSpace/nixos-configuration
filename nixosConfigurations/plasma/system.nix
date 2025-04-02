@@ -93,13 +93,24 @@
           lctl      lmet lalt            spc            ralt rctl left down rght
         )
 
+        (defalias cap (around rsft (layer-toggle restore-caps)))
+
         (deflayer default
           _    _    _    _    _    _    _    _    _    _    _    _    _
           _    _    _    _    _    _    _    _    _    _    _    _    _    _
           _    _    _    _    _    _    _    _    _    _    _    _    _    _
           lctl _    _    _    _    _    _    _    _    _    _    _    _
-          _    _    _    _    _    _    _    _    _    _    _    _    _
+          _    _    _    _    _    _    _    _    _    _    _    @cap _
           _         lalt lmet           _              _    _    _    _    _
+        )
+
+        (deflayer restore-caps
+          _    _    _    _    _    _    _    _    _    _    _    _    _
+          _    _    _    _    _    _    _    _    _    _    _    _    _    _
+          _    _    _    _    _    _    _    _    _    _    _    _    _    _
+          _    _    _    _    _    _    _    _    _    _    _    _    _
+          caps _    _    _    _    _    _    _    _    _    _    _    _
+          _         _    _              _              _    _    _    _    _
         )
       '';
     };
