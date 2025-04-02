@@ -149,21 +149,6 @@
   :bind ("C-=" . 'er/expand-region))
 
 ;; Some stuff stolen from Emacs prelude
-(defadvice kill-ring-save (before smart-copy activate compile)
-  "When called interactively with no active region, copy a single line instead."
-  (interactive
-   (if mark-active (list (region-beginning) (region-end))
-     (message "Copied line")
-     (list (line-beginning-position)
-           (line-end-position)))))
-
-(defadvice kill-region (before smart-cut activate compile)
-  "When called interactively with no active region, kill a single line instead."
-  (interactive
-   (if mark-active (list (region-beginning) (region-end))
-     (list (line-beginning-position)
-           (line-beginning-position 2)))))
-
 (defun prelude-move-beginning-of-line (arg)
   "Move point back to indentation of beginning of line.
 
@@ -193,6 +178,46 @@ point reaches the beginning or end of the buffer, stop there."
                 'prelude-move-beginning-of-line)
 ;; Okay back to my code, now
 
+(defun squircle-space-kill-region (original beginning end &optional region)
+  (if (and region (not mark-active))
+      (let ((kill-whole-line t))
+        (move-beginning-of-line 1)
+        (call-interactively (keymap-lookup nil "C-k")))
+    (funcall original beginning end region)))
+
+(advice-add 'kill-region :around 'squircle-space-kill-region)
+
+(defun squircle-space-kill-ring-save (original beginning end &optional region)
+  (if (and region (not mark-active))
+      (let (vhl-start-point)
+        (save-excursion
+          (move-beginning-of-line 1)
+          (setf vhl-start-point (point))
+          (prog1
+              (let ((kill-whole-line t)
+                    (buffer-read-only t)
+                    (kill-read-only-ok t)
+                    (inhibit-message t))
+                (call-interactively (keymap-lookup nil "C-k")))
+            (message "Copied")
+            (vhl/add-range vhl-start-point (point)))))
+    (funcall original beginning end region)))
+
+(advice-add 'kill-ring-save :around 'squircle-space-kill-ring-save)
+
+(defvar-local squircle-space-indent-after-yank nil)
+
+(defun squircle-space-indent-after-yank (&rest args)
+  (when squircle-space-indent-after-yank
+    (let ((beginning (point))
+          (end (mark t)))
+      (when (> beginning end)
+        (cl-rotatef beginning end))
+      (indent-region beginning end))))
+
+(advice-add 'yank :after 'squircle-space-indent-after-yank)
+(advice-add 'yank-pop :after 'squircle-space-indent-after-yank)
+
 (defvar-local squircle-space-allow-unfill-on-visual-line-mode t)
 
 (defun squircle-space-fill-advice (original &rest rest)
@@ -214,11 +239,6 @@ point reaches the beginning or end of the buffer, stop there."
   (progn
     (global-undo-tree-mode 1)
     (setf undo-tree-auto-save-history nil)))
-
-(use-package paredit
-  :diminish paredit-mode
-  :hook ((lisp-data-mode . paredit-mode)
-         (lisp-mode . paredit-mode)))
 
 (use-package elec-pair
   :init
@@ -315,7 +335,7 @@ point reaches the beginning or end of the buffer, stop there."
           (other . "gnu")))))
 
 ;; ===============================
-;; slime
+;; lisp
 ;; ===============================
 
 (use-package slime
@@ -323,6 +343,16 @@ point reaches the beginning or end of the buffer, stop there."
   :defer t
   :config
   (slime-setup '(slime-fancy slime-company)))
+
+(defun squircle-space-paredit-tweaks ()
+  (setq-local kill-whole-line t))
+
+(use-package paredit
+  :diminish paredit-mode
+  :hook ((lisp-data-mode . paredit-mode)
+         (lisp-mode . paredit-mode))
+  :config
+  (add-hook 'paredit-mode-hook 'squircle-space-paredit-tweaks))
 
 ;; ===============================
 ;; macOS
