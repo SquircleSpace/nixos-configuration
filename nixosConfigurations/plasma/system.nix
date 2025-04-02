@@ -90,7 +90,7 @@
           tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
           caps a    s    d    f    g    h    j    k    l    ;    '    ret
           lsft z    x    c    v    b    n    m    ,    .    /    rsft up
-          lctl      lmet lalt            spc            ralt rctl left down rght
+          lctl      lmet lalt            spc           ralt rctl left down rght
         )
 
         (defalias cap (around rsft (layer-toggle restore-caps)))
