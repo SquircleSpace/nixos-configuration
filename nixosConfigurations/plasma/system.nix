@@ -114,6 +114,42 @@
         )
       '';
     };
+
+    keyboards."launch" = {
+      device = "/dev/input/by-id/usb-System76_Launch_Configurable_Keyboard__launch_1_-if02-event-kbd";
+      defcfg.fallthrough = true;
+      defcfg.enable = true;
+      config = ''
+        (defsrc
+          esc  f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12  del  home
+          grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc pgdn
+          tab  q    w    e    r    t    y    u    i    o    p    [    ]    \    pgup
+          caps a    s    d    f    g    h    j    k    l    ;    '    ret       end
+          lsft z    x    c    v    b    n    m    ,    .    /    rsft up
+          lctl lalt      lmet      spc       ralt rctl           left down rght
+        )
+
+        (defalias cap (around rsft (layer-toggle restore-caps)))
+
+        (deflayer default
+          _    _    _    _    _    _    _    _    _    _    _    _    _    _    _
+          _    _    _    _    _    _    _    _    _    _    _    _    _    _    _
+          _    _    _    _    _    _    _    _    _    _    _    _    _    _    _
+          lctl _    _    _    _    _    _    _    _    _    _    _    _         _
+          _    _    _    _    _    _    _    _    _    _    _    @cap _
+          _    _         _         _         _    _              _    _    _
+        )
+
+        (deflayer restore-caps
+          _    _    _    _    _    _    _    _    _    _    _    _    _    _    _
+          _    _    _    _    _    _    _    _    _    _    _    _    _    _    _
+          _    _    _    _    _    _    _    _    _    _    _    _    _    _    _
+          _    _    _    _    _    _    _    _    _    _    _    _    _         _
+          caps _    _    _    _    _    _    _    _    _    _    _    _
+          _    _         _         _         _    _              _    _    _
+        )
+      '';
+    };
   };
 
   services.borgbackup.smartjobs."rsync" = {
