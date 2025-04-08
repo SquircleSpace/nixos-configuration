@@ -2,6 +2,7 @@
 {
   squircle.space.ada.enable = true;
   squircle.space.ada.extraPackages = with pkgs; [
+    btdu
     darktable
     exiftool
   ];
