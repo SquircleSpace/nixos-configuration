@@ -6,6 +6,136 @@
 (require 'cl-lib)
 
 ;; ===============================
+;; f-keys
+;; ===============================
+
+
+(defun squircle-space-ensure-function (symbol)
+  ;; In Emacs 30.1, some keymaps aren't defined as a prefix maps.
+  ;; That means that they can't be referenced by their symbol names in
+  ;; other maps.  Normally that doesn't matter much, but it means that
+  ;; in which-key's display they aren't given a nice label.
+  (unless (fboundp symbol)
+    (fset symbol (symbol-value symbol))))
+
+(squircle-space-ensure-function 'narrow-map)
+
+(use-package rect
+  :defer t
+  :config
+  (squircle-space-ensure-function 'rectangle-mark-mode-map))
+
+(defvar squircle-space-global-prefix "M-SPC")
+(defvar squircle-space-mode-prefix "C-M-SPC")
+
+(defun squircle-space-core-key (key)
+  (keymap-lookup squircle-space-f1-map key))
+
+(defun set-squircle-space-core-key (key new-value)
+  (keymap-set squircle-space-f1-map key new-value)
+  new-value)
+
+(gv-define-simple-setter squircle-space-core-key set-squircle-space-core-key)
+
+(defun squircle-space-mode-key-sequence (key)
+  (if (stringp key)
+      (concat squircle-space-mode-prefix " " key)
+    (vconcat (kbd squircle-space-mode-prefix) key)))
+
+(defun squircle-space-mode-key (key mode-map)
+  (keymap-lookup mode-map (squircle-space-mode-key-sequence key)))
+
+(defun set-squircle-space-mode-key (key mode-map new-value)
+  (keymap-set squircle-space-f2-map key new-value)
+  new-value)
+
+(gv-define-simple-setter squircle-space-mode-key set-squircle-space-mode-key)
+
+(define-keymap
+  :name "Global Commands"
+  (if (boundp 'squircle-space-f1-map) :keymap :prefix)
+  'squircle-space-f1-map
+  "f" 'find-file
+  "s" 'save-buffer
+  "w" 'write-file
+  "b" 'consult-buffer
+  "r" 'rectangle-mark-mode-map
+
+  "1" 'delete-other-windows
+  "2" 'split-window-below
+  "3" 'split-window-horizontally
+  "+" 'balance-windows
+  "o" 'other-window
+
+  "=" 'global-text-scale-adjust
+  "-" 'global-text-scale-adjust
+  "0" 'global-text-scale-adjust
+
+  "n" 'narrow-map
+
+  "(" 'kmacro-start-macro
+  ")" 'kmacro-end-macro
+  "e" 'kmacro-end-and-call-macro)
+
+(keymap-set global-map "<f1>" 'squircle-space-f1-map)
+(keymap-set global-map "M-SPC" 'squircle-space-f1-map)
+
+(define-keymap
+  :name "Mode Commands"
+  (if (boundp 'squircle-space-f2-map) :keymap :prefix)
+  'squircle-space-f2-map)
+
+(keymap-set global-map "<f2>" 'squircle-space-f2-map)
+(keymap-set global-map "C-M-SPC" 'squircle-space-f2-map)
+
+(defun pinky-saver (original-key new-key &optional keymap)
+  (let* ((keymap (or keymap global-map))
+         (old-command (keymap-lookup keymap original-key))
+         (old-command (or (and (symbolp old-command)
+                               (get old-command 'pinky-saver))
+                          old-command))
+         (new-name (cond
+                    ((symbolp old-command)
+                     (intern (concat (symbol-name old-command) "-pinky-saver")))
+
+                    (t
+                     (gensym "pinky-saver")))))
+    (put new-name 'pinky-saver old-command)
+    (defalias new-name
+      (byte-compile
+       (let ((last-execution nil))
+         (lambda ()
+           (interactive)
+           (if (and last-execution (time-less-p (time-since last-execution) 10))
+               (call-interactively old-command)
+             (message (propertize "Ow!  Your pinky!  Use [%s] instead, or repeat the command" 'face '(error (:height 2.0))) new-key)
+             (setf last-execution (float-time))
+             nil)))))
+    (keymap-set keymap original-key new-name)))
+
+(pinky-saver "C-x C-s" "<f1> s")
+(pinky-saver "C-x C-w" "<f1> w")
+(pinky-saver "C-x C-f" "<f1> f")
+(pinky-saver "C-x C-b" "<f1> b")
+(pinky-saver "C-x b" "<f1> b")
+(pinky-saver "C-x o" "<f1> o")
+(pinky-saver "C-x 1" "<f1> 1")
+(pinky-saver "C-x 2" "<f1> 2")
+(pinky-saver "C-x 3" "<f1> 3")
+(pinky-saver "C-x +" "<f1> +")
+
+(pinky-saver "C-x C-e" "<f2> e") ; Yes this is defined in the global map
+
+;; ===============================
+;; repeat
+;; ===============================
+
+(use-package repeat
+  :config
+  (repeat-mode 1)
+  :demand t)
+
+;; ===============================
 ;; completion
 ;; ===============================
 
@@ -41,7 +171,8 @@
       (apply orig-fun args)))
   :hook (after-init . global-company-mode)
   :config
-  (advice-add 'company-capf :around #'ada-company-capf-around-advice))
+  (advice-add 'company-capf :around #'ada-company-capf-around-advice)
+  (setf company-auto-update-doc t))
 
 ;; ===============================
 ;; consult
@@ -51,8 +182,12 @@
   :bind
   (("M-g g" . consult-goto-line)
    ("M-g M-g" . consult-goto-line)
+   ("<f1> l" . consult-line)
    ("M-]" . consult-grep)
-   ("C-x C-d" . consult-find))
+   ("<f1> ]" . consult-grep)
+   ("C-x C-d" . consult-find)
+   ("<f1> d" . consult-find)
+   ("<f1> M" . consult-man))
   :preface
   (setf completion-in-region-function
         ;; https://web.archive.org/web/20231120220521/https://github.com/minad/vertico#completion-at-point-and-completion-in-region
@@ -103,6 +238,12 @@
 ;; ===============================
 ;; misc stuff
 ;; ===============================
+
+(use-package which-key
+  :demand t
+  :config
+  (which-key-mode 1)
+  (which-key-setup-side-window-right-bottom))
 
 (use-package diminish
   :diminish buffer-face-mode
@@ -342,7 +483,23 @@ point reaches the beginning or end of the buffer, stop there."
   :after lisp-mode
   :defer t
   :config
-  (slime-setup '(slime-fancy slime-company)))
+  (slime-setup '(slime-fancy slime-company slime-trace-dialog slime-xref-browser))
+  (keymap-set slime-mode-map "<f2> c" 'slime-compile-defun)
+  (keymap-set slime-mode-map "<f2> e" 'slime-eval-last-expression)
+  (keymap-set slime-mode-map "<f2> l" 'slime-load-file)
+  (keymap-set slime-mode-map "<f2> h" 'slime-documentation-lookup)
+  (keymap-set slime-mode-map "<f2> d" 'slime-describe-symbol)
+  (keymap-set slime-mode-map "<f2> a" 'slime-apropos)
+
+  (defun squircle-space-after-slime-show-description (&rest rest)
+    ;; Slime defaults to fundamental mode when showing docs.  This is
+    ;; a little annoying because slime-company has a nice mode for
+    ;; showing the exact same text.  Let's just use their mode!
+    (let ((name (slime-buffer-name :description)))
+      (with-current-buffer name
+        (when (eql major-mode 'fundamental-mode)
+          (slime-company-doc-mode)))))
+  (advice-add 'slime-show-description :after 'squircle-space-after-slime-show-description))
 
 (defun squircle-space-paredit-tweaks ()
   (setq-local kill-whole-line t))
@@ -353,6 +510,9 @@ point reaches the beginning or end of the buffer, stop there."
          (lisp-mode . paredit-mode))
   :config
   (add-hook 'paredit-mode-hook 'squircle-space-paredit-tweaks))
+
+(keymap-set emacs-lisp-mode-map "<f2> e" 'eval-last-sexp)
+(keymap-set emacs-lisp-mode-map "<f2> l" 'load-file)
 
 ;; ===============================
 ;; macOS
@@ -376,7 +536,9 @@ point reaches the beginning or end of the buffer, stop there."
 
 (use-package magit
   :bind (("C-c s" . magit-status)
-         ("C-c f" . magit-file-popup))
+         ("<f1> g" . magit-status)
+         ("C-c f" . magit-file-dispatch)
+         ("<f1> F" . magit-file-dispatch))
   :config
   (setf magit-log-arguments '("--graph" "--color" "--decorate" "-n256")))
 
@@ -525,6 +687,7 @@ point reaches the beginning or end of the buffer, stop there."
   (add-hook 'org-mode-hook 'squircle-space-set-up-org-mode)
   (setf org-hide-emphasis-markers t)
   (advice-add 'org-fill-paragraph :around 'squircle-space-fill-advice)
+  (keymap-set org-mode-map "<f2> h" 'consult-org-heading)
   ;; https://web.archive.org/web/20241226010147/https://zzamboni.org/post/beautifying-org-mode-in-emacs/
   (custom-theme-set-faces
    'user
@@ -589,3 +752,5 @@ point reaches the beginning or end of the buffer, stop there."
           lines-tail
           indentation
           face)))
+
+(prog1 nil (message (propertize "testing sdklfj sdklfj skldfj sdklfj skldfj skldf sdfklj " 'face 'font-lock-warning-face)))
