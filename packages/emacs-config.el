@@ -195,7 +195,21 @@
           (apply (if vertico-mode
                      #'consult-completion-in-region
                    #'completion--in-region)
-                 args))))
+                 args)))
+  :config
+  ;; Workaround for https://github.com/minad/consult/pull/1217
+  (defun squircle-space-around-consult-theme (original theme)
+    (when (eq theme 'default)
+      (setf theme nil))
+    (if (not theme)
+        (funcall original theme)
+      (unless (custom-theme-p theme)
+        (load-theme theme t t))
+      (if (custom-theme-p theme)
+          (funcall original theme)
+        (message "%s is not a theme" theme)
+        (funcall original nil))))
+  (advice-add 'consult-theme :around #'squircle-space-around-consult-theme))
 
 ;; ===============================
 ;; rgrep-fast
