@@ -5,12 +5,27 @@
 
 (require 'cl-lib)
 
+(defmacro my-mode-setup (mode-hook &rest body)
+  (declare (indent 1))
+  (let* ((setup-name (when (consp mode-hook)
+                       (cadr mode-hook)))
+         (mode-hook (if (consp mode-hook)
+                        (car mode-hook)
+                      mode-hook))
+         (setup-name (or setup-name
+                         (intern (concat "my-"
+                                         (string-trim-right (symbol-name mode-hook) "-hook")
+                                         "-setup")))))
+    `(progn
+       (defun ,setup-name ()
+         ,@body)
+       (add-hook ',mode-hook ',setup-name))))
+
 ;; ===============================
 ;; f-keys
 ;; ===============================
 
-
-(defun squircle-space-ensure-function (symbol)
+(defun my-ensure-function (symbol)
   ;; In Emacs 30.1, some keymaps aren't defined as a prefix maps.
   ;; That means that they can't be referenced by their symbol names in
   ;; other maps.  Normally that doesn't matter much, but it means that
@@ -18,75 +33,74 @@
   (unless (fboundp symbol)
     (fset symbol (symbol-value symbol))))
 
-(squircle-space-ensure-function 'narrow-map)
+(my-ensure-function 'narrow-map)
 
 (use-package rect
+  :commands (rectangle-mark-mode-map)
   :defer t
   :config
-  (squircle-space-ensure-function 'rectangle-mark-mode-map))
+  (my-ensure-function 'rectangle-mark-mode-map))
 
-(defvar squircle-space-global-prefix "M-SPC")
-(defvar squircle-space-mode-prefix "C-M-SPC")
+(defvar my-mode-prefix "C-M-SPC")
 
-(defun squircle-space-core-key (key)
-  (keymap-lookup squircle-space-f1-map key))
+(defun my-mode-prefix (key)
+  (declare (compiler-macro (lambda (original)
+                             (if (stringp key)
+                                 (concat my-mode-prefix " " key)
+                               original)))
+           (pure t))
+  (concat my-mode-prefix " " key))
 
-(defun set-squircle-space-core-key (key new-value)
-  (keymap-set squircle-space-f1-map key new-value)
-  new-value)
+(defvar my-global-prefix "M-SPC")
 
-(gv-define-simple-setter squircle-space-core-key set-squircle-space-core-key)
+(defun my-global-prefix (key)
+  (declare (compiler-macro (lambda (original)
+                             (if (stringp key)
+                                 (concat my-global-prefix " " key)
+                               original)))
+           (pure t))
+  (concat my-global-prefix " " key))
 
-(defun squircle-space-mode-key-sequence (key)
-  (if (stringp key)
-      (concat squircle-space-mode-prefix " " key)
-    (vconcat (kbd squircle-space-mode-prefix) key)))
+(defmacro my-define-keymap (name &rest args)
+  (declare (indent defun))
+  `(progn
+     (defvar-keymap ,name
+       ,@args)
+     (fset ',name ,name)))
 
-(defun squircle-space-mode-key (key mode-map)
-  (keymap-lookup mode-map (squircle-space-mode-key-sequence key)))
-
-(defun set-squircle-space-mode-key (key mode-map new-value)
-  (keymap-set squircle-space-f2-map key new-value)
-  new-value)
-
-(gv-define-simple-setter squircle-space-mode-key set-squircle-space-mode-key)
-
-(define-keymap
-  :name "Global Commands"
-  (if (boundp 'squircle-space-f1-map) :keymap :prefix)
-  'squircle-space-f1-map
+(my-define-keymap my-global-map
   "f" 'find-file
   "s" 'save-buffer
   "w" 'write-file
-  "b" 'consult-buffer
+  "k" 'kill-buffer
+
   "r" 'rectangle-mark-mode-map
 
   "1" 'delete-other-windows
   "2" 'split-window-below
   "3" 'split-window-horizontally
+  "0" 'delete-window
   "+" 'balance-windows
   "o" 'other-window
 
   "=" 'global-text-scale-adjust
   "-" 'global-text-scale-adjust
-  "0" 'global-text-scale-adjust
 
   "n" 'narrow-map
 
   "(" 'kmacro-start-macro
   ")" 'kmacro-end-macro
-  "e" 'kmacro-end-and-call-macro)
+  "e" 'kmacro-end-and-call-macro
 
-(keymap-set global-map "<f1>" 'squircle-space-f1-map)
-(keymap-set global-map "M-SPC" 'squircle-space-f1-map)
+  "$" 'ispell-word)
 
-(define-keymap
-  :name "Mode Commands"
-  (if (boundp 'squircle-space-f2-map) :keymap :prefix)
-  'squircle-space-f2-map)
+(keymap-set global-map my-global-prefix 'my-global-map)
+(keymap-set function-key-map "<f1>" my-global-prefix)
 
-(keymap-set global-map "<f2>" 'squircle-space-f2-map)
-(keymap-set global-map "C-M-SPC" 'squircle-space-f2-map)
+(my-define-keymap my-local-map)
+
+(keymap-set global-map my-mode-prefix 'my-local-map)
+(keymap-set function-key-map "<f2>" my-mode-prefix)
 
 (defun pinky-saver (original-key new-key &optional keymap)
   (let* ((keymap (or keymap global-map))
@@ -164,31 +178,32 @@
 
 (use-package company
   :diminish company-mode
-  :preface
+  :hook (after-init . global-company-mode)
+  :config
   (defun ada-company-capf-around-advice (orig-fun &rest args)
     ;; dynamic scoping saves the day!
     (let ((completion-styles '(basic partial-completion emacs22)))
       (apply orig-fun args)))
-  :hook (after-init . global-company-mode)
-  :config
-  (advice-add 'company-capf :around #'ada-company-capf-around-advice)
-  (setf company-auto-update-doc t))
+  (advice-add 'company-capf :around #'ada-company-capf-around-advice))
 
 ;; ===============================
 ;; consult
 ;; ===============================
 
 (use-package consult
-  :bind
-  (("M-g g" . consult-goto-line)
-   ("M-g M-g" . consult-goto-line)
-   ("<f1> l" . consult-line)
-   ("M-]" . consult-grep)
-   ("<f1> ]" . consult-grep)
-   ("C-x C-d" . consult-find)
-   ("<f1> d" . consult-find)
-   ("<f1> M" . consult-man))
-  :preface
+  :commands (consult-line
+             consult-grep
+             consult-find
+             consult-man
+             consult-goto-line
+             consult-buffer)
+  :init
+  (keymap-set my-global-map "l" 'consult-line)
+  (keymap-set my-global-map "]" 'consult-grep)
+  (keymap-set my-global-map "d" 'consult-find)
+  (keymap-set my-global-map "M" 'consult-man)
+  (keymap-set my-global-map "b" 'consult-buffer)
+
   (setf completion-in-region-function
         ;; https://web.archive.org/web/20231120220521/https://github.com/minad/vertico#completion-at-point-and-completion-in-region
         (lambda (&rest args)
@@ -196,9 +211,10 @@
                      #'consult-completion-in-region
                    #'completion--in-region)
                  args)))
+
   :config
   ;; Workaround for https://github.com/minad/consult/pull/1217
-  (defun squircle-space-around-consult-theme (original theme)
+  (defun my-around-consult-theme (original theme)
     (when (eq theme 'default)
       (setf theme nil))
     (if (not theme)
@@ -209,7 +225,7 @@
           (funcall original theme)
         (message "%s is not a theme" theme)
         (funcall original nil))))
-  (advice-add 'consult-theme :around #'squircle-space-around-consult-theme))
+  (advice-add 'consult-theme :around #'my-around-consult-theme))
 
 ;; ===============================
 ;; rgrep-fast
@@ -333,16 +349,16 @@ point reaches the beginning or end of the buffer, stop there."
                 'prelude-move-beginning-of-line)
 ;; Okay back to my code, now
 
-(defun squircle-space-kill-region (original beginning end &optional region)
+(defun my-kill-region (original beginning end &optional region)
   (if (and region (not mark-active))
       (let ((kill-whole-line t))
         (move-beginning-of-line 1)
         (call-interactively (keymap-lookup nil "C-k")))
     (funcall original beginning end region)))
 
-(advice-add 'kill-region :around 'squircle-space-kill-region)
+(advice-add 'kill-region :around 'my-kill-region)
 
-(defun squircle-space-kill-ring-save (original beginning end &optional region)
+(defun my-kill-ring-save (original beginning end &optional region)
   (if (and region (not mark-active))
       (let (vhl-start-point)
         (save-excursion
@@ -358,34 +374,36 @@ point reaches the beginning or end of the buffer, stop there."
             (vhl/add-range vhl-start-point (point)))))
     (funcall original beginning end region)))
 
-(advice-add 'kill-ring-save :around 'squircle-space-kill-ring-save)
+(advice-add 'kill-ring-save :around 'my-kill-ring-save)
 
-(defvar-local squircle-space-indent-after-yank nil)
+(defvar-local my-indent-after-yank nil)
 
-(defun squircle-space-indent-after-yank (&rest args)
-  (when squircle-space-indent-after-yank
+(defun my-indent-after-yank (&rest args)
+  (when my-indent-after-yank
     (let ((beginning (point))
           (end (mark t)))
       (when (> beginning end)
         (cl-rotatef beginning end))
       (indent-region beginning end))))
 
-(advice-add 'yank :after 'squircle-space-indent-after-yank)
-(advice-add 'yank-pop :after 'squircle-space-indent-after-yank)
+(advice-add 'yank :after 'my-indent-after-yank)
+(advice-add 'yank-pop :after 'my-indent-after-yank)
 
-(defvar-local squircle-space-allow-unfill-on-visual-line-mode t)
+(defvar-local my-allow-unfill-on-visual-line-mode t)
 
-(defun squircle-space-fill-advice (original &rest rest)
-  (if (and squircle-space-allow-unfill-on-visual-line-mode
+(defun my-fill-advice (original &rest rest)
+  (if (and my-allow-unfill-on-visual-line-mode
            visual-line-mode)
       (let ((fill-column (point-max)))
         (apply original rest))
     (apply original rest)))
 
-(advice-add 'fill-paragraph :around 'squircle-space-fill-advice)
+(advice-add 'fill-paragraph :around 'my-fill-advice)
 
 (use-package define-word
-  :bind (("M-#" . define-word-at-point)))
+  :commands (define-word-at-point)
+  :init
+  (keymap-set my-global-map "#" 'define-word-at-point))
 
 (use-package undo-tree
   :demand t
@@ -498,14 +516,8 @@ point reaches the beginning or end of the buffer, stop there."
   :defer t
   :config
   (slime-setup '(slime-fancy slime-company slime-trace-dialog slime-xref-browser))
-  (keymap-set slime-mode-map "<f2> c" 'slime-compile-defun)
-  (keymap-set slime-mode-map "<f2> e" 'slime-eval-last-expression)
-  (keymap-set slime-mode-map "<f2> l" 'slime-load-file)
-  (keymap-set slime-mode-map "<f2> h" 'slime-documentation-lookup)
-  (keymap-set slime-mode-map "<f2> d" 'slime-describe-symbol)
-  (keymap-set slime-mode-map "<f2> a" 'slime-apropos)
 
-  (defun squircle-space-after-slime-show-description (&rest rest)
+  (defun my-after-slime-show-description (&rest rest)
     ;; Slime defaults to fundamental mode when showing docs.  This is
     ;; a little annoying because slime-company has a nice mode for
     ;; showing the exact same text.  Let's just use their mode!
@@ -513,20 +525,34 @@ point reaches the beginning or end of the buffer, stop there."
       (with-current-buffer name
         (when (eql major-mode 'fundamental-mode)
           (slime-company-doc-mode)))))
-  (advice-add 'slime-show-description :after 'squircle-space-after-slime-show-description))
+  (advice-add 'slime-show-description :after 'my-after-slime-show-description)
 
-(defun squircle-space-paredit-tweaks ()
-  (setq-local kill-whole-line t))
+  (my-define-keymap my-lisp-mode-map
+    "c" 'slime-compile-defun
+    "e" 'slime-eval-last-expression
+    "l" 'slime-load-file
+    "h" 'slime-documentation-lookup
+    "d" 'slime-describe-symbol
+    "a" 'slime-apropos
+    "r" 'slime-eval-region)
+
+  (keymap-set lisp-mode-map my-mode-prefix 'my-lisp-mode-map))
 
 (use-package paredit
   :diminish paredit-mode
   :hook ((lisp-data-mode . paredit-mode)
          (lisp-mode . paredit-mode))
   :config
-  (add-hook 'paredit-mode-hook 'squircle-space-paredit-tweaks))
+  (my-mode-setup paredit-mode
+    (setq-local kill-whole-line t)))
 
-(keymap-set emacs-lisp-mode-map "<f2> e" 'eval-last-sexp)
-(keymap-set emacs-lisp-mode-map "<f2> l" 'load-file)
+(use-package elisp-mode
+  :defer t
+  :config
+  (my-define-keymap my-emacs-lisp-mode-map
+    "e" 'eval-last-sexp
+    "l" 'load-file)
+  (keymap-set emacs-lisp-mode-map my-mode-prefix 'my-emacs-lisp-mode-map))
 
 ;; ===============================
 ;; macOS
@@ -549,10 +575,10 @@ point reaches the beginning or end of the buffer, stop there."
 ;; ===============================
 
 (use-package magit
-  :bind (("C-c s" . magit-status)
-         ("<f1> g" . magit-status)
-         ("C-c f" . magit-file-dispatch)
-         ("<f1> F" . magit-file-dispatch))
+  :commands (magit-status magit-file-dispatch)
+  :init
+  (keymap-set my-global-map "g" 'magit-status)
+  (keymap-set my-global-map "F" 'magit-file-dispatch)
   :config
   (setf magit-log-arguments '("--graph" "--color" "--decorate" "-n256")))
 
@@ -583,125 +609,123 @@ point reaches the beginning or end of the buffer, stop there."
 ;; Org
 ;; ===============================
 
-(defvar-local squircle-space-org-header-line-content nil)
-(put 'squircle-space-org-header-line-content 'risky-local-variable t)
-
-(defconst squircle-space-org-header-line
-  '(:eval
-    (progn
-      ;; We need to bounce through a symbol to prevent emacs from
-      ;; processing % constructs in the resulting string.
-      (setf squircle-space-org-header-line-content (squircle-space-get-org-header-line))
-      (list
-       (propertize " " 'display '((space :align-to left-margin)))
-       'squircle-space-org-header-line-content))))
-
-(defconst squircle-space-org-header-line-back-to-top
-  (progn
-    (let ((keymap (make-sparse-keymap)))
-      (define-key keymap (kbd "<header-line> <mouse-1>") 'beginning-of-buffer)
-      (concat
-       (propertize "Back to top" 'keymap keymap 'face '(shadow org-level-1) 'mouse-face 'underline)))))
-
-(defun squircle-space-get-org-header-line ()
-  (cl-block return
-    (let ((headings (squircle-space-get-org-headings)))
-      (concat
-       (propertize "⮤ " 'face 'shadow)
-       (cond
-        (headings
-         (mapconcat 'identity
-                    headings
-                    (propertize " > " 'face 'shadow)))
-        ((not (equal (window-start) (point-min)))
-         squircle-space-org-header-line-back-to-top)
-        (t
-         (cl-return-from return nil)))))))
-
-(defun squircle-space-org-ensure-title-fontified (string org-level)
-  (if (get-text-property 0 'face string)
-      string
-    (propertize string 'face (if org-cycle-level-faces
-		                 (nth (% (1- org-level) org-n-level-faces) org-level-faces)
-		               (nth (1- (min org-level org-n-level-faces)) org-level-faces)))))
-
-(defun squircle-space-get-org-headings ()
-  (save-excursion
-    ;; Move to the start of the first non-empty line
-    (goto-char (window-start))
-    (let ((first-non-blank (re-search-forward (rx (not space)) nil t)))
-      (when first-non-blank
-        (goto-char first-non-blank)
-        (forward-line 0)))
-
-    (let* (number-prefix
-           titles
-           (top (point))
-           (current (org-element-lineage
-                     (org-element-at-point)
-                     '(headline)
-                     'with-self)))
-      ;; Special case.  If the buffer starts with a headline, then
-      ;; we want to skip the current element in the navigation line.
-      (when (equal top (org-element-begin current))
-        (setf current (org-element-lineage current 'headline)))
-
-      (while current
-        (goto-char (org-element-begin current))
-        (save-match-data
-          (re-search-forward (regexp-quote (org-element-property :title current)) (save-excursion (end-of-line) (point)))
-          (let* ((string (match-string 0))
-                 (string (squircle-space-org-ensure-title-fontified string (org-element-property :level current)))
-                 (keymap (make-sparse-keymap))
-                 (begin (org-element-begin current)))
-            (when (and org-num-mode (null number-prefix))
-              (save-excursion
-                (re-search-backward (rx "*"))
-                (forward-char)
-                (cl-block done
-                  (dolist (overlay (overlays-at (point)))
-                    (when (and (overlay-get overlay 'org-num)
-                               (overlay-get overlay 'after-string))
-                      (setf number-prefix (overlay-get overlay 'after-string))
-                      (cl-return-from done nil))))))
-            (define-key keymap (kbd "<header-line> <mouse-1>")
-                        (lambda (event)
-                          (interactive "e")
-                          (select-window (posn-window (event-start event)))
-                          (setf (window-start) begin)
-                          (goto-char begin)))
-            (setf string (propertize string
-                                     'keymap keymap
-                                     'mouse-face 'underline))
-            (push string titles)))
-        (setf current (org-element-lineage current 'headline)))
-
-      (when (and number-prefix titles)
-        (setf (car titles)
-              (concat (propertize number-prefix 'face '(shadow org-level-1)) (car titles))))
-      titles)))
-
-(defun squircle-space-set-up-org-mode ()
-  (setq-local line-spacing 0.25)
-  (setq-local header-line-format squircle-space-org-header-line)
-  (setq-local mode-line-position-line-format "")
-  (setq-local mode-line-position-column-format "")
-  (setq-local mode-line-position-column-line-format "")
-  (face-remap-add-relative 'header-line 'fringe '(:height 0.75) 'default))
-
 (use-package org
   :mode (("\\.org$" . org-mode))
   :diminish org-num-mode
   :diminish org-indent-mode
   :config
+  (defvar-local my-org-header-line-content nil)
+  (put 'my-org-header-line-content 'risky-local-variable t)
+
+  (defconst my-org-header-line
+    '(:eval
+      (progn
+        ;; We need to bounce through a symbol to prevent emacs from
+        ;; processing % constructs in the resulting string.
+        (setf my-org-header-line-content (my-get-org-header-line))
+        (list
+         (propertize " " 'display '((space :align-to left-margin)))
+         'my-org-header-line-content))))
+
+  (defconst my-org-header-line-back-to-top
+    (progn
+      (let ((keymap (make-sparse-keymap)))
+        (define-key keymap (kbd "<header-line> <mouse-1>") 'beginning-of-buffer)
+        (concat
+         (propertize "Back to top" 'keymap keymap 'face '(shadow org-level-1) 'mouse-face 'underline)))))
+
+  (defun my-get-org-header-line ()
+    (cl-block return
+      (let ((headings (my-get-org-headings)))
+        (concat
+         (propertize "⮤ " 'face 'shadow)
+         (cond
+          (headings
+           (mapconcat 'identity
+                      headings
+                      (propertize " > " 'face 'shadow)))
+          ((not (equal (window-start) (point-min)))
+           my-org-header-line-back-to-top)
+          (t
+           (cl-return-from return nil)))))))
+
+  (defun my-org-ensure-title-fontified (string org-level)
+    (if (get-text-property 0 'face string)
+        string
+      (propertize string 'face (if org-cycle-level-faces
+		                   (nth (% (1- org-level) org-n-level-faces) org-level-faces)
+		                 (nth (1- (min org-level org-n-level-faces)) org-level-faces)))))
+
+  (defun my-get-org-headings ()
+    (save-excursion
+      ;; Move to the start of the first non-empty line
+      (goto-char (window-start))
+      (let ((first-non-blank (re-search-forward (rx (not space)) nil t)))
+        (when first-non-blank
+          (goto-char first-non-blank)
+          (forward-line 0)))
+
+      (let* (number-prefix
+             titles
+             (top (point))
+             (current (org-element-lineage
+                       (org-element-at-point)
+                       '(headline)
+                       'with-self)))
+        ;; Special case.  If the buffer starts with a headline, then
+        ;; we want to skip the current element in the navigation line.
+        (when (equal top (org-element-begin current))
+          (setf current (org-element-lineage current 'headline)))
+
+        (while current
+          (goto-char (org-element-begin current))
+          (save-match-data
+            (re-search-forward (regexp-quote (org-element-property :title current)) (save-excursion (end-of-line) (point)))
+            (let* ((string (match-string 0))
+                   (string (my-org-ensure-title-fontified string (org-element-property :level current)))
+                   (keymap (make-sparse-keymap))
+                   (begin (org-element-begin current)))
+              (when (and org-num-mode (null number-prefix))
+                (save-excursion
+                  (re-search-backward (rx "*"))
+                  (forward-char)
+                  (cl-block done
+                    (dolist (overlay (overlays-at (point)))
+                      (when (and (overlay-get overlay 'org-num)
+                                 (overlay-get overlay 'after-string))
+                        (setf number-prefix (overlay-get overlay 'after-string))
+                        (cl-return-from done nil))))))
+              (define-key keymap (kbd "<header-line> <mouse-1>")
+                          (lambda (event)
+                            (interactive "e")
+                            (select-window (posn-window (event-start event)))
+                            (setf (window-start) begin)
+                            (goto-char begin)))
+              (setf string (propertize string
+                                       'keymap keymap
+                                       'mouse-face 'underline))
+              (push string titles)))
+          (setf current (org-element-lineage current 'headline)))
+
+        (when (and number-prefix titles)
+          (setf (car titles)
+                (concat (propertize number-prefix 'face '(shadow org-level-1)) (car titles))))
+        titles)))
+
   (setf org-startup-numerated t)
   (setf org-startup-indented t)
   (setf org-indent-indentation-per-level 0)
-  (add-hook 'org-mode-hook 'org-bullets-mode)
-  (add-hook 'org-mode-hook 'squircle-space-set-up-org-mode)
   (setf org-hide-emphasis-markers t)
-  (advice-add 'org-fill-paragraph :around 'squircle-space-fill-advice)
-  (keymap-set org-mode-map "<f2> h" 'consult-org-heading)
+  (advice-add 'org-fill-paragraph :around 'my-fill-advice)
+
+  (use-package consult
+    :defer t
+    :commands (consult-org-heading))
+
+  (my-define-keymap my-org-mode-map
+    "h" 'consult-org-heading)
+  (keymap-set org-mode-map my-mode-prefix 'my-org-mode-map)
+
   ;; https://web.archive.org/web/20241226010147/https://zzamboni.org/post/beautifying-org-mode-in-emacs/
   (custom-theme-set-faces
    'user
@@ -711,7 +735,16 @@ point reaches the beginning or end of the buffer, stop there."
    '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
    '(org-property-value ((t (:inherit fixed-pitch))) t)
    '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-   '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))))
+   '(org-verbatim ((t (:inherit (shadow fixed-pitch))))))
+
+  (my-mode-setup org-mode-hook
+    (org-bullets-mode 1)
+    (setq-local line-spacing 0.25)
+    (setq-local header-line-format my-org-header-line)
+    (setq-local mode-line-position-line-format "")
+    (setq-local mode-line-position-column-format "")
+    (setq-local mode-line-position-column-line-format "")
+    (face-remap-add-relative 'header-line 'fringe '(:height 0.75) 'default)))
 
 (use-package org-bullets
   :defer t
@@ -721,10 +754,10 @@ point reaches the beginning or end of the buffer, stop there."
 ;; Looks
 ;; ===============================
 
-(defvar squircle-space-frame-tweaks-applied? nil)
+(defvar my-frame-tweaks-applied? nil)
 
-(defun squircle-space-frame-tweaks ()
-  (setf squircle-space-frame-tweaks-applied? t)
+(defun my-frame-tweaks ()
+  (setf my-frame-tweaks-applied? t)
   (load-theme 'doom-bluloco-dark t)
   (apply 'custom-theme-set-faces
          'user
@@ -736,10 +769,10 @@ point reaches the beginning or end of the buffer, stop there."
             '((variable-pitch ((t (:family "ETBembo" :height 160 :weight thin))))))
           '((fringe ((t (:inherit mode-line-inactive))))))))
 
-(if (and (daemonp) (not squircle-space-frame-tweaks-applied?))
-    (add-hook 'server-after-make-frame-hook 'squircle-space-frame-tweaks)
+(if (and (daemonp) (not my-frame-tweaks-applied?))
+    (add-hook 'server-after-make-frame-hook 'my-frame-tweaks)
   (when (display-graphic-p)
-    (squircle-space-frame-tweaks)))
+    (my-frame-tweaks)))
 
 ;; ===============================
 ;; Olivetti
@@ -766,5 +799,3 @@ point reaches the beginning or end of the buffer, stop there."
           lines-tail
           indentation
           face)))
-
-(prog1 nil (message (propertize "testing sdklfj sdklfj skldfj sdklfj skldfj skldf sdfklj " 'face 'font-lock-warning-face)))
