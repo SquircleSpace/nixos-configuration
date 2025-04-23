@@ -36,6 +36,7 @@ let
     gparted
     graphviz
     ispell
+    librewolf
     nextcloud-client
     pandoc
     paprefs
