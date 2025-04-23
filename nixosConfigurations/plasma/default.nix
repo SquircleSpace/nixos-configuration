@@ -6,7 +6,7 @@ mkNixosSystem {
     lanzaboote.nixosModules.lanzaboote
     nixos-hardware.nixosModules.framework-13-7040-amd
     self.nixosModules.default
-    self.nixosModules.kde
+    self.nixosModules.gnome
     self.nixosModules.photosync
 
     ./system.nix
