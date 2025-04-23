@@ -799,3 +799,12 @@ point reaches the beginning or end of the buffer, stop there."
           lines-tail
           indentation
           face)))
+
+;; ===============================
+;; journalctl-mode
+;; ===============================
+
+(use-package journalctl-mode
+  :defer t
+  :init
+  (keymap-set my-global-map "J J" 'journalctl))

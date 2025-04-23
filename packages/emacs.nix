@@ -73,6 +73,7 @@ emacsWithPackages (epkgs:
     git-gutter-fringe
     haskell-mode
     htmlize
+    journalctl-mode
     magit
     marginalia
     nix-mode
