@@ -168,14 +168,6 @@
     snapshotPath = "/btrfs/backups";
   };
 
-  specialisation."nonui".configuration = {
-    services.xserver.enable = lib.mkForce false;
-    services.desktopManager.plasma6.enable = lib.mkForce false;
-    services.displayManager.sddm.enable = lib.mkForce false;
-    boot.plymouth.enable = lib.mkForce false;
-    services.flatpak.enable = lib.mkForce false;
-  };
-
   # Minecraft
   networking.firewall.allowedTCPPorts = [ 25565 ];
   networking.firewall.allowedUDPPorts = [ 25565 ];

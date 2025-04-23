@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 {
   imports = [
     ./sound.nix
@@ -24,4 +24,15 @@
 
   # Make boot pretty!
   boot.plymouth.enable = true;
+
+  # For recovery
+  specialisation."nonui".configuration = {
+    services.xserver.enable = lib.mkForce false;
+    services.desktopManager.plasma6.enable = lib.mkForce false;
+    services.displayManager.sddm.enable = lib.mkForce false;
+    services.xserver.desktopManager.gnome.enable = lib.mkForce false;
+    services.xserver.displayManager.gdm.enable = lib.mkForce false;
+    boot.plymouth.enable = lib.mkForce false;
+    services.flatpak.enable = lib.mkForce false;
+  };
 }
