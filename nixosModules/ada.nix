@@ -56,7 +56,7 @@ let
     okular
     yakuake
   ];
-  gnomePackages = with pkgs.gnome; [
+  gnomePackages = with pkgs; [
     gnome-tweaks
     gnome-shell-extensions
   ];
