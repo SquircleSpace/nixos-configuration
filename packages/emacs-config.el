@@ -402,19 +402,20 @@ point reaches the beginning or end of the buffer, stop there."
         (message "Copied")
         (pulse-momentary-highlight-region start end)))))
 
-(defun my-kill-region (original beginning end &optional region)
-  (if (and region (not mark-active) (called-interactively-p 'any))
+(defun my-kill-region ()
+  (interactive)
+  (if (not mark-active)
       (my-quick-kill-line t)
-    (funcall original beginning end region)))
+    (call-interactively 'kill-region)))
 
-(advice-add 'kill-region :around 'my-kill-region)
-
-(defun my-kill-ring-save (original beginning end &optional region)
-  (if (and region (not mark-active) (called-interactively-p 'any))
+(defun my-kill-ring-save ()
+  (interactive)
+  (if (not mark-active)
       (my-quick-kill-line nil)
-    (funcall original beginning end region)))
+    (call-interactively 'kill-ring-save)))
 
-(advice-add 'kill-ring-save :around 'my-kill-ring-save)
+(keymap-set global-map "<remap> <kill-region>" 'my-kill-region)
+(keymap-set global-map "<remap> <kill-ring-save>" 'my-kill-ring-save)
 
 (defvar-local my-indent-after-yank nil)
 
