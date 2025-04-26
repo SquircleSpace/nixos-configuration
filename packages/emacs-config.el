@@ -578,6 +578,12 @@ point reaches the beginning or end of the buffer, stop there."
 
   (keymap-set lisp-mode-map my-mode-prefix 'my-lisp-mode-map))
 
+(use-package lisp-mode
+  :defer t
+  :config
+  (my-mode-setup lisp-mode-hook
+    (setf my-indent-after-yank t)))
+
 (use-package paredit
   :diminish paredit-mode
   :hook ((lisp-data-mode . paredit-mode)
@@ -589,7 +595,8 @@ point reaches the beginning or end of the buffer, stop there."
 (use-package elisp-mode
   :defer t
   :config
-  (autoload 'slime-flash-region "slime")
+  (my-mode-setup emacs-lisp-mode-hook
+    (setf my-indent-after-yank t))
 
   (defun my-compile-defun ()
     (interactive)
