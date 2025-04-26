@@ -557,7 +557,7 @@ point reaches the beginning or end of the buffer, stop there."
   :config
   (slime-setup '(slime-fancy slime-company slime-trace-dialog slime-xref-browser))
 
-  (defun my-after-slime-show-description (&rest rest)
+  (defun my-after-slime-show-description (&rest _rest)
     ;; Slime defaults to fundamental mode when showing docs.  This is
     ;; a little annoying because slime-company has a nice mode for
     ;; showing the exact same text.  Let's just use their mode!
