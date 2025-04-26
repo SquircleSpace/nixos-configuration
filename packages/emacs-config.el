@@ -25,21 +25,22 @@
 ;; f-keys
 ;; ===============================
 
-(defun my-ensure-function (symbol)
-  ;; In Emacs 30.1, some keymaps aren't defined as a prefix maps.
-  ;; That means that they can't be referenced by their symbol names in
-  ;; other maps.  Normally that doesn't matter much, but it means that
-  ;; in which-key's display they aren't given a nice label.
-  (unless (fboundp symbol)
-    (fset symbol (symbol-value symbol))))
+(defmacro my-define-keymap (name &rest args)
+  (declare (indent defun))
+  `(progn
+     (defvar-keymap ,name)
+     (define-keymap :keymap ,name
+       ,@args)
+     (fset ',name ,name)))
 
-(my-ensure-function 'narrow-map)
+(my-define-keymap my-rectangle-mark-mode-map
+  :parent rectangle-mark-mode-map)
 
-(use-package rect
-  :commands (rectangle-mark-mode-map)
-  :defer t
-  :config
-  (my-ensure-function 'rectangle-mark-mode-map))
+(my-define-keymap my-narrow-map
+  :parent narrow-map)
+
+(my-define-keymap my-project-prefix-map
+  :parent project-prefix-map)
 
 (defvar my-mode-prefix "C-M-SPC")
 
@@ -61,50 +62,25 @@
            (pure t))
   (concat my-global-prefix " " key))
 
-(defmacro my-define-keymap (name &rest args)
-  (declare (indent defun))
-  `(progn
-     (defvar-keymap ,name
-       ,@args)
-     (fset ',name ,name)))
-
 (my-define-keymap my-global-map
-  "f" 'find-file
-  "s" 'save-buffer
-  "w" 'write-file
-  "k" 'kill-buffer
-
-  "r" 'rectangle-mark-mode-map
-
-  "1" 'delete-other-windows
-  "2" 'split-window-below
-  "3" 'split-window-horizontally
-  "0" 'delete-window
-  "+" 'balance-windows
-  "o" 'other-window
-
-  "=" 'global-text-scale-adjust
-  "-" 'global-text-scale-adjust
-
-  "n" 'narrow-map
-
-  "(" 'kmacro-start-macro
-  ")" 'kmacro-end-macro
-  "e" 'kmacro-end-and-call-macro
-
-  "$" 'ispell-word)
+  "r" 'my-rectangle-mark-mode-map
+  "n" 'my-narrow-map
+  "p" 'my-project-prefix-map)
 
 (keymap-set global-map my-global-prefix 'my-global-map)
 (keymap-set function-key-map "<f1>" my-global-prefix)
+(keymap-unset global-map "<f1>")
 
 (my-define-keymap my-local-map)
 
 (keymap-set global-map my-mode-prefix 'my-local-map)
 (keymap-set function-key-map "<f2>" my-mode-prefix)
+(keymap-unset global-map "<f2>")
 
-(defun pinky-saver (original-key new-key &optional keymap)
-  (let* ((keymap (or keymap global-map))
-         (old-command (keymap-lookup keymap original-key))
+(defun pinky-saver (original-key &optional original-keymap new-key new-keymap)
+  (let* ((original-keymap (or original-keymap global-map))
+         (new-keymap (or new-keymap global-map))
+         (old-command (keymap-lookup original-keymap original-key))
          (old-command (or (and (symbolp old-command)
                                (get old-command 'pinky-saver))
                           old-command))
@@ -116,29 +92,58 @@
                      (gensym "pinky-saver")))))
     (put new-name 'pinky-saver old-command)
     (defalias new-name
-      (byte-compile
-       (let ((last-execution nil))
-         (lambda ()
-           (interactive)
-           (if (and last-execution (time-less-p (time-since last-execution) 10))
-               (call-interactively old-command)
-             (message (propertize "Ow!  Your pinky!  Use [%s] instead, or repeat the command" 'face '(error (:height 2.0))) new-key)
-             (setf last-execution (float-time))
-             nil)))))
-    (keymap-set keymap original-key new-name)))
+      (let ((last-execution nil))
+        (lambda ()
+          (interactive)
+          (if (and last-execution (time-less-p (time-since last-execution) 10))
+              (call-interactively old-command)
+            (let ((other-key (where-is-internal old-command nil t nil nil)))
+              (message (propertize "Ow!  Your pinky!  Use %s instead, or repeat the command" 'face '(error (:height 2.0)))
+                       (if other-key
+                           (key-description other-key)
+                         (format "%s %s"
+                                 (key-description (where-is-internal 'execute-extended-command nil t))
+                                 old-command))))
+            (setf last-execution (float-time))
+            nil))))
+    (keymap-set original-keymap original-key new-name)
+    (when new-key
+      (keymap-set new-keymap new-key old-command))))
 
-(pinky-saver "C-x C-s" "<f1> s")
-(pinky-saver "C-x C-w" "<f1> w")
-(pinky-saver "C-x C-f" "<f1> f")
-(pinky-saver "C-x C-b" "<f1> b")
-(pinky-saver "C-x b" "<f1> b")
-(pinky-saver "C-x o" "<f1> o")
-(pinky-saver "C-x 1" "<f1> 1")
-(pinky-saver "C-x 2" "<f1> 2")
-(pinky-saver "C-x 3" "<f1> 3")
-(pinky-saver "C-x +" "<f1> +")
+;; Buffers
+(pinky-saver "C-x C-s" nil "s" my-global-map)
+(pinky-saver "C-x C-w" nil "w" my-global-map)
+(pinky-saver "C-x C-f" nil "f" my-global-map)
+(pinky-saver "C-x b"   nil "b" my-global-map)
+(pinky-saver "C-x k"   nil "k" my-global-map)
 
-(pinky-saver "C-x C-e" "<f2> e") ; Yes this is defined in the global map
+;; Windows
+(pinky-saver "C-x 1"   nil "1" my-global-map)
+(pinky-saver "C-x 2"   nil "2" my-global-map)
+(pinky-saver "C-x 3"   nil "3" my-global-map)
+(pinky-saver "C-x 0"   nil "0" my-global-map)
+(pinky-saver "C-x +"   nil "+" my-global-map)
+(pinky-saver "C-x o"   nil "o" my-global-map)
+
+;; Text-size
+(pinky-saver "C-x C-M-=" nil "="   my-global-map)
+(pinky-saver "C-x C-M--" nil "-"   my-global-map)
+(pinky-saver "C-x C-="   nil "M-=" my-global-map)
+(pinky-saver "C-x C--"   nil "M--" my-global-map)
+
+;; Keyboard macros
+(pinky-saver "C-x ("   nil "(" my-global-map)
+(pinky-saver "C-x )"   nil ")" my-global-map)
+(pinky-saver "C-x e"   nil "e" my-global-map)
+
+;; Goto line
+(pinky-saver "M-g M-g" nil "j" my-global-map)
+(pinky-saver "M-g g")
+
+;; Misc
+(pinky-saver "M-$"     nil "$"   my-global-map)
+(pinky-saver "M-%"     nil "%"   my-global-map)
+(pinky-saver "C-M-%"   nil "M-%" my-global-map)
 
 ;; ===============================
 ;; repeat
@@ -202,7 +207,8 @@
   (keymap-set my-global-map "]" 'consult-grep)
   (keymap-set my-global-map "d" 'consult-find)
   (keymap-set my-global-map "M" 'consult-man)
-  (keymap-set my-global-map "b" 'consult-buffer)
+  (keymap-set global-map "<remap> <goto-line>" 'consult-goto-line)
+  (keymap-set global-map "<remap> <switch-to-buffer>" 'consult-buffer)
 
   (setf completion-in-region-function
         ;; https://web.archive.org/web/20231120220521/https://github.com/minad/vertico#completion-at-point-and-completion-in-region
@@ -271,7 +277,10 @@
 
 (use-package which-key
   :demand t
+  :diminish which-key-mode
   :config
+  (setf which-key-show-early-on-C-h t)
+  (setf which-key-idle-secondary-delay 0.05)
   (which-key-mode 1)
   (which-key-setup-side-window-right-bottom))
 
@@ -349,29 +358,60 @@ point reaches the beginning or end of the buffer, stop there."
                 'prelude-move-beginning-of-line)
 ;; Okay back to my code, now
 
+(defun my-quick-kill-line (deletep)
+  ;; This is a bit silly.  This function implements the behavior I'd
+  ;; like to have when pressing C-w or M-w without an active region.
+  ;; In particular, I want it to kill the current line.  However, some
+  ;; modes (e.g. paredit) enforce a sort of consistency on the buffer
+  ;; and don't want you to delete indiscriminately.  In these modes,
+  ;; C-k is overridden to do something fancier.  So, to kill the line,
+  ;; we use whatever C-k is bound to.  But, we don't actually want to
+  ;; use C-k since it doesn't respect kill-ring-deindent-mode and
+  ;; other buffer filters.
+
+  ;; First, we go to the "start" of the line.  Then we perform C-k
+  ;; while in read-only mode.  This moves the cursor to the end of the
+  ;; region to be killed.  Then, we use kill-region to perform the
+  ;; kill.  If, after performing the kill, we're on a line containing
+  ;; nothing but whitespace, then kill the rest of the line (which can
+  ;; happen in paredit-mode for example).
+  (save-excursion
+    (let* ((start (progn (if kill-ring-deindent-mode
+                             (back-to-indentation)
+                           (beginning-of-line 1))
+                         (point)))
+           (end (let ((kill-whole-line nil)
+                      (buffer-read-only t)
+                      (kill-read-only-ok t)
+                      (inhibit-message t)
+                      (kill-transform-function (lambda (_string) nil)))
+                  (call-interactively (keymap-lookup nil "C-k"))
+                  (point))))
+      (if deletep
+          (progn
+            (kill-region start end)
+            (kill-append "\n" nil)
+            (when (looking-at "\n")
+              (beginning-of-line 1)
+              (when (looking-at (rx (* blank) "\n"))
+                (let ((kill-whole-line t)
+                      (kill-transform-function (lambda (_string) nil)))
+                  (kill-line)))))
+        (kill-ring-save start end)
+        (kill-append "\n" nil)
+        (message "Copied")
+        (pulse-momentary-highlight-region start end)))))
+
 (defun my-kill-region (original beginning end &optional region)
-  (if (and region (not mark-active))
-      (let ((kill-whole-line t))
-        (move-beginning-of-line 1)
-        (call-interactively (keymap-lookup nil "C-k")))
+  (if (and region (not mark-active) (called-interactively-p 'any))
+      (my-quick-kill-line t)
     (funcall original beginning end region)))
 
 (advice-add 'kill-region :around 'my-kill-region)
 
 (defun my-kill-ring-save (original beginning end &optional region)
-  (if (and region (not mark-active))
-      (let (vhl-start-point)
-        (save-excursion
-          (move-beginning-of-line 1)
-          (setf vhl-start-point (point))
-          (prog1
-              (let ((kill-whole-line t)
-                    (buffer-read-only t)
-                    (kill-read-only-ok t)
-                    (inhibit-message t))
-                (call-interactively (keymap-lookup nil "C-k")))
-            (message "Copied")
-            (vhl/add-range vhl-start-point (point)))))
+  (if (and region (not mark-active) (called-interactively-p 'any))
+      (my-quick-kill-line nil)
     (funcall original beginning end region)))
 
 (advice-add 'kill-ring-save :around 'my-kill-ring-save)
@@ -422,25 +462,12 @@ point reaches the beginning or end of the buffer, stop there."
   :config
   (windmove-default-keybindings 'meta))
 
-(use-package volatile-highlights
-  :demand t
-  :diminish volatile-highlights-mode
-  :config
-  (progn
-    (volatile-highlights-mode t)
-    (defadvice pop-tag-mark (after highlight-line)
-      (save-excursion
-	(let ((line-start (progn (move-beginning-of-line 1) (point)))
-	      (line-end (progn (move-end-of-line 1) (1+ (point)))))
-	  (vhl/add-range line-start line-end))))
-    (ad-activate 'pop-tag-mark)
-
-    (defadvice recenter-top-bottom (after highlight-line)
-      (save-excursion
-	(let ((line-start (progn (move-beginning-of-line 1) (point)))
-	      (line-end (progn (move-end-of-line 1) (1+ (point)))))
-	  (vhl/add-range line-start line-end))))
-    (ad-activate 'recenter-top-bottom)))
+(use-package pulse
+  :defer t
+  :init
+  (defun my-highlight-current-line (&rest _args)
+    (pulse-momentary-highlight-one-line))
+  (advice-add 'recenter-top-bottom :after 'my-highlight-current-line))
 
 ;; ===============================
 ;; fringe
@@ -549,9 +576,25 @@ point reaches the beginning or end of the buffer, stop there."
 (use-package elisp-mode
   :defer t
   :config
+  (autoload 'slime-flash-region "slime")
+
+  (defun my-compile-defun ()
+    (interactive)
+    (save-excursion
+      (let ((end (progn
+                   (end-of-defun)
+                   (point)))
+            (start (progn
+                     (beginning-of-defun)
+                     (point))))
+        (slime-flash-region start end)))
+    (call-interactively 'compile-defun))
+
   (my-define-keymap my-emacs-lisp-mode-map
     "e" 'eval-last-sexp
-    "l" 'load-file)
+    "l" 'load-file
+    "c" 'my-compile-defun
+    "r" 'eval-region)
   (keymap-set emacs-lisp-mode-map my-mode-prefix 'my-emacs-lisp-mode-map))
 
 ;; ===============================
@@ -577,8 +620,8 @@ point reaches the beginning or end of the buffer, stop there."
 (use-package magit
   :commands (magit-status magit-file-dispatch)
   :init
-  (keymap-set my-global-map "g" 'magit-status)
-  (keymap-set my-global-map "F" 'magit-file-dispatch)
+  (keymap-set my-global-map "g g" 'magit-status)
+  (keymap-set my-global-map "g f" 'magit-file-dispatch)
   :config
   (setf magit-log-arguments '("--graph" "--color" "--decorate" "-n256")))
 

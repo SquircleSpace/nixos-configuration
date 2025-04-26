@@ -89,7 +89,6 @@ emacsWithPackages (epkgs:
     swift-mode
     undo-tree
     vertico
-    volatile-highlights
     zenburn-theme
   ])
   ++ (if builtins.isFunction extraPackages
