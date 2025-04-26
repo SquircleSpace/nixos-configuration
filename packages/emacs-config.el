@@ -467,8 +467,20 @@ point reaches the beginning or end of the buffer, stop there."
   :defer t
   :init
   (defun my-highlight-current-line (&rest _args)
-    (pulse-momentary-highlight-one-line))
-  (advice-add 'recenter-top-bottom :after 'my-highlight-current-line))
+    (when (called-interactively-p 'interactive)
+      (pulse-momentary-highlight-one-line)))
+
+  (defun my-highlight-region (&rest _args)
+    (when (called-interactively-p 'interactive)
+      (let ((beginning (point))
+            (end (mark)))
+        (when (> beginning end)
+          (cl-rotatef beginning end))
+        (pulse-momentary-highlight-region beginning end))))
+
+  (advice-add 'recenter-top-bottom :after 'my-highlight-current-line)
+  (advice-add 'yank :after 'my-highlight-region)
+  (advice-add 'yank-pop :after 'my-highlight-region))
 
 ;; ===============================
 ;; fringe
