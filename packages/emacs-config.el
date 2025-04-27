@@ -575,8 +575,11 @@ point reaches the beginning or end of the buffer, stop there."
     "d" 'slime-describe-symbol
     "a" 'slime-apropos
     "r" 'slime-eval-region)
+  (keymap-set lisp-mode-map my-mode-prefix 'my-lisp-mode-map)
 
-  (keymap-set lisp-mode-map my-mode-prefix 'my-lisp-mode-map))
+  (defun my-slime-flash-region (start end &optional _duration)
+    (pulse-momentary-highlight-region start end))
+  (advice-add 'slime-flash-region :override 'my-slime-flash-region))
 
 (use-package lisp-mode
   :defer t
@@ -607,7 +610,7 @@ point reaches the beginning or end of the buffer, stop there."
             (start (progn
                      (beginning-of-defun)
                      (point))))
-        (slime-flash-region start end)))
+        (pulse-momentary-highlight-region start end)))
     (call-interactively 'compile-defun))
 
   (my-define-keymap my-emacs-lisp-mode-map
