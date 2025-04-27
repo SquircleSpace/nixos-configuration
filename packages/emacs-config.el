@@ -719,8 +719,8 @@ point reaches the beginning or end of the buffer, stop there."
     (if (get-text-property 0 'face string)
         string
       (propertize string 'face (if org-cycle-level-faces
-		                   (nth (% (1- org-level) org-n-level-faces) org-level-faces)
-		                 (nth (1- (min org-level org-n-level-faces)) org-level-faces)))))
+                                   (nth (% (1- org-level) org-n-level-faces) org-level-faces)
+                                 (nth (1- (min org-level org-n-level-faces)) org-level-faces)))))
 
   (defun my-get-org-headings ()
     (save-excursion
