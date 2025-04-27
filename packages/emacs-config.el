@@ -856,13 +856,28 @@ point reaches the beginning or end of the buffer, stop there."
 
 (use-package whitespace
   :defer t
+  :init
+  (keymap-set my-global-map "W m" 'whitespace-mode)
+  (keymap-set my-global-map "W c" 'my-whitespace-cleanup-region)
+  (keymap-set my-global-map "W C" 'my-whitespace-cleanup)
+
+  (defun my-whitespace-cleanup-region (beginning end)
+    (interactive "@r")
+    (if mark-active
+        (whitespace-cleanup-region beginning end)
+      (message "Cannot cleanup because mark is not active")))
+
+  (defun my-whitespace-cleanup ()
+    (interactive "@")
+    (let ((mark-active nil))
+      (whitespace-cleanup)))
+
   :config
   (setf whitespace-style
         '(trailing
           empty
           space-after-tab
           space-before-tab
-          lines-tail
           indentation
           face)))
 
