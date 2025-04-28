@@ -328,6 +328,42 @@
 (use-package expand-region
   :bind ("C-=" . 'er/expand-region))
 
+(defun my-buffer-flag ()
+  (cond
+   ((buffer-modified-p)
+    '(:propertize "*" face font-lock-warning-face))
+   (buffer-read-only
+    "%")
+   (t
+    " ")))
+
+(defun my-remote-flag ()
+  (if (and default-directory (file-remote-p default-directory))
+      "@"
+    ""))
+
+(defun my-eol-flag ()
+  (pcase (coding-system-eol-type buffer-file-coding-system)
+    (0 "")
+    (1 '(:propertize "W" face font-lock-keyword-face))
+    (2 '(:propertize "!" face font-lock-warning-face))))
+
+(setq-default
+ mode-line-format
+ '("%e" " " (:eval (my-buffer-flag)) (:eval (my-remote-flag)) (:eval (my-eol-flag)) " "
+   (:propertize "%b" face mode-line-buffer-id)
+   " "
+   (line-number-mode
+    (column-number-mode (6 "%l:%c ") (3 "%l "))
+    (3 (column-number-mode ":%c ")))
+   " " (:propertize mode-name face font-lock-builtin-face) mode-line-process
+   "  " mode-line-percent-position
+   (size-indication-mode "  %I ")
+   (project-mode-line (:propertize project-mode-line-format face font-lock-constant-face))
+   (vc-mode (:propertize vc-mode face font-lock-keyword-face))
+   minor-mode-alist))
+(setf project-mode-line t)
+
 ;; Some stuff stolen from Emacs prelude
 (defun prelude-move-beginning-of-line (arg)
   "Move point back to indentation of beginning of line.
@@ -833,7 +869,10 @@ point reaches the beginning or end of the buffer, stop there."
               (default ((t (:family "Fira Code" :height 120))))))
           (when (x-list-fonts "ETBembo")
             '((variable-pitch ((t (:family "ETBembo" :height 160 :weight thin))))))
-          '((fringe ((t (:inherit mode-line-inactive))))))))
+          '((fringe ((t (:inherit mode-line-inactive))))
+            (mode-line-active ((t (:inherit (mode-line) :height 0.8))))
+            (mode-line-inactive ((t (:inherit (shadow mode-line) :height 0.8))))
+            (mode-line-buffer-id ((t :height 1.25)))))))
 
 (if (and (daemonp) (not my-frame-tweaks-applied?))
     (add-hook 'server-after-make-frame-hook 'my-frame-tweaks)
