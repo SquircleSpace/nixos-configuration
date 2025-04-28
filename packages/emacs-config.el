@@ -334,7 +334,8 @@
    ((buffer-modified-p)
     '(:propertize "*" face font-lock-warning-face))
    (buffer-read-only
-    "%")
+    ;; Don't forget that strings are checked for format directives!
+    "%%")
    (t
     " ")))
 
@@ -349,18 +350,64 @@
     (1 '(:propertize "W" face font-lock-keyword-face))
     (2 '(:propertize "!" face font-lock-warning-face))))
 
+(defvar-local my-project-mode-line-cache nil)
+(defvar my-project-mode-line-cache-lifespan 60)
+
+(defun my-project-mode-line-format ()
+  ;; It seems that project-mode-line-format doesn't cache if the
+  ;; buffer doesn't have an associated project.  This is a problem
+  ;; because the mode line is refreshed... a lot.  Let's just cache
+  ;; the result ourselves.
+  (when (or (null my-project-mode-line-cache)
+          (< my-project-mode-line-cache-lifespan
+             (abs (- (float-time)
+                     (cdr my-project-mode-line-cache)))))
+    (let* ((formatted (project-mode-line-format))
+           (formatted (when formatted
+                        (if (and (or (not dired-directory)
+                                     (not (equal (expand-file-name (project-root (project-current)))
+                                                 (expand-file-name default-directory))))
+                                 (not (derived-mode-p '(magit-mode))))
+                            (list "" formatted ": ")
+                          "-- "))))
+      (setf my-project-mode-line-cache (cons formatted (float-time)))))
+  (car my-project-mode-line-cache))
+
+(defvar-local my-mode-name nil)
+(put 'my-mode-name 'risky-local-variable t)
+(defvar-local my-mode-name-previous nil)
+
+(defun my-mode-name ()
+  ;; Bah.  mode-line-format doesn't support nested :propertize forms.
+  ;; Despite what the documentation says, the innermost :propertize
+  ;; form is the only one that gets to set text properties.
+  ;; Properties set via outer forms are completely lost.  If a
+  ;; mode-name wants to, for example, set the help-echo property, that
+  ;; means we can't apply a face to it.  Let's hack it.  We'll format
+  ;; mode-name and then apply the face afterwards.  Note that we can't
+  ;; use the face parameter to format-mode-line, since it has the
+  ;; exact same issue as nested :propertize forms.
+
+  ;; Since mode lines are rendered very frequently, we should cache
+  ;; the result of propertizing the mode name.
+  (if (eql my-mode-name-previous mode-name)
+      'my-mode-name
+    (setf my-mode-name (propertize (format-mode-line mode-name) 'face 'font-lock-builtin-face))
+    (setf my-mode-name-previous mode-name)
+    'my-mode-name))
+
 (setq-default
  mode-line-format
  '("%e" " " (:eval (my-buffer-flag)) (:eval (my-remote-flag)) (:eval (my-eol-flag)) " "
+   (project-mode-line (:propertize (:eval (my-project-mode-line-format)) face font-lock-constant-face))
    (:propertize "%b" face mode-line-buffer-id)
    " "
    (line-number-mode
     (column-number-mode (6 "%l:%c ") (3 "%l "))
     (3 (column-number-mode ":%c ")))
-   " " (:propertize mode-name face font-lock-builtin-face) mode-line-process
+   " " (:eval (my-mode-name)) mode-line-process
    "  " mode-line-percent-position
    (size-indication-mode "  %I ")
-   (project-mode-line (:propertize project-mode-line-format face font-lock-constant-face))
    (vc-mode (:propertize vc-mode face font-lock-keyword-face))
    minor-mode-alist))
 (setf project-mode-line t)
