@@ -680,8 +680,10 @@ point reaches the beginning or end of the buffer, stop there."
 (use-package magit
   :commands (magit-status magit-file-dispatch)
   :init
-  (keymap-set my-global-map "g g" 'magit-status)
-  (keymap-set my-global-map "g f" 'magit-file-dispatch)
+  (my-define-keymap my-magit-map
+    "g" 'magit-status
+    "f" 'magit-file-dispatch)
+  (keymap-set my-global-map "g" 'my-magit-map)
   :config
   (setf magit-log-arguments '("--graph" "--color" "--decorate" "-n256")))
 
