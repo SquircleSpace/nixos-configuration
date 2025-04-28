@@ -33,8 +33,9 @@
        ,@args)
      (fset ',name ,name)))
 
-(my-define-keymap my-rectangle-mark-mode-map
-  :parent rectangle-mark-mode-map)
+(my-define-keymap my-rectangle-mark-map
+  "t" 'string-rectangle
+  "k" 'kill-rectangle)
 
 (my-define-keymap my-narrow-map
   :parent narrow-map)
@@ -63,7 +64,7 @@
   (concat my-global-prefix " " key))
 
 (my-define-keymap my-global-map
-  "r" 'my-rectangle-mark-mode-map
+  "r" 'my-rectangle-mark-map
   "n" 'my-narrow-map
   "p" 'my-project-prefix-map)
 
