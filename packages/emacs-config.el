@@ -856,6 +856,7 @@ point reaches the beginning or end of the buffer, stop there."
 
 (use-package whitespace
   :defer t
+  :hook (prog-mode org-mode)
   :init
   (keymap-set my-global-map "W m" 'whitespace-mode)
   (keymap-set my-global-map "W c" 'my-whitespace-cleanup-region)
