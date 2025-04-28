@@ -896,22 +896,41 @@ point reaches the beginning or end of the buffer, stop there."
 
 (use-package whitespace
   :defer t
-  :hook (prog-mode org-mode)
+  :hook ((prog-mode . my-maybe-whitespace-mode)
+         (org-mode . my-maybe-whitespace-mode))
   :init
-  (keymap-set my-global-map "W m" 'whitespace-mode)
-  (keymap-set my-global-map "W c" 'my-whitespace-cleanup-region)
-  (keymap-set my-global-map "W C" 'my-whitespace-cleanup)
+  (defun my-maybe-whitespace-mode ()
+    (unless buffer-read-only
+      (whitespace-mode)))
+
+  (my-define-keymap my-whitespace-map
+    "m" 'whitespace-mode
+    "c" 'my-whitespace-cleanup-region
+    "C-c" 'my-whitespace-cleanup)
 
   (defun my-whitespace-cleanup-region (beginning end)
-    (interactive "@r")
-    (if mark-active
-        (whitespace-cleanup-region beginning end)
-      (message "Cannot cleanup because mark is not active")))
+    (interactive
+     (if mark-active
+         (list (point) (mark))
+       (save-excursion
+         (list (progn
+                 (move-beginning-of-line 1)
+                 (point))
+               (progn
+                 (move-end-of-line 1)
+                 (point))))))
+    (when (> beginning end)
+      (cl-rotatef beginning end))
+    (whitespace-cleanup-region beginning end)
+    (pulse-momentary-highlight-region beginning end)
+    (message "Cleaned whitespace in region"))
 
   (defun my-whitespace-cleanup ()
     (interactive "@")
     (let ((mark-active nil))
-      (whitespace-cleanup)))
+      (whitespace-cleanup)
+      (pulse-momentary-highlight-region (point-min) (point-max))
+      (message "Cleaned whitespace in buffer")))
 
   :config
   (setf whitespace-style
