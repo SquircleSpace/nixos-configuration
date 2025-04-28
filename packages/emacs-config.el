@@ -896,7 +896,8 @@ point reaches the beginning or end of the buffer, stop there."
     (setq-local mode-line-position-line-format "")
     (setq-local mode-line-position-column-format "")
     (setq-local mode-line-position-column-line-format "")
-    (face-remap-add-relative 'header-line 'fringe '(:height 0.75) 'default)))
+    (face-remap-add-relative 'header-line 'fringe '(:height 1.25) 'default)
+    (face-remap-add-relative 'fixed-pitch '(:height .8))))
 
 (use-package org-bullets
   :defer t
@@ -915,10 +916,10 @@ point reaches the beginning or end of the buffer, stop there."
          'user
          (append
           (when (x-list-fonts "Fira Code")
-            '((fixed-pitch ((t (:family "Fira Code" :height 120))))
+            '((fixed-pitch ((t (:family "Fira Code" :inherit default))))
               (default ((t (:family "Fira Code" :height 120))))))
           (when (x-list-fonts "ETBembo")
-            '((variable-pitch ((t (:family "ETBembo" :height 160 :weight thin))))))
+            '((variable-pitch ((t (:family "ETBembo" :height 1.25 :inherit default))))))
           '((fringe ((t (:inherit mode-line-inactive))))
             (mode-line-active ((t (:inherit (mode-line) :height 0.8))))
             (mode-line-inactive ((t (:inherit (shadow mode-line) :height 0.8))))
