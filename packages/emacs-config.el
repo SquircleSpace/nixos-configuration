@@ -957,6 +957,7 @@ point reaches the beginning or end of the buffer, stop there."
     "m" 'whitespace-mode
     "c" 'my-whitespace-cleanup-region
     "C-c" 'my-whitespace-cleanup)
+  (keymap-set my-global-map "W" 'my-whitespace-map)
 
   (defun my-whitespace-cleanup-region (beginning end)
     (interactive
@@ -998,4 +999,6 @@ point reaches the beginning or end of the buffer, stop there."
 (use-package journalctl-mode
   :defer t
   :init
-  (keymap-set my-global-map "J J" 'journalctl))
+  (my-define-keymap my-journalctl-map
+    "J" 'journalctl)
+  (keymap-set my-global-map "J" 'my-journalctl-map))
