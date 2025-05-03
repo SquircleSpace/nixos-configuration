@@ -359,17 +359,16 @@
   ;; because the mode line is refreshed... a lot.  Let's just cache
   ;; the result ourselves.
   (when (or (null my-project-mode-line-cache)
-          (< my-project-mode-line-cache-lifespan
-             (abs (- (float-time)
-                     (cdr my-project-mode-line-cache)))))
+            (< my-project-mode-line-cache-lifespan
+               (abs (- (float-time)
+                       (cdr my-project-mode-line-cache)))))
     (let* ((formatted (project-mode-line-format))
-           (formatted (when formatted
-                        (if (and (or (not dired-directory)
+           (formatted (when (and formatted
+                                 (or (not dired-directory)
                                      (not (equal (expand-file-name (project-root (project-current)))
                                                  (expand-file-name default-directory))))
                                  (not (derived-mode-p '(magit-mode))))
-                            (list "" formatted ": ")
-                          "-- "))))
+                        formatted)))
       (setf my-project-mode-line-cache (cons formatted (float-time)))))
   (car my-project-mode-line-cache))
 
@@ -396,20 +395,64 @@
     (setf my-mode-name-previous mode-name)
     'my-mode-name))
 
+(defun my-minor-mode-line ()
+  (cons ""
+        (cl-loop
+         for entry in minor-mode-alist
+         for key = (car entry)
+         when (and (symbol-value key) (cadr entry) (not (equal "" (cadr entry))))
+         collect `(:propertize
+                   ,(cadr entry)
+                   help-echo ,(symbol-name key)
+                   mouse-face mode-line-highlight
+                   keymap ,(let ((k (make-sparse-keymap))
+                                 (fn key))
+                             (keymap-set k "<mode-line> <mouse-1>"
+                                         (lambda ()
+                                           (interactive)
+                                           (describe-minor-mode-from-symbol fn)))
+                             k)))))
+
 (setq-default
  mode-line-format
- '("%e" " " (:eval (my-buffer-flag)) (:eval (my-remote-flag)) (:eval (my-eol-flag)) " "
-   (project-mode-line (:propertize (:eval (my-project-mode-line-format)) face font-lock-constant-face))
-   (:propertize "%b" face mode-line-buffer-id)
+ `("%e" " " (:eval (my-buffer-flag)) (:eval (my-remote-flag)) (:eval (my-eol-flag)) " "
+   (:propertize "%b"
+                face mode-line-buffer-id
+                mouse-face mode-line-highlight
+                help-echo "Open dired"
+                keymap ,(let ((k (make-sparse-keymap)))
+                          (keymap-set k "<mode-line> <mouse-1>" (lambda ()
+                                                                  (interactive)
+                                                                  (dired default-directory)))
+                          k))
    " "
    (line-number-mode
-    (column-number-mode (6 "%l:%c ") (3 "%l "))
+    (column-number-mode (7 "%l:%c ") (3 "%l "))
     (3 (column-number-mode ":%c ")))
    " " (:eval (my-mode-name)) mode-line-process
    "  " mode-line-percent-position
    (size-indication-mode "  %I ")
-   (vc-mode (:propertize vc-mode face font-lock-keyword-face))
-   minor-mode-alist))
+   (:eval (my-minor-mode-line))
+   mode-line-format-right-align
+   (project-mode-line (:propertize (:eval (my-project-mode-line-format))
+                                   face font-lock-constant-face
+                                   mouse-face mode-line-highlight
+                                   help-echo "Show project dired"
+                                   keymap ,(let ((k (make-sparse-keymap)))
+                                             (keymap-set k "<mode-line> <mouse-1>" 'project-dired)
+                                             k)))
+   (vc-mode (:propertize vc-mode
+                         face font-lock-keyword-face
+                         mouse-face mode-line-highlight
+                         help-echo "Show magit"
+                         keymap ,(let ((k (make-sparse-keymap)))
+                                   (keymap-set k "<mode-line> <mouse-1>" 'magit-status)
+                                   k)))
+   " "))
+
+(setq-default mode-line-right-align-edge 'right-margin)
+
+(setq-default vc-display-status 'no-backend)
 (setf project-mode-line t)
 
 ;; Some stuff stolen from Emacs prelude
@@ -921,8 +964,10 @@ point reaches the beginning or end of the buffer, stop there."
           (when (x-list-fonts "ETBembo")
             '((variable-pitch ((t (:family "ETBembo" :height 1.25 :inherit default))))))
           '((fringe ((t (:inherit mode-line-inactive))))
-            (mode-line-active ((t (:inherit (mode-line) :height 0.8))))
-            (mode-line-inactive ((t (:inherit (shadow mode-line) :height 0.8))))
+            (header-line ((t (:inherit (mode-line) :height 1.25))))
+            (mode-line ((t (:inherit (default) :height 0.8))))
+            (mode-line-active ((t (:inherit (mode-line)))))
+            (mode-line-inactive ((t (:inherit (shadow mode-line)))))
             (mode-line-buffer-id ((t :height 1.25)))))))
 
 (if (and (daemonp) (not my-frame-tweaks-applied?))
