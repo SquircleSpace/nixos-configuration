@@ -21,9 +21,7 @@
          ,@body)
        (add-hook ',mode-hook ',setup-name))))
 
-;; ===============================
-;; f-keys
-;; ===============================
+;;; f-keys
 
 (defmacro my-define-keymap (name &rest args)
   (declare (indent defun))
@@ -146,18 +144,14 @@
 (pinky-saver "M-%"     nil "%"   my-global-map)
 (pinky-saver "C-M-%"   nil "M-%" my-global-map)
 
-;; ===============================
-;; repeat
-;; ===============================
+;;; repeat
 
 (use-package repeat
   :config
   (repeat-mode 1)
   :demand t)
 
-;; ===============================
-;; completion
-;; ===============================
+;;; completion
 
 (use-package vertico
   :config (vertico-mode)
@@ -172,9 +166,7 @@
   :custom
   (completion-styles '(substring orderless basic)))
 
-;; ===============================
-;; company
-;; ===============================
+;;; company
 
 ;; Orderless and company don't play nicely together, sadly.  Well,
 ;; they do, but the orderless completion style isn't very nice for
@@ -192,9 +184,7 @@
       (apply orig-fun args)))
   (advice-add 'company-capf :around #'ada-company-capf-around-advice))
 
-;; ===============================
-;; consult
-;; ===============================
+;;; consult
 
 (use-package consult
   :commands (consult-line
@@ -208,6 +198,7 @@
   (keymap-set my-global-map "]" 'consult-grep)
   (keymap-set my-global-map "d" 'consult-find)
   (keymap-set my-global-map "M" 'consult-man)
+  (keymap-set my-global-map "O" 'consult-outline)
   (keymap-set global-map "<remap> <goto-line>" 'consult-goto-line)
   (keymap-set global-map "<remap> <switch-to-buffer>" 'consult-buffer)
 
@@ -234,9 +225,7 @@
         (funcall original nil))))
   (advice-add 'consult-theme :around #'my-around-consult-theme))
 
-;; ===============================
-;; rgrep-fast
-;; ===============================
+;;; rgrep-fast
 
 (defun rgrep-fast (regexp &optional files dir confirm)
   (interactive
@@ -264,17 +253,13 @@
 
 (global-set-key (kbd "C-M-]") 'rgrep-fast)
 
-;; ===============================
-;; mouse
-;; ===============================
+;;; mouse
 
 (when (window-system)
   (setq mouse-wheel-scroll-amount '(1))
   (setq mouse-wheel-progressive-speed nil))
 
-;; ===============================
-;; misc stuff
-;; ===============================
+;;; misc stuff
 
 (use-package which-key
   :demand t
@@ -616,9 +601,7 @@
   (advice-add 'yank :after 'my-highlight-region)
   (advice-add 'yank-pop :after 'my-highlight-region))
 
-;; ===============================
-;; project
-;; ===============================
+;;; project
 
 (use-package project
   :defer t
@@ -644,9 +627,7 @@
   (cl-defmethod project-name ((project (head my-nix-path)))
     (nth 2 project)))
 
-;; ===============================
-;; fringe
-;; ===============================
+;;; fringe
 
 (when window-system
   ;; Get a very small right fringe
@@ -681,9 +662,7 @@
                                              nil [event]))))
           (global-set-key from-kbd to-fn))))))
 
-;; ===============================
-;; Flyspell
-;; ===============================
+;;; Flyspell
 
 (use-package flyspell
   :hook text-mode
@@ -694,9 +673,7 @@
   (keymap-set flyspell-mouse-map "<mouse-2>" nil)
   (keymap-set flyspell-mouse-map "<mouse-3>" 'flyspell-correct-word))
 
-;; ===============================
-;; c
-;; ===============================
+;;; c
 
 (use-package cc-mode
   :defer t
@@ -709,9 +686,7 @@
           (awk-mode . "awk")
           (other . "gnu")))))
 
-;; ===============================
-;; lisp
-;; ===============================
+;;; lisp
 
 (use-package slime
   :after lisp-mode
@@ -782,9 +757,7 @@
     "r" 'eval-region)
   (keymap-set emacs-lisp-mode-map my-mode-prefix 'my-emacs-lisp-mode-map))
 
-;; ===============================
-;; macOS
-;; ===============================
+;;; macOS
 
 (when (eq system-type 'darwin)
   ;; keyboard shortcuts
@@ -798,9 +771,7 @@
   :config
   (exec-path-from-shell-initialize))
 
-;; ===============================
-;; Git
-;; ===============================
+;;; Git
 
 (use-package magit
   :commands (magit-status magit-file-dispatch)
@@ -835,9 +806,7 @@
   :config
   (setf vc-git-resolve-conflicts nil))
 
-;; ===============================
-;; Org
-;; ===============================
+;;; Org
 
 (use-package org
   :mode (("\\.org$" . org-mode))
@@ -981,9 +950,7 @@
   :defer t
   :diminish org-bullets-mode)
 
-;; ===============================
-;; Looks
-;; ===============================
+;;; Looks
 
 (defvar my-frame-tweaks-applied? nil)
 
@@ -1010,9 +977,7 @@
   (when (display-graphic-p)
     (my-frame-tweaks)))
 
-;; ===============================
-;; Olivetti
-;; ===============================
+;;; Olivetti
 
 (use-package olivetti
   :defer t
@@ -1020,9 +985,7 @@
   :config
   (setf olivetti-style 'fancy))
 
-;; ===============================
-;; whitespace
-;; ===============================
+;;; whitespace
 
 (use-package whitespace
   :defer t
@@ -1072,9 +1035,7 @@
           indentation
           face)))
 
-;; ===============================
-;; journalctl-mode
-;; ===============================
+;;; journalctl-mode
 
 (use-package journalctl-mode
   :defer t
