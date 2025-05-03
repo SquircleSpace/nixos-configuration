@@ -617,6 +617,34 @@
   (advice-add 'yank-pop :after 'my-highlight-region))
 
 ;; ===============================
+;; project
+;; ===============================
+
+(use-package project
+  :defer t
+  :config
+  (defun my-is-nix-path? (path)
+    (cl-block done
+      (save-match-data
+        (unless (string-match (rx (group "/nix/store/" (* "/") (+ (not "/"))) "/") path)
+          (cl-return-from done))
+
+        (let* ((match (match-string 1 path))
+               (base-name (file-name-nondirectory (directory-file-name match)))
+               (name (progn
+                       (string-match (rx (+ alnum) "-" (group (+ anychar))) base-name)
+                       (concat "nix:" (match-string 1 base-name)))))
+          (list 'my-nix-path match name)))))
+
+  (add-to-list 'project-find-functions 'my-is-nix-path?)
+
+  (cl-defmethod project-root ((project (head my-nix-path)))
+    (nth 1 project))
+
+  (cl-defmethod project-name ((project (head my-nix-path)))
+    (nth 2 project)))
+
+;; ===============================
 ;; fringe
 ;; ===============================
 
