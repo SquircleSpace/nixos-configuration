@@ -455,35 +455,42 @@
 (setq-default vc-display-status 'no-backend)
 (setf project-mode-line t)
 
-;; Some stuff stolen from Emacs prelude
-(defun prelude-move-beginning-of-line (arg)
-  "Move point back to indentation of beginning of line.
-
-Move point to the first non-whitespace character on this line.
-If point is already there, move to the beginning of the line.
-Effectively toggle between the first non-whitespace character and
-the beginning of the line.
-
-If ARG is not nil or 1, move forward ARG - 1 lines first.  If
-point reaches the beginning or end of the buffer, stop there."
+(defun my-move-beginning-of-line (arg)
   (interactive "^p")
-  (setq arg (or arg 1))
+  ;; move-beginning-of-line (which we are imitating) says that 1 means
+  ;; "this line".
+  (let ((line-movement (1- (or arg 1))))
+    (cond
+     ((not (zerop line-movement))
+      (forward-line line-movement)
+      (back-to-indentation))
 
-  ;; Move lines first
-  (when (/= arg 1)
-    (let ((line-move-visual nil))
-      (forward-line (1- arg))))
+     (line-move-visual
+      (let* ((indentation
+              (save-excursion
+                (back-to-indentation)
+                (point)))
+             (line-start
+              (save-excursion
+                (beginning-of-visual-line 1)
+                (point))))
+        (if (equal (point) indentation)
+            (goto-char line-start)
+          (goto-char (max indentation line-start)))))
 
-  (let ((orig-point (point)))
-    (back-to-indentation)
-    (when (= orig-point (point))
-      (move-beginning-of-line 1))))
+     (t
+      (let ((start (point)))
+        (back-to-indentation)
+        (when (equal (point) start)
+          (move-beginning-of-line 1)))))))
 
-(global-set-key [remap beginning-of-visual-line]
-                'prelude-move-beginning-of-line)
-(global-set-key [remap move-beginning-of-line]
-                'prelude-move-beginning-of-line)
-;; Okay back to my code, now
+(keymap-set global-map
+            "<remap> <beginning-of-visual-line>"
+            'my-move-beginning-of-line)
+
+(keymap-set visual-line-mode-map
+            "<remap> <move-beginning-of-line>"
+            'my-move-beginning-of-line)
 
 (defun my-quick-kill-line (deletep)
   ;; This is a bit silly.  This function implements the behavior I'd
