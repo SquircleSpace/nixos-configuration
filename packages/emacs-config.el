@@ -284,7 +284,6 @@
         '((width . 80)
           (height . 40))))
 (setf inhibit-startup-screen t)
-(setf initial-buffer-choice nil)
 (set-scroll-bar-mode nil)
 (tool-bar-mode 0)
 (setf ring-bell-function (lambda ()))
@@ -1049,3 +1048,158 @@
   (my-define-keymap my-journalctl-map
     "J" 'journalctl)
   (keymap-set my-global-map "J" 'my-journalctl-map))
+
+;;; Initial buffer
+
+(defun my-welcome-projects ()
+  (let ((projects (sort (project-known-project-roots)
+                        :lessp 'string<)))
+    (dolist (project projects)
+      (let* ((project-lexical project)
+             (start (point))
+             (keymap (my-welcome-render-item
+                      project
+                      (lambda ()
+                        (interactive)
+                        (if (file-exists-p (file-name-concat project-lexical ".git"))
+                            (magit-status-setup-buffer project-lexical)
+                          (find-file project-lexical))))))
+        (keymap-set keymap
+                    "k"
+                    (lambda ()
+                      (interactive)
+                      (project-forget-project project-lexical)
+                      (save-excursion
+                        (goto-char start)
+                        (let ((inhibit-read-only t))
+                          (move-beginning-of-line 2)
+                          (delete-region start (point))))))))))
+
+(defun my-welcome-toggle-section (here)
+  (interactive "d")
+  (save-excursion
+    (let ((section-id (get-text-property here 'my-welcome-section)))
+      (when section-id
+        (let (start
+              end
+              (inhibit-read-only t)
+              display)
+          (text-property-search-backward 'my-welcome-section section-id t)
+          (text-property-search-forward 'my-welcome-entries section-id t)
+          (setf end (1- (point)))
+          (text-property-search-backward 'my-welcome-entries section-id t)
+          (setf display (get-text-property (point) 'display))
+
+          (setf start (1- (point)))
+          (if display
+              (progn
+                (remove-text-properties start end '(display nil))
+                (setf my-welcome-hidden-sections
+                      (delete section-id my-welcome-hidden-sections)))
+              (put-text-property start end 'display "...")
+              (add-to-list 'my-welcome-hidden-sections section-id)))))))
+
+(defun my-welcome-buffer-or-call (name function)
+  (let ((buffer (get-buffer name)))
+    (if buffer
+        (switch-to-buffer buffer)
+      (funcall function))))
+
+(defvar my-welcome-sections
+  `(("Common"
+     ("Shell" .
+      ,(lambda () (interactive)
+         (let ((default-directory "~"))
+           (my-welcome-buffer-or-call "*shell*" 'shell))))
+     ("Home" .
+      ,(lambda () (interactive)
+         (find-file "~")))
+     ("Scratch" .
+      ,(lambda () (interactive)
+         (switch-to-buffer "*scratch*"))))
+    ("Projects" . my-welcome-projects)))
+
+(defvar-local my-welcome-hidden-sections nil)
+
+(defun my-welcome-render-item (item-name action)
+  (let ((line-keymap (make-sparse-keymap))
+        (text-keymap (make-sparse-keymap)))
+
+    (set-keymap-parent text-keymap line-keymap)
+    (keymap-set text-keymap "<mouse-1>" action)
+    (keymap-set line-keymap "<RET>" action)
+
+    (insert (propertize "  " 'keymap line-keymap))
+    (insert (propertize item-name 'mouse-face 'highlight 'keymap text-keymap))
+    (insert (propertize "\n" 'keymap line-keymap 'rear-sticky nil))
+
+    line-keymap))
+
+(defun my-welcome-render-section (id name contents)
+  (let ((start (point))
+        entries-start)
+
+    (insert (propertize name 'face 'outline-1) "\n")
+    (setf entries-start (point))
+
+    (cond
+     ((functionp contents)
+      (funcall contents))
+
+     ((consp contents)
+      (dolist (item contents)
+        (my-welcome-render-item (car item) (cdr item))))
+     (t
+      (error "Unrecognized section contents")))
+
+    (put-text-property start (point) 'my-welcome-section id)
+    (put-text-property entries-start (point) 'my-welcome-entries id)
+    (when (member id my-welcome-hidden-sections)
+      (save-excursion
+        (goto-char entries-start)
+        (my-welcome-toggle-section (point))))))
+
+(defun my-welcome-revert (&optional _ignore-auto _noconfirm)
+  (let ((inhibit-read-only t))
+    (widen)
+    (delete-region (point-min) (point-max))
+
+    (insert "Its Emacs!\n\n")
+
+    (cl-loop
+     with first? = t
+     for section in my-welcome-sections
+     for id from 0 do
+     (unless first?
+       (insert "\n"))
+     (my-welcome-render-section id (car section) (cdr section))
+     (setf first? nil))
+
+    (goto-char (point-min))
+    (text-property-search-forward 'my-welcome-section 0)))
+
+(defvar-local my-welcome-mode nil)
+
+(define-derived-mode my-welcome-mode special-mode
+  (setq-local revert-buffer-function 'my-welcome-revert)
+  (read-only-mode 1)
+  (setf my-welcome-mode t)
+  (my-welcome-revert))
+
+(keymap-set my-welcome-mode-map "<tab>" 'my-welcome-toggle-section)
+
+(defun my-welcome-noselect ()
+  (with-current-buffer (get-buffer-create "*my-welcome*")
+    (if my-welcome-mode
+        (my-welcome-revert)
+      (my-welcome-mode))
+    (current-buffer)))
+
+(defun my-welcome ()
+  (interactive)
+  (with-current-buffer (pop-to-buffer "*my-welcome*")
+    (if my-welcome-mode
+        (my-welcome-revert)
+      (my-welcome-mode))))
+
+(setf initial-buffer-choice 'my-welcome-noselect)
