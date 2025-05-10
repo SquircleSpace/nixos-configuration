@@ -1112,14 +1112,17 @@
 (defvar my-welcome-sections
   `(("Common"
      ("Shell" .
-      ,(lambda () (interactive)
+      ,(lambda ()
+         (interactive)
          (let ((default-directory "~"))
            (my-welcome-buffer-or-call "*shell*" 'shell))))
      ("Home" .
-      ,(lambda () (interactive)
+      ,(lambda ()
+         (interactive)
          (find-file "~")))
      ("Scratch" .
-      ,(lambda () (interactive)
+      ,(lambda ()
+         (interactive)
          (switch-to-buffer "*scratch*"))))
     ("Projects" . my-welcome-projects)))
 
@@ -1190,7 +1193,42 @@
   (setf my-welcome-mode t)
   (my-welcome-revert))
 
-(keymap-set my-welcome-mode-map "<tab>" 'my-welcome-toggle-section)
+(defun my-welcome-next-section ()
+  (interactive)
+  (let ((id (get-text-property (point) 'my-welcome-section))
+        target)
+    (save-excursion
+      (if id
+          (text-property-search-forward 'my-welcome-section (1+ id))
+        (text-property-search-forward 'my-welcome-section nil t))
+      (when (get-text-property (point) 'my-welcome-section)
+        (setf target (point))))
+    (if target
+        (goto-char target)
+      (message "No next section"))))
+
+(defun my-welcome-previous-section ()
+  (interactive)
+  (let ((id (get-text-property (point) 'my-welcome-section))
+        target)
+    (save-excursion
+      (if id
+          (progn
+            (text-property-search-backward 'my-welcome-section id t)
+            (text-property-search-backward 'my-welcome-section (1- id) t))
+        (text-property-search-backward 'my-welcome-section nil))
+      (when (get-text-property (point) 'my-welcome-section)
+        (setf target (point))))
+    (if target
+        (goto-char target)
+      (message "No previous section"))))
+
+(my-define-keymap my-welcome-mode-map
+  "<tab>" 'my-welcome-toggle-section
+  "n" 'next-line
+  "M-n" 'my-welcome-next-section
+  "p" 'previous-line
+  "M-p" 'my-welcome-previous-section)
 
 (defun my-welcome-noselect ()
   (with-current-buffer (get-buffer-create "*my-welcome*")
