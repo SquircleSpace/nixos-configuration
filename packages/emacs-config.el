@@ -478,6 +478,10 @@
             "<remap> <beginning-of-visual-line>"
             'my-move-beginning-of-line)
 
+(keymap-set global-map
+            "<remap> <move-beginning-of-line>"
+            'my-move-beginning-of-line)
+
 (keymap-set visual-line-mode-map
             "<remap> <move-beginning-of-line>"
             'my-move-beginning-of-line)
@@ -1139,7 +1143,7 @@
   (let ((start (point))
         entries-start)
 
-    (insert (propertize name 'face 'outline-1) "\n")
+    (insert (propertize name 'face '(:inherit (font-lock-keyword-face) :weight bold)) "\n")
     (setf entries-start (point))
 
     (cond
