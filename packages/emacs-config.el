@@ -398,6 +398,18 @@
                                            (describe-minor-mode-from-symbol fn)))
                              k)))))
 
+(defvar-local my-vc-mode nil)
+(put 'my-vc-mode 'risky-local-variable t)
+(defun my-vc-mode ()
+  (setf my-vc-mode
+        (propertize vc-mode
+                    'face 'font-lock-keyword-face
+                    'mouse-face 'mode-line-highlight
+                    'keymap (let ((k (make-sparse-keymap)))
+                              (keymap-set k "<mode-line> <mouse-1>" 'magit-status)
+                              k)))
+  'my-vc-mode)
+
 (setq-default
  mode-line-format
  `("%e" " " (:eval (my-buffer-flag)) (:eval (my-remote-flag)) (:eval (my-eol-flag)) " "
@@ -426,16 +438,10 @@
                                    keymap ,(let ((k (make-sparse-keymap)))
                                              (keymap-set k "<mode-line> <mouse-1>" 'project-dired)
                                              k)))
-   (vc-mode (:propertize vc-mode
-                         face font-lock-keyword-face
-                         mouse-face mode-line-highlight
-                         help-echo "Show magit"
-                         keymap ,(let ((k (make-sparse-keymap)))
-                                   (keymap-set k "<mode-line> <mouse-1>" 'magit-status)
-                                   k)))
+   (vc-mode (:eval (my-vc-mode)))
    " "))
 
-(setq-default mode-line-right-align-edge 'right-margin)
+(setq-default mode-line-right-align-edge 'right-fringe)
 
 (setq-default vc-display-status 'no-backend)
 (setf project-mode-line t)
@@ -967,7 +973,7 @@
             '((variable-pitch ((t (:family "ETBembo" :height 1.25 :inherit default))))))
           '((fringe ((t (:inherit mode-line-inactive))))
             (header-line ((t (:inherit (mode-line) :height 1.25))))
-            (mode-line ((t (:inherit (default) :height 0.8))))
+            (mode-line ((t (:inherit (fixed-pitch) :height 0.8))))
             (mode-line-active ((t (:inherit (mode-line)))))
             (mode-line-inactive ((t (:inherit (shadow mode-line)))))
             (mode-line-buffer-id ((t :height 1.25)))))))
