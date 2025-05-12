@@ -9,5 +9,7 @@
 
   services.xserver.desktopManager.gnome.sessionPath = [
     pkgs.gnomeExtensions.appindicator
+    pkgs.gnomeExtensions.hide-universal-access
+    pkgs.gnomeExtensions.unite
   ];
 }
