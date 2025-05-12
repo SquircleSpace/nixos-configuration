@@ -21,7 +21,7 @@
          ,@body)
        (add-hook ',mode-hook ',setup-name))))
 
-;;; f-keys
+;;; Key remap
 
 (defmacro my-define-keymap (name &rest args)
   (declare (indent defun))
@@ -109,40 +109,41 @@
     (when new-key
       (keymap-set new-keymap new-key old-command))))
 
-;; Buffers
-(pinky-saver "C-x C-s" nil "s" my-global-map)
-(pinky-saver "C-x C-w" nil "w" my-global-map)
-(pinky-saver "C-x C-f" nil "f" my-global-map)
-(pinky-saver "C-x b"   nil "b" my-global-map)
-(pinky-saver "C-x k"   nil "k" my-global-map)
+(progn ;; Define pinky-savers
+  ;; Buffers
+  (pinky-saver "C-x C-s" nil "s" my-global-map)
+  (pinky-saver "C-x C-w" nil "w" my-global-map)
+  (pinky-saver "C-x C-f" nil "f" my-global-map)
+  (pinky-saver "C-x b"   nil "b" my-global-map)
+  (pinky-saver "C-x k"   nil "k" my-global-map)
 
-;; Windows
-(pinky-saver "C-x 1"   nil "1" my-global-map)
-(pinky-saver "C-x 2"   nil "2" my-global-map)
-(pinky-saver "C-x 3"   nil "3" my-global-map)
-(pinky-saver "C-x 0"   nil "0" my-global-map)
-(pinky-saver "C-x +"   nil "+" my-global-map)
-(pinky-saver "C-x o"   nil "o" my-global-map)
+  ;; Windows
+  (pinky-saver "C-x 1"   nil "1" my-global-map)
+  (pinky-saver "C-x 2"   nil "2" my-global-map)
+  (pinky-saver "C-x 3"   nil "3" my-global-map)
+  (pinky-saver "C-x 0"   nil "0" my-global-map)
+  (pinky-saver "C-x +"   nil "+" my-global-map)
+  (pinky-saver "C-x o"   nil "o" my-global-map)
 
-;; Text-size
-(pinky-saver "C-x C-M-=" nil "="   my-global-map)
-(pinky-saver "C-x C-M--" nil "-"   my-global-map)
-(pinky-saver "C-x C-="   nil "M-=" my-global-map)
-(pinky-saver "C-x C--"   nil "M--" my-global-map)
+  ;; Text-size
+  (pinky-saver "C-x C-M-=" nil "="   my-global-map)
+  (pinky-saver "C-x C-M--" nil "-"   my-global-map)
+  (pinky-saver "C-x C-="   nil "M-=" my-global-map)
+  (pinky-saver "C-x C--"   nil "M--" my-global-map)
 
-;; Keyboard macros
-(pinky-saver "C-x ("   nil "(" my-global-map)
-(pinky-saver "C-x )"   nil ")" my-global-map)
-(pinky-saver "C-x e"   nil "e" my-global-map)
+  ;; Keyboard macros
+  (pinky-saver "C-x ("   nil "(" my-global-map)
+  (pinky-saver "C-x )"   nil ")" my-global-map)
+  (pinky-saver "C-x e"   nil "e" my-global-map)
 
-;; Goto line
-(pinky-saver "M-g M-g" nil "j" my-global-map)
-(pinky-saver "M-g g")
+  ;; Goto line
+  (pinky-saver "M-g M-g" nil "j" my-global-map)
+  (pinky-saver "M-g g")
 
-;; Misc
-(pinky-saver "M-$"     nil "$"   my-global-map)
-(pinky-saver "M-%"     nil "%"   my-global-map)
-(pinky-saver "C-M-%"   nil "M-%" my-global-map)
+  ;; Misc
+  (pinky-saver "M-$"     nil "$"   my-global-map)
+  (pinky-saver "M-%"     nil "%"   my-global-map)
+  (pinky-saver "C-M-%"   nil "M-%" my-global-map))
 
 ;;; repeat
 
@@ -154,7 +155,7 @@
 ;;; completion
 
 (use-package vertico
-  :config (vertico-mode)
+  :config (vertico-mode 1)
   :demand t)
 
 (use-package marginalia
