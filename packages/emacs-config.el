@@ -1057,6 +1057,26 @@
 
 ;;; Initial buffer
 
+(defvar-local my-welcome-section-shortcuts
+    '("a"
+      "b"
+      "c"
+      "d"
+      "e"
+      "f"))
+
+(defvar-local my-welcome-item-shortcuts
+    '("1"
+      "2"
+      "3"
+      "4"
+      "5"
+      "6"
+      "7"
+      "8"
+      "9"
+      "0"))
+
 (defun my-welcome-projects ()
   (let ((projects (sort (project-known-project-roots)
                         :lessp 'string<)))
@@ -1077,33 +1097,10 @@
                       (project-forget-project project-lexical)
                       (save-excursion
                         (goto-char start)
-                        (let ((inhibit-read-only t))
-                          (move-beginning-of-line 2)
-                          (delete-region start (point))))))))))
-
-(defun my-welcome-toggle-section (here)
-  (interactive "d")
-  (save-excursion
-    (let ((section-id (get-text-property here 'my-welcome-section)))
-      (when section-id
-        (let (start
-              end
-              (inhibit-read-only t)
-              display)
-          (text-property-search-backward 'my-welcome-section section-id t)
-          (text-property-search-forward 'my-welcome-entries section-id t)
-          (setf end (1- (point)))
-          (text-property-search-backward 'my-welcome-entries section-id t)
-          (setf display (get-text-property (point) 'display))
-
-          (setf start (1- (point)))
-          (if display
-              (progn
-                (remove-text-properties start end '(display nil))
-                (setf my-welcome-hidden-sections
-                      (delete section-id my-welcome-hidden-sections)))
-              (put-text-property start end 'display "...")
-              (add-to-list 'my-welcome-hidden-sections section-id)))))))
+                        (with-silent-modifications
+                          (let ((inhibit-read-only t))
+                            (move-beginning-of-line 2)
+                            (delete-region start (point)))))))))))
 
 (defun my-welcome-buffer-or-call (name function)
   (let ((buffer (get-buffer name)))
@@ -1111,13 +1108,32 @@
         (switch-to-buffer buffer)
       (funcall function))))
 
+(defun my-welcome-some-shell-entry (buffer-name spawn-function title)
+  (let* ((action
+          (lambda ()
+            (interactive)
+            (let ((default-directory "~"))
+              (my-welcome-buffer-or-call buffer-name spawn-function))))
+         (buffer (get-buffer buffer-name))
+         (current-path
+          (when buffer
+            (buffer-local-value 'default-directory buffer))))
+    (when current-path
+      (set-text-properties 0 (length current-path) nil current-path))
+    (my-welcome-render-item
+     title action current-path)))
+
+(defun my-welcome-shell-entry ()
+  (my-welcome-some-shell-entry "*shell*" 'shell "Shell"))
+
+(defun my-welcome-eshell-entry ()
+  (my-welcome-some-shell-entry "*eshell*" 'eshell "Eshell"))
+
 (defvar my-welcome-sections
   `(("Common"
-     ("Shell" .
-      ,(lambda ()
-         (interactive)
-         (let ((default-directory "~"))
-           (my-welcome-buffer-or-call "*shell*" 'shell))))
+     my-welcome-shell-entry
+     my-welcome-eshell-entry
+     ("Slime REPL" . slime)
      ("Home" .
       ,(lambda ()
          (interactive)
@@ -1129,25 +1145,72 @@
     ("Projects" . my-welcome-projects)))
 
 (defvar-local my-welcome-hidden-sections nil)
+(defvar-local my-welcome-maximum-width 0)
+(defvar-local my-welcome-section-keymap nil)
 
-(defun my-welcome-render-item (item-name action)
+(defun my-welcome-render-item (item-name action &optional comment)
   (let ((line-keymap (make-sparse-keymap))
-        (text-keymap (make-sparse-keymap)))
+        (text-keymap (make-sparse-keymap))
+        (line-start (point))
+        link-end)
 
     (set-keymap-parent text-keymap line-keymap)
+    (set-keymap-parent line-keymap my-welcome-section-keymap)
     (keymap-set text-keymap "<mouse-1>" action)
     (keymap-set line-keymap "<RET>" action)
 
     (insert (propertize "  " 'keymap line-keymap))
-    (insert (propertize item-name 'mouse-face 'highlight 'keymap text-keymap))
-    (insert (propertize "\n" 'keymap line-keymap 'rear-sticky nil))
+    (let* ((short-key (pop my-welcome-item-shortcuts)))
+      (when short-key
+        (insert (propertize short-key
+                            'keymap line-keymap
+                            'face 'shadow
+                            'my-welcome-item-shortcut t
+                            'display " "))
+        (keymap-set my-welcome-section-keymap short-key
+                    (lambda ()
+                      (interactive)
+                      (goto-char line-start)
+                      (funcall action)))))
+
+    (insert (propertize " " 'keymap line-keymap))
+
+    (insert (propertize item-name 'mouse-face 'highlight 'keymap text-keymap 'face font-lock-doc-face))
+    (setf link-end (point))
+    (setf my-welcome-maximum-width
+          (max my-welcome-maximum-width
+               (string-pixel-width (buffer-substring line-start link-end))))
+
+    (when comment
+      (insert (propertize " " 'keymap line-keymap 'display '(space :align-to my-welcome-maximum-width)))
+      (insert (propertize "    " 'keymap line-keymap))
+      (insert (propertize comment 'keymap line-keymap 'face font-lock-comment-face)))
+    (insert (apply 'propertize "\n" 'keymap line-keymap
+                   (unless comment
+                     '(rear-sticky nil))))
 
     line-keymap))
 
+(defvar my-welcome-jump-keymap nil)
+
 (defun my-welcome-render-section (id name contents)
   (let ((start (point))
-        entries-start)
+        entries-start
+        entries-end
+        (my-welcome-item-shortcuts my-welcome-item-shortcuts)
+        (my-welcome-section-keymap (make-sparse-keymap)))
 
+    (let ((section-shortcut (pop my-welcome-section-shortcuts)))
+      (if (not section-shortcut)
+          (insert "  ")
+        (insert (propertize (format "%s" section-shortcut)
+                            'face 'shadow
+                            'my-welcome-section-shortcut t))
+        (insert " ")
+        (keymap-set my-welcome-jump-keymap section-shortcut
+                    (lambda ()
+                      (interactive)
+                      (goto-char start)))))
     (insert (propertize name 'face '(:inherit (font-lock-keyword-face) :weight bold)) "\n")
     (setf entries-start (point))
 
@@ -1157,41 +1220,78 @@
 
      ((consp contents)
       (dolist (item contents)
-        (my-welcome-render-item (car item) (cdr item))))
+        (cond
+         ((not (consp item))
+          (funcall item))
+
+         ((consp (car item))
+          (my-welcome-render-item (caar item) (cdr item) (cdar item)))
+
+         (t
+          (my-welcome-render-item (car item) (cdr item))))))
      (t
       (error "Unrecognized section contents")))
 
-    (put-text-property start (point) 'my-welcome-section id)
-    (put-text-property entries-start (point) 'my-welcome-entries id)
-    (when (member id my-welcome-hidden-sections)
-      (save-excursion
-        (goto-char entries-start)
-        (my-welcome-toggle-section (point))))))
+    (setf entries-end (point))
+
+    (put-text-property start entries-end 'my-welcome-section id)
+    (put-text-property start entries-end 'cursor-sensor-functions
+                       (list (lambda (_window _previous change)
+                               (let ((inhibit-read-only t))
+                                 (with-silent-modifications
+                                   (save-excursion
+                                     (save-restriction
+                                       (widen)
+                                       (narrow-to-region entries-start entries-end)
+                                       (goto-char (point-min))
+                                       (while (text-property-search-forward 'my-welcome-item-shortcut t nil)
+                                         (let ((shortcut-start (point))
+                                               shortcut-stop)
+                                           (text-property-search-forward 'my-welcome-item-shortcut t t)
+                                           (setf shortcut-stop (point))
+                                           (if (eq change 'entered)
+                                               (remove-text-properties shortcut-start shortcut-stop '(display))
+                                             (add-text-properties shortcut-start shortcut-stop '(display " "))))))))))))
+
+    (put-text-property entries-start entries-end 'my-welcome-entries id)
+
+    (alter-text-property start entries-end 'keymap
+                         (lambda (old)
+                           (or old my-welcome-section-keymap)))))
 
 (defun my-welcome-revert (&optional _ignore-auto _noconfirm)
-  (let ((inhibit-read-only t))
-    (widen)
-    (delete-region (point-min) (point-max))
+  (with-silent-modifications
+    (let ((inhibit-read-only t)
+          (my-welcome-section-shortcuts my-welcome-section-shortcuts)
+          (my-welcome-jump-keymap (make-sparse-keymap)))
+      (widen)
+      (delete-region (point-min) (point-max))
+      (setq-local my-welcome-maximum-width 0)
 
-    (insert "Its Emacs!\n\n")
+      (insert "Its Emacs!\n\n")
 
-    (cl-loop
-     with first? = t
-     for section in my-welcome-sections
-     for id from 0 do
-     (unless first?
-       (insert "\n"))
-     (my-welcome-render-section id (car section) (cdr section))
-     (setf first? nil))
+      (cl-loop
+       with first? = t
+       for section in my-welcome-sections
+       for id from 0 do
+       (unless first?
+         (insert "\n"))
+       (my-welcome-render-section id (car section) (cdr section))
+       (setf first? nil))
 
-    (goto-char (point-min))
-    (text-property-search-forward 'my-welcome-section 0)))
+      (goto-char (point-min))
+      (when (display-graphic-p)
+        (setq-local my-welcome-maximum-width (list my-welcome-maximum-width)))
+      (text-property-search-forward 'my-welcome-section 0)
+
+      (use-local-map (make-composed-keymap (list my-welcome-mode-map my-welcome-jump-keymap))))))
 
 (defvar-local my-welcome-mode nil)
 
 (define-derived-mode my-welcome-mode special-mode
   (setq-local revert-buffer-function 'my-welcome-revert)
   (read-only-mode 1)
+  (cursor-sensor-mode 1)
   (setf my-welcome-mode t)
   (my-welcome-revert))
 
@@ -1226,7 +1326,6 @@
       (message "No previous section"))))
 
 (my-define-keymap my-welcome-mode-map
-  "<tab>" 'my-welcome-toggle-section
   "n" 'next-line
   "M-n" 'my-welcome-next-section
   "p" 'previous-line
