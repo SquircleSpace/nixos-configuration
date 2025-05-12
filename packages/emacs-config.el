@@ -736,7 +736,8 @@
 
 (use-package paredit
   :diminish paredit-mode
-  :hook ((lisp-data-mode . paredit-mode)
+  :hook ((emacs-lisp-mode . paredit-mode)
+         (lisp-interaction-mode . paredit-mode)
          (lisp-mode . paredit-mode))
   :config
   (my-mode-setup paredit-mode
