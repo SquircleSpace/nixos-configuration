@@ -152,6 +152,14 @@
   (repeat-mode 1)
   :demand t)
 
+;;; shell
+
+(use-package shell
+  :defer t
+  :config
+  (my-mode-setup shell-mode-hook
+    (setq-local comint-prompt-read-only t)))
+
 ;;; completion
 
 (use-package vertico
@@ -731,6 +739,8 @@
 (use-package lisp-mode
   :defer t
   :config
+  (setf inferior-lisp-program "sbcl")
+
   (my-mode-setup lisp-mode-hook
     (setf my-indent-after-yank t)))
 
