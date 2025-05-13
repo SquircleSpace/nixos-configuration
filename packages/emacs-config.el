@@ -288,10 +288,6 @@
 (setf column-number-mode t)
 (size-indication-mode t)
 (menu-bar-mode -1)
-(when window-system
-  (setf default-frame-alist
-        '((width . 80)
-          (height . 40))))
 (setf inhibit-startup-screen t)
 (set-scroll-bar-mode nil)
 (tool-bar-mode 0)
@@ -299,6 +295,10 @@
 (setf scroll-conservatively 10000)
 (pending-delete-mode 1)
 (delete-selection-mode 1)
+
+(when (eq window-system 'x)
+  (add-hook 'window-size-change-functions
+            'frame-hide-title-bar-when-maximized))
 
 (setq backup-directory-alist
       `(("." . ,(concat user-emacs-directory "backups/"))))
